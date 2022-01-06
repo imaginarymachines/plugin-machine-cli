@@ -4,6 +4,12 @@ Command line interface for [Plugin Machine](https://pluginmachine.com).
 
 ## Install
 
+- Install globally, which is recommended:
+    - `npm i plugin-machine -g`
+- Install as a dependency of plugin:
+    - `npm i plugin-machine`
+- Use via npx
+    - `npx plugin-machine login`
 
 ## Commands
 
