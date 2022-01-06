@@ -22,6 +22,7 @@
     "inquirer": "^8.2.0",
     "isomorphic-fetch": "^3.0.0"
   },
+  "engines" : { "node" : ">12" },
   "files": [
     "bin/",
     "src/"
