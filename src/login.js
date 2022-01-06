@@ -40,7 +40,8 @@ async function promptForMissingOptions(options) {
 
 export async function  doLogin(token) {
   const config = updateAuthConfig({token});
-  console.log(config);
+  console.log(`Logged in with token: ${token}`);
+ // console.log(config);
 }
 
 export async function cli(args) {

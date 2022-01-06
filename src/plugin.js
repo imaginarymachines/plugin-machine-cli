@@ -200,11 +200,17 @@ async function handleAddFeature(pluginDir,pluginMachine,pluginMachineJson,option
   });
   data.featureType = feature;
 
-  let {featureId,files} = await pluginMachine.addFeature(pluginMachineJson,data);
+  let {featureId,files} = await pluginMachine.addFeature(pluginMachineJson,data).catch(e => {
+      throw new Error(e);
+  });
+  console.log( `Saved new ${feature} feature with id ${featureId}`);
   if( files.length ){
     files.forEach(async(file) => {
       let fileContents = await pluginMachine.getFeatureCode(pluginMachineJson,featureId,file);
-      await pluginMachine.writeFile(pluginDir,file,fileContents);
+      await pluginMachine.writeFile(pluginDir,file,fileContents).catch(e => {
+          throw new Error(e);
+      });
+      console.log(`Added ${file}`);
     });
 
   }
@@ -248,7 +254,7 @@ export async function cli(args) {
     case 'zip':
       pluginMachineJson = validatePluginJson(pluginMachineJson);
       await handleZip(pluginDir,pluginMachineJson);
-        break;
+      break;
     case 'add':
       pluginMachineJson = validatePluginJson(pluginMachineJson);
       const rules = require( './data/rules.json');
