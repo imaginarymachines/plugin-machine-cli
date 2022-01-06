@@ -1,6 +1,6 @@
 import arg from 'arg';
 import inquirer from 'inquirer';
-import { getAuthToken, getPluginMachineJson } from './lib/config';
+import { getAuthToken, getPluginDir, getPluginMachineJson } from './lib/config';
 import pluginMachineApi from './lib/pluginMachineApi';
 
 
@@ -10,6 +10,7 @@ function parseArgumentsIntoOptions(rawArgs) {
     {
       '--pluginId': String,
       '--feature': String,
+      '--pluginDir': String,
       // Aliases
     },
     {
@@ -21,6 +22,7 @@ function parseArgumentsIntoOptions(rawArgs) {
     command: args._[0] || false,
     feature: args['--feature'] || false,
     pluginId: args['--pluginId'] || args._[1] || false,
+    pluginDir: args['--pluginDir'] || false,
   };
 }
 async function promptForFeature(options,features) {
@@ -131,8 +133,7 @@ async function handleAddFeature(pluginDir,pluginMachine,pluginMachineJson,option
 
 export async function cli(args) {
   let options = parseArgumentsIntoOptions(args);
-  const path = require('path');
-  const pluginDir = path.join(__dirname, '..');
+  const pluginDir = options.pluginDir || getPluginDir();
   const pluginMachineJson = getPluginMachineJson(pluginDir);
   const pluginMachine = await pluginMachineApi(
     options.token || getAuthToken(pluginDir),

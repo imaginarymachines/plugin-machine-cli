@@ -20,8 +20,12 @@ export const getAuthToken = () => {
     return authConfig.token;
   }
   return false;
-
 };
+
+export const getPluginDir = () => {
+  const {cwd}= require( 'process');
+  return cwd();
+}
 //update auth.json contents
 export const updateAuthConfig = (newData) => {
     // read existing config
