@@ -16,7 +16,7 @@ Command line interface for [Plugin Machine](https://pluginmachine.com).
 ### Login
 - Login to plugin machine.
     - `plugin-machine login {token}`
-    - [When logged in, go to /dashboard/user](https://pluginmachine.app/dashboard/user) to see API token.
+    - [When logged in, go to /dashboard/api](https://pluginmachine.app/dashboard/api) to see API token.
 
 ### Plugin
 > These Commands Require login
