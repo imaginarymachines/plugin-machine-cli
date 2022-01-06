@@ -1,0 +1,36 @@
+{
+  "name": "@imaginary-machines/plugin-machine",
+  "version": "1.0.0",
+  "description": "A CLI for Plugin Machine",
+  "main": "src/index.js",
+  "bin": {
+    "login": "bin/login"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Josh Pollock <josh@joshpress.net> (https://joshpress.net)",
+  "license": "GPL-2.0",
+  "dependencies": {
+    "archiver": "^5.3.0",
+    "arg": "^5.0.1",
+    "chalk": "^5.0.0",
+    "covgen": "^3.1.0",
+    "esm": "^3.2.18",
+    "gitignore": "^0.7.0",
+    "inquirer": "^8.2.0",
+    "isomorphic-fetch": "^3.0.0",
+    "listr": "^0.14.3",
+    "ncp": "^2.0.0",
+    "pkg-install": "^1.0.0",
+    "spdx-license-list": "^6.4.0"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "templates/"
+  ]
+}
