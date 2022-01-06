@@ -1,18 +1,18 @@
 {
-    "name": "shelob9/taco-blog",
-    "description": "Tacos!",
+    "name": "shelob9/book-list",
+    "description": "Books listing plugin",
     "require": {
         "php": "^7.2|^8.0"
     },
     "type": "wordpress-plugin",
     "autoload": {
         "psr-4": {
-            "TacoBlock\\": "./php"
+            "BooksList\\": "./php"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "TacoBlock\\Tests\\": "./tests"
+            "BooksList\\Tests\\": "./tests"
         }
     },
     "require-dev": {

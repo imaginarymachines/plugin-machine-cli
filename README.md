@@ -35,6 +35,10 @@ All `plugin` commands will assume that the current directory is the root directo
 - Output some debug information
 	- `plugin-machine debug`
 
+### Get Version
+- Output some debug information
+	- `plugin-machine version`
+
 ## Development
 
 - Git clone

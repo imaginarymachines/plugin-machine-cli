@@ -1,7 +1,85 @@
 const arg = require('arg');
 const inquirer = require('inquirer');
 const { getAuthToken, getPluginDir, getPluginMachineJson } = require( './lib/config');
-const pluginMachineApi = require( './lib/pluginMachineApi');
+export const pluginMachineApi = async (token) => {
+  const fetch = require('isomorphic-fetch');
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
+  };
+
+  const apiUrl = (endpoint) => `https://pluginmachine.app/api/v1${endpoint}`;
+
+  async function getPluginMachineJson(pluginId){
+    return fetch(
+      apiUrl(`/plugins/${pluginId}/code`),
+      {
+        method: 'GET',
+        headers,
+      }
+
+    ).then( r => r.json() ).then(r => {
+      return r;
+    })
+  }
+  const fs = require( 'fs');
+
+  return {
+    getPluginMachineJson,
+    addFeature: async (pluginMachineJson,data)  =>{
+      const {pluginId,buildId}=pluginMachineJson;
+      return fetch(
+        apiUrl(`/plugins/${pluginId}/builds/${buildId}/features`),
+        {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers,
+        }
+      )
+      .catch(e => {
+        console.log(e);
+      }).then( r => r.json())
+        .then(r => {
+          return {
+            files: r.files,
+            featureId:r.setting.id
+          };
+        });
+
+
+    },
+    getFeatureCode: async (pluginMachineJson,featureId,file) => {
+      const {pluginId,buildId}=pluginMachineJson;
+      return fetch(
+        apiUrl(`/plugins/${pluginId}/builds/${buildId}/features/${featureId}/code?file=${encodeURI(file)}`),
+        {
+          method: "GET",
+        headers,        }
+      ).then( r => r.text() ).then(r => {
+        return r;
+      });
+    },
+    writeFile: async(pluginDir,file,fileContents) => {
+      //Has a path?
+      let split = file.split('/');
+      //Create directories if they don't exist
+      if( split.length > 1 ) {
+        let createDir = pluginDir;
+        for (let i = 0; i < split.length -1; i++) {
+          createDir = `${createDir}/${split[i]}`;
+          if( ! fs.existsSync(createDir) ) {
+            fs.mkdirSync(createDir);
+          }
+        }
+
+      }
+
+      fs.writeFileSync(`${pluginDir}/${file}`,fileContents,{ flag: 'w+' });
+    }
+  };
+
+}
+
 
 
 function parseArgumentsIntoOptions(rawArgs) {
@@ -17,11 +95,10 @@ function parseArgumentsIntoOptions(rawArgs) {
       argv: rawArgs.slice(2),
     }
   );
-
   return {
-    command: args._[0] || false,
+    command: args._[1] || false,
     feature: args['--feature'] || false,
-    pluginId: args['--pluginId'] || args._[1] || false,
+    pluginId: args['--pluginId'] || args._[2] || false,
     pluginDir: args['--pluginDir'] || false,
   };
 }
@@ -116,7 +193,9 @@ async function handleAddFeature(pluginDir,pluginMachine,pluginMachineJson,option
   const badKeys = ['command','feature','pluginId'];
   Object.keys(options).forEach( option => {
     if( -1 == badKeys.indexOf(option) ) {
-      data[option] = options[option].toLowerCase();
+      if( 'string' === typeof options[option] ) {
+        data[option] = options[option].toLowerCase();
+      }
     }
   });
   data.featureType = feature;
