@@ -1,6 +1,6 @@
 {
-  "name": "@imaginary-machines/plugin-machine",
-  "version": "1.0.0",
+  "name": "plugin-machine",
+  "version": "0.1.0",
   "description": "A CLI for Plugin Machine",
   "main": "src/index.js",
   "bin": {
