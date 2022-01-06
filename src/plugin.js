@@ -1,8 +1,13 @@
 const arg = require('arg');
 const inquirer = require('inquirer');
 const { getAuthToken, getPluginDir, getPluginMachineJson } = require( './lib/config');
+
+/**
+ * Plugin Machine API client
+ */
 export const pluginMachineApi = async (token) => {
   const fetch = require('isomorphic-fetch');
+  const fs = require( 'fs');
   const headers = {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${token}`,
@@ -10,6 +15,7 @@ export const pluginMachineApi = async (token) => {
 
   const apiUrl = (endpoint) => `https://pluginmachine.app/api/v1${endpoint}`;
 
+  //Get the plugin machine json file for a saved plugin
   async function getPluginMachineJson(pluginId){
     return fetch(
       apiUrl(`/plugins/${pluginId}/code`),
@@ -22,10 +28,10 @@ export const pluginMachineApi = async (token) => {
       return r;
     })
   }
-  const fs = require( 'fs');
 
   return {
     getPluginMachineJson,
+    //Add a feature to a plugin
     addFeature: async (pluginMachineJson,data)  =>{
       const {pluginId,buildId}=pluginMachineJson;
       return fetch(
@@ -48,6 +54,7 @@ export const pluginMachineApi = async (token) => {
 
 
     },
+    //Get one file, from a feature
     getFeatureCode: async (pluginMachineJson,featureId,file) => {
       const {pluginId,buildId}=pluginMachineJson;
       return fetch(
@@ -59,6 +66,7 @@ export const pluginMachineApi = async (token) => {
         return r;
       });
     },
+    //Write a file, with some saftery features
     writeFile: async(pluginDir,file,fileContents) => {
       //Has a path?
       let split = file.split('/');
@@ -83,7 +91,7 @@ export const pluginMachineApi = async (token) => {
 
 
 function parseArgumentsIntoOptions(rawArgs) {
-  //https://www.npmjs.com/package/arg
+//https://www.npmjs.com/package/arg
   const args = arg(
     {
       '--pluginId': String,
@@ -174,7 +182,9 @@ async function promptForMissingOptions(options,questions) {
   return options;
 }
 
-
+/**
+ * Hander for `plugin-machine plugin config` command
+ */
 async function handleConfig(pluginDir,pluginId,pluginMachine) {
   const fs = require('fs');
   let newPluginMachineJson = await pluginMachine.getPluginMachineJson(pluginId);
@@ -182,11 +192,17 @@ async function handleConfig(pluginDir,pluginId,pluginMachine) {
   return true;
 }
 
+/**
+ * Hander for `plugin-machine plugin zip` command
+ */
 async function handleZip(pluginDir,pluginMachineJson){
   const {makeZip} = require('./zip');
   await makeZip(pluginDir,pluginMachineJson);
 }
 
+/**
+ * Hander for `plugin-machine plugin add` command
+ */
 async function handleAddFeature(pluginDir,pluginMachine,pluginMachineJson,options){
   const {feature} = options;
   const data = {};
@@ -234,7 +250,9 @@ const validatePluginJson = (pluginMachineJson) => {
   return pluginMachineJson;
 }
 
-
+/**
+ * Hander for `plugin-machine plugin {command}` commands
+ */
 export async function cli(args) {
   let options = parseArgumentsIntoOptions(args);
   const pluginDir = options.pluginDir || getPluginDir();

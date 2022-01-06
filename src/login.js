@@ -38,12 +38,18 @@ async function promptForMissingOptions(options) {
   return options;
 }
 
-export async function  doLogin(token) {
+/**
+ * Hander for `plugin-machine login ` command
+ */
+export async function doLogin(token) {
   const config = updateAuthConfig({token});
   console.log(`Logged in with token: ${token}`);
  // console.log(config);
 }
 
+/**
+ * Hander for `plugin-machine login {command}` commands
+ */
 export async function cli(args) {
   let options = parseArgumentsIntoOptions(args);
   if( options.c ) {
