@@ -210,12 +210,31 @@ async function handleAddFeature(pluginDir,pluginMachine,pluginMachineJson,option
   }
 }
 
+//Make sure we have a token
+const checkLogin = (token) => {
+  if( ! token ) {
+    throw new Error('No token found, you must be logged in to use this command');
+  }
+  return token;
+}
+
+const validatePluginJson = (pluginMachineJson) => {
+  if( ! pluginMachineJson.pluginId ) {
+    throw new Error('No pluginId found in pluginMachine.json');
+  }
+  if( ! pluginMachineJson.buildId ) {
+    throw new Error('No buildId found in pluginMachine.json');
+  }
+  return pluginMachineJson;
+}
+
+
 export async function cli(args) {
   let options = parseArgumentsIntoOptions(args);
   const pluginDir = options.pluginDir || getPluginDir();
-  const pluginMachineJson = getPluginMachineJson(pluginDir);
+  let pluginMachineJson = getPluginMachineJson(pluginDir);
   const pluginMachine = await pluginMachineApi(
-    options.token || getAuthToken(pluginDir),
+    checkLogin(options.token || getAuthToken(pluginDir)),
   );
 
   switch (options.command) {
@@ -227,17 +246,21 @@ export async function cli(args) {
       );
       break;
     case 'zip':
+      pluginMachineJson = validatePluginJson(pluginMachineJson);
       await handleZip(pluginDir,pluginMachineJson);
         break;
-        case 'add':
-          const rules = require( './data/rules.json');
-          const features = require( './data/features.json');
-          options = await promptForFeature(options,features);
-          options = await promptForFeatureRules(options,rules);
-          await handleAddFeature(
-            pluginDir,pluginMachine,pluginMachineJson,options
-          );
+    case 'add':
+      pluginMachineJson = validatePluginJson(pluginMachineJson);
+      const rules = require( './data/rules.json');
+      const features = require( './data/features.json');
+      options = await promptForFeature(options,features);
+      options = await promptForFeatureRules(options,rules);
+      await handleAddFeature(
+        pluginDir,pluginMachine,pluginMachineJson,options
+      );
+      break;
     default:
+      throw new Error(`Command plugin ${options.command} not found`);
       break;
   }
 

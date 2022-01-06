@@ -5,7 +5,8 @@
     "entryPoints": {
         "adminPages": [],
         "blocks": [
-            "b"
+            "b",
+            "a"
         ]
     },
     "buildIncludes": [
@@ -17,6 +18,8 @@
         "blocks/b/init.php",
         "blocks/b/init.php",
         "blocks/b/init.php",
-        "blocks/b/init.php"
+        "blocks/b/init.php",
+        "blocks/a/init.php",
+        "blocks/a/init.php"
     ]
 }

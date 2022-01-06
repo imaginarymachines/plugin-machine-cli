@@ -44,4 +44,6 @@ All `plugin` commands will assume that the current directory is the root directo
 - Git clone
     - `git@github.com:imaginarymachines/plugin-machine-cli.git`
 - Install
-    - `yarn`
+    - `npm i`
+- Run a command
+    - `node bin/cli plugin add`

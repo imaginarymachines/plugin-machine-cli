@@ -6,9 +6,14 @@ const { homedir } = require( 'os' );
 //Get current pluginMachine.json file
 export const getPluginMachineJson = (pluginDir ) => {
     if( ! pluginMachineJson ){
+      if(  fs.existsSync(`${pluginDir}/pluginMachine.json`) ){
         pluginMachineJson = require(
             join(pluginDir, 'pluginMachine.json')
         );
+      }else{
+        pluginMachineJson = {pluginId: 0, buildId: 0};
+      }
+
     }
     return pluginMachineJson;
 }
