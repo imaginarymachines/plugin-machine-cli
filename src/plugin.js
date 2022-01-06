@@ -1,7 +1,7 @@
-import arg from 'arg';
-import inquirer from 'inquirer';
-import { getAuthToken, getPluginDir, getPluginMachineJson } from './lib/config';
-import pluginMachineApi from './lib/pluginMachineApi';
+const arg = require('arg');
+const inquirer = require('inquirer');
+const { getAuthToken, getPluginDir, getPluginMachineJson } = require( './lib/config');
+const pluginMachineApi = require( './lib/pluginMachineApi');
 
 
 function parseArgumentsIntoOptions(rawArgs) {

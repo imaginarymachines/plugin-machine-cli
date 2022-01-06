@@ -1,7 +1,7 @@
 const fs = require('fs');
 let pluginMachineJson = false;
-import { join } from 'path';
-import { homedir } from 'os';
+const { join } = require( 'path' );
+const { homedir } = require( 'os' );
 
 //Get current pluginMachine.json file
 export const getPluginMachineJson = (pluginDir ) => {

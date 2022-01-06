@@ -1,5 +1,5 @@
-import arg from 'arg';
-import inquirer from 'inquirer';
+const arg = require('arg');
+const inquirer = require('inquirer');
 
 
 const commandArgs = {
