@@ -1,11 +1,11 @@
 {
   "name": "plugin-machine",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "A CLI for Plugin Machine",
   "homepage": "https://pluginmachine.com/cli",
   "repository": "github:imaginarymachines/plugin-machine-cli",
-  "bugs":{
-    "url" : "https://github.com/imaginarymachines/plugin-machine-cli/issues"
+  "bugs": {
+    "url": "https://github.com/imaginarymachines/plugin-machine-cli/issues"
   },
   "main": "src/index.js",
   "bin": {
@@ -27,7 +27,9 @@
     "inquirer": "^8.2.0",
     "isomorphic-fetch": "^3.0.0"
   },
-  "engines" : { "node" : ">12" },
+  "engines": {
+    "node": ">12"
+  },
   "files": [
     "bin/",
     "src/"
