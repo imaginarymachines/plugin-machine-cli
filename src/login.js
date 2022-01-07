@@ -32,7 +32,7 @@ async function promptForMissingOptions(options) {
     questions.push({
       type: 'prompt',
       name: 'token',
-      message: 'Plugin Machine API token:',
+      message: 'Plugin Machine API token. https://pluginmachine.app/dashboard/api',
       default: '',
     });
 
@@ -50,7 +50,6 @@ async function promptForMissingOptions(options) {
 export async function doLogin(token) {
   const config = updateAuthConfig({token});
   success(`Logged in with token: ${token}`);
- // console.log(config);
 }
 
 /**
@@ -60,6 +59,7 @@ export async function cli(args) {
   let options = parseArgumentsIntoOptions(args);
   if( options.c ) {
     const config = getAuthConfig();
+    info( config );
     return;
   }
   options = await promptForMissingOptions(options);
