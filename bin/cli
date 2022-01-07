@@ -15,6 +15,7 @@ switch(process.argv[2]){
         require = require('esm')(module /*, options*/);
         require('../src/login.js').cli(process.argv);
     break;
+    case 'v':
     case 'version':
         console.log(`Current version: ${packageJson.version}`);
         break;
