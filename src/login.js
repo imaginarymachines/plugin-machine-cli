@@ -1,6 +1,12 @@
 const arg = require('arg');
 const inquirer = require('inquirer');
 const { getAuthConfig, updateAuthConfig } =  require('./lib/config');
+const {
+  error,
+  important,
+  info,
+  success
+} = require('./lib/log');
 
 function parseArgumentsIntoOptions(rawArgs) {
   //https://www.npmjs.com/package/arg
@@ -43,7 +49,7 @@ async function promptForMissingOptions(options) {
  */
 export async function doLogin(token) {
   const config = updateAuthConfig({token});
-  console.log(`Logged in with token: ${token}`);
+  success(`Logged in with token: ${token}`);
  // console.log(config);
 }
 

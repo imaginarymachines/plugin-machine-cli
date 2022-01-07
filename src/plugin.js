@@ -2,6 +2,13 @@ const arg = require('arg');
 const inquirer = require('inquirer');
 const { getAuthToken, getPluginDir, getPluginMachineJson } = require( './lib/config');
 
+const {
+  error,
+  important,
+  info,
+  success
+} = require('./lib/log');
+
 /**
  * Plugin Machine API client
  */
@@ -48,7 +55,8 @@ export const pluginMachineApi = async (token) => {
         .then(r => {
           return {
             files: r.files,
-            featureId:r.setting.id
+            featureId:r.setting.id,
+            main: r.main ? r.main : false,
           };
         });
 
@@ -216,7 +224,7 @@ async function handleAddFeature(pluginDir,pluginMachine,pluginMachineJson,option
   });
   data.featureType = feature;
 
-  let {featureId,files} = await pluginMachine.addFeature(pluginMachineJson,data).catch(e => {
+  let {featureId,files,main} = await pluginMachine.addFeature(pluginMachineJson,data).catch(e => {
       throw new Error(e);
   });
   console.log( `Saved new ${feature} feature with id ${featureId}`);
@@ -228,6 +236,8 @@ async function handleAddFeature(pluginDir,pluginMachine,pluginMachineJson,option
       });
       console.log(`Added ${file}`);
     });
+  }
+  if( ! main ){
 
   }
 }
