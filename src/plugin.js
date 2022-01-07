@@ -233,19 +233,36 @@ async function handleAddFeature(pluginDir,pluginMachine,pluginMachineJson,option
   let {featureId,files,main} = await pluginMachine.addFeature(pluginMachineJson,data).catch(e => {
       throw new Error(e);
   });
-  console.log( `Saved new ${feature} feature with id ${featureId}`);
+  info( `Saved new ${feature} feature with id ${featureId}`);
+
+  const promises = [];
   if( files.length ){
     files.forEach(async(file) => {
       let fileContents = await pluginMachine.getFeatureCode(pluginMachineJson,featureId,file);
-      await pluginMachine.writeFile(pluginDir,file,fileContents).catch(e => {
-          throw new Error(e);
-      });
-      console.log(`Added ${file}`);
-    });
+      promises.push(
+        await pluginMachine.writeFile(pluginDir,file,fileContents).catch(e => {
+            throw new Error(e);
+        }).then(() => {
+          info(`Added ${file}`);
+        })
+      )});
   }
-  if( ! main ){
 
+  const outputMain = async () => {
+    if( main && main.length ){
+      important( 'IMPORTANT!')
+      important( 'You must add this to the main file of your plugin:')
+      if( Array.isArray(main)){
+        main.forEach(main => {
+          important( main);
+        });
+      }else if( 'string' === typeof main ){
+        important( main );
+      }
+    }
   }
+  Promise.all(promises).then(outputMain);
+
 }
 
 //Make sure we have a token

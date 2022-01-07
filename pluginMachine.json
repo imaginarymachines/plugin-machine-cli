@@ -6,7 +6,9 @@
         "adminPages": [],
         "blocks": [
             "b",
-            "a"
+            "a",
+            "aa",
+            "dd"
         ]
     },
     "buildIncludes": [
@@ -19,6 +21,18 @@
         "blocks/b/init.php",
         "blocks/b/init.php",
         "blocks/b/init.php",
+        "blocks/a/init.php",
+        "blocks/a/init.php",
+        "blocks/b/init.php",
+        "blocks/aa/init.php",
+        "blocks/aa/init.php",
+        "blocks/a/init.php",
+        "blocks/a/init.php",
+        "blocks/b/init.php",
+        "blocks/dd/init.php",
+        "blocks/dd/init.php",
+        "blocks/a/init.php",
+        "blocks/a/init.php",
         "blocks/a/init.php",
         "blocks/a/init.php"
     ]
