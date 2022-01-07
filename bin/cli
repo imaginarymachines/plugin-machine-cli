@@ -15,19 +15,16 @@ switch(process.argv[2]){
         require = require('esm')(module /*, options*/);
         require('../src/login.js').cli(process.argv);
     break;
+    case '-v':
     case 'v':
     case 'version':
-        console.log(`Current version: ${packageJson.version}`);
+        require = require('esm')(module /*, options*/);
+        require('../src/version.js').cli(process.argv);
         break;
     default:
-        console.log({
-            info:{
-                version:packageJson.version,
-                cwd: require( 'process').cwd(),
-                homedir: require( 'os').homedir(),
-            },
-            debug:{}
-        });
+        require = require('esm')(module /*, options*/);
+        require('../src/debug.js').cli(process.argv);
+        break;
     break;
 
 }

@@ -4,7 +4,7 @@ const log = console.log;
 
 const maybeStringify = (obj) => {
     if( 'string' == typeof obj ) {
-        return String;
+        return obj;
     }
     return JSON.stringify(obj,null,2);
 }
