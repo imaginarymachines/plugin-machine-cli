@@ -30,8 +30,10 @@ export const pluginMachineApi = async (token) => {
         method: 'GET',
         headers,
       }
-
-    ).then( r => r.json() ).then(r => {
+    ).catch( e => {
+      error(`Error getting plugin machine json for plugin ${pluginId}`);
+      console.log(e);
+    }).then( r => r.json() ).then(r => {
       return r;
     })
   }
@@ -49,7 +51,8 @@ export const pluginMachineApi = async (token) => {
           headers,
         }
       )
-      .catch(e => {
+      .catch( e => {
+        error(`Error adding feature to plugin ${pluginId}`);
         console.log(e);
       }).then( r => r.json())
         .then(r => {
@@ -70,7 +73,10 @@ export const pluginMachineApi = async (token) => {
         {
           method: "GET",
         headers,        }
-      ).then( r => r.text() ).then(r => {
+      ).catch( e => {
+        error(`Error getting feature ${featureId} for plugin ${pluginId}`);
+        console.log(e);
+      }).then( r => r.text() ).then(r => {
         return r;
       });
     },
