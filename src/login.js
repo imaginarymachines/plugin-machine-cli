@@ -2,8 +2,6 @@ const arg = require('arg');
 const inquirer = require('inquirer');
 const { getAuthConfig, updateAuthConfig } =  require('./lib/config');
 const {
-  error,
-  important,
   info,
   success
 } = require('./lib/log');

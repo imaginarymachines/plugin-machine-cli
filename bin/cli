@@ -1,11 +1,5 @@
 #!/usr/bin/env node
 
-
-const packageJson = require(
-    require('path').join(__dirname, '../package.json')
-);
-
-
 switch(process.argv[2]){
     case 'plugin':
         require = require('esm')(module /*, options*/);

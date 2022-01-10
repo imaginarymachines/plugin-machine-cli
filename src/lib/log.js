@@ -9,14 +9,7 @@ const maybeStringify = (obj) => {
     return JSON.stringify(obj,null,2);
 }
 
-const error = (message) => log(chalk.green(maybeStringify(message)));
-const important = (message) => log(chalk.yellow(maybeStringify(message)));
-const info = (message) => log(chalk.blue(maybeStringify(message)));
-const success = (message) => log(chalk.green(maybeStringify(message)));
-
-export {
-    error,
-    important,
-    info,
-    success
-}
+export const error = (message) => log(chalk.green(maybeStringify(message)));
+export const important = (message) => log(chalk.yellow(maybeStringify(message)));
+export const info = (message) => log(chalk.blue(maybeStringify(message)));
+export const success = (message) => log(chalk.green(maybeStringify(message)));
