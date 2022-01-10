@@ -1,4 +1,4 @@
-import { info } from './lib/log';
+const { info } = require( './lib/log');
 
 /**
  * Hander for `plugin-machine version` commands
