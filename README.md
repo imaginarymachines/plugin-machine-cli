@@ -2,6 +2,8 @@
 
 Command line interface for [Plugin Machine](https://pluginmachine.com).
 
+- ![npm](https://img.shields.io/npm/v/plugin-machine?style=flat-square)
+
 ## Install
 
 - Install globally, which is recommended:

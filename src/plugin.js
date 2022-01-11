@@ -6,7 +6,6 @@ const {
   error,
   important,
   info,
-  success
 } = require('./lib/log');
 
 /**
