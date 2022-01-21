@@ -19,7 +19,9 @@ export const pluginMachineApi = async (token) => {
     'Authorization': `Bearer ${token}`,
   };
 
-  const apiUrl = (endpoint) => `https://pluginmachine.app/api/v1${endpoint}`;
+  const appUrl = (endpoint) => `https://pluginmachine.app${endpoint}`;
+  const apiUrl = (endpoint) => `${appUrl(`/api/v1${endpoint}`)}`;
+  const pluginApiUrl = (endpoint) => `${appUrl(`/plugins${endpoint}`)}`;
 
   //Get the plugin machine json file for a saved plugin
   async function getPluginMachineJson(pluginId){
@@ -79,6 +81,48 @@ export const pluginMachineApi = async (token) => {
         return r;
       });
     },
+    //upoad a new version
+    uploadVersion: async (pluginMachineJson,version) => {
+      const {pluginId,slug}=pluginMachineJson;
+
+      //fetch with contents of `${slug}.zip`
+      const file = fs.readFileSync('foo.txt', 'utf8')
+
+      const data = new FormData();
+      data.append('file', fs.readFileSync(`${slug}.zip`));
+      data.append('version', version);
+
+      return fetch(
+        pluginApiUrl(`/${pluginId}/versions`),
+        {
+          method: "PUT",
+          headers,
+          data
+        }
+      ).catch( e => {
+        error(`Error uploading version${version} for plugin ${pluginId}`);
+        console.log(e);
+      }).then( r => r.json() ).then(r => {
+          return r;
+      });
+    },
+    //upoad a new version
+    getVersions: async (pluginMachineJson) => {
+      const {pluginId}=pluginMachineJson;
+
+      return fetch(
+        pluginApiUrl(`/${pluginId}/versions`),
+        {
+          method: "GET",
+          headers,
+        }
+      ).catch( e => {
+        error(`Error getting versions for plugin ${pluginId}`);
+        console.log(e);
+      }).then( r => r.json() ).then(r => {
+          return r;
+      });
+    },
     //Write a file, with some saftery features
     writeFile: async(pluginDir,file,fileContents) => {
       //Has a path?
@@ -96,7 +140,8 @@ export const pluginMachineApi = async (token) => {
       }
 
       fs.writeFileSync(`${pluginDir}/${file}`,fileContents,{ flag: 'w+' });
-    }
+    },
+
   };
 
 }
@@ -147,6 +192,37 @@ async function promptForFeature(options,features) {
     });
     options = await promptForMissingOptions(options,questions);
   }
+
+  return options;
+}
+
+async function promptForZipOptions(options) {
+  const questions = [{
+    type: 'list',
+    name: 'version',
+    message: 'Would you like to create a new release?',
+    choices:[
+      {
+        name: 'NO',
+        value: false,
+      },
+      {
+        value: 'patch',
+        name: 'Yes, a patch release',
+      },
+      {
+        name: 'Yes, a minor release',
+        value: 'minor',
+      },
+      {
+        name: 'Yes, a major release',
+        value: 'release',
+      },
+    ]
+  }];
+
+  options = await promptForMissingOptions(options,questions);
+
 
   return options;
 }
@@ -303,7 +379,11 @@ export async function cli(args) {
       break;
     case 'zip':
       pluginMachineJson = validatePluginJson(pluginMachineJson);
+      options = await promptForZipOptions(options);
       await handleZip(pluginDir,pluginMachineJson);
+      if( options.version){
+        await pluginMachine.uploadVersion(pluginMachineJson,options.version);
+      }
       break;
     case 'add':
       pluginMachineJson = validatePluginJson(pluginMachineJson);
