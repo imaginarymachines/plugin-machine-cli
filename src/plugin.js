@@ -83,19 +83,16 @@ export const pluginMachineApi = async (token) => {
     },
     //upoad a new version
     uploadVersion: async (pluginMachineJson,version) => {
-      const {pluginId,slug}=pluginMachineJson;
-
-      //fetch with contents of `${slug}.zip`
-      const file = fs.readFileSync('foo.txt', 'utf8')
+      const {pluginId,slug} = pluginMachineJson;
 
       const data = new FormData();
-      data.append('file', fs.readFileSync(`${slug}.zip`));
+      data.append('zip', fs.readFileSync(`${slug}.zip`));
       data.append('version', version);
 
       return fetch(
         pluginApiUrl(`/${pluginId}/versions`),
         {
-          method: "PUT",
+          method: "POST",
           headers,
           data
         }
