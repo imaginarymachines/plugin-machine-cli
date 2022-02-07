@@ -132,7 +132,7 @@ const isDirectory = (path) => {
 // Returns full URL for endpoint on Plugin Machine server.
 // Override
 // `getPluginMachineJson(pluginDir, {appUrl: 'http://localhost:3000'})`
-const appUrl = (endpoint) => `https://pluginmachine.app${endpoint}`;
+const appUrl = (endpoint) => `${getPluginMachineJson().appUrl}${endpoint}`;
 
 module.exports = {
   getPluginMachineJson,
@@ -144,5 +144,4 @@ module.exports = {
   writeToAuthConfigFile,
   isDirectory,
   appUrl
-
 }
