@@ -19,7 +19,9 @@ export const pluginMachineApi = async (token) => {
     'Authorization': `Bearer ${token}`,
   };
 
-  const pluginApiUrl = (endpoint) => `${appUrl(`/plugins${endpoint}`)}`;
+  //Get full URL for plugin update API
+  //Plugin update API uses a non-standard API prefix (OK, but why?)
+  const pluginApiUrl = (endpoint) => `${appUrl(`/api/plugins${endpoint}`)}`;
 
   //Get the plugin machine json file for a saved plugin
   async function getPluginMachineJson(pluginId){
@@ -84,11 +86,11 @@ export const pluginMachineApi = async (token) => {
       const {pluginId,slug} = pluginMachineJson;
       let readStream = fs.createReadStream(`${slug}.zip`);
       const fileSizeInBytes = fs.statSync(`${slug}.zip`).size;
-      const data = {
-        file: readStream,
+      const body = {
+        zip: readStream,
         version
-      }
-
+      };
+      console.log(pluginApiUrl(`/${pluginId}/versions`));
       return fetch(
         pluginApiUrl(`/${pluginId}/versions`),
         {
@@ -97,21 +99,38 @@ export const pluginMachineApi = async (token) => {
             ...headers,
             "Content-length": fileSizeInBytes
           },
-          body:  {
-            zip: readStream,
-            version
-          }
+          body
         }
       ).catch( e => {
         error(`Error uploading version${version} for plugin ${pluginId}`);
         console.log(e);
       }).then( r => {
-        try {
-          return r.json();
-        } catch (error) {
-          console.log({r,error});
+
+        switch(r.status){
+          case 401:
+            error(`Error uploading a ${version} update for plugin ${pluginId}`);
+            throw new Error(r.statusText || 'Unauthorized');
+          case 201:
+          case 200:
+            try {
+              return r.json();
+            } catch (error) {
+              console.log({r,error});
+              throw error;
+            }
+          break;
         }
+
+        if( r.status() ) {
+          try {
+            return r.json();
+          } catch (error) {
+            console.log({r,error});
+          }
+        }
+        throw new  Error(`Error uploading version ${version} for plugin ${pluginId}`);
       } ).then(r => {
+        console.log({r});
           return r;
       });
     },
@@ -398,7 +417,12 @@ export async function cli(args) {
       options = await promptForZipOptions(options);
       await handleZip(pluginDir,pluginMachineJson);
       if( options.version){
-        await pluginMachine.uploadVersion(pluginMachineJson,options.version);
+        try {
+          await pluginMachine.uploadVersion(pluginMachineJson,options.version);
+        } catch (error) {
+            console.log(error);
+
+        }
       }
       break;
     case 'add':
