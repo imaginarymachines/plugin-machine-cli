@@ -18,7 +18,7 @@ const { homedir } = require( 'os' );
     pluginMachineJson = Object.assign(pluginMachineJson, opts);
     pluginMachineJson.pluginId = parseInt(pluginMachineJson.pluginId, 10);
     pluginMachineJson.buildId = parseInt(pluginMachineJson.buildId, 10);
-    if( ! pluginMachineJson.hasOwnProperty('appUrl') ){
+    if( ! pluginMachineJson.hasOwnProperty('appUrl')|| false == pluginMachineJson.appUrl ){
       pluginMachineJson.appUrl = 'https://pluginmachine.app';
     }
 

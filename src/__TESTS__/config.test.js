@@ -38,6 +38,11 @@ describe( 'appUrl and apiUrl', () => {
         expect( appUrl('/api')).toEqual('https://pluginmachine.app/api');
     });
 
+    it( 'returns appUrl if provided false for the URL', () => {
+        expect( typeof getPluginMachineJson(pluginDir,{appUrl: false}).appUrl).toEqual('string');
+        expect( appUrl('/api')).toEqual('https://pluginmachine.app/api');
+    });
+
     it( 'Ovverides app url', () => {
         const pluginMachineJson = getPluginMachineJson(pluginDir, {appUrl: 'http://localhost:3000'})
         expect( pluginMachineJson.appUrl).toEqual('http://localhost:3000')

@@ -376,12 +376,14 @@ const validatePluginJson = (pluginMachineJson) => {
 export async function cli(args) {
   let options = parseArgumentsIntoOptions(args);
   const pluginDir = options.pluginDir || getPluginDir();
-  let pluginMachineJson = getPluginMachineJson(pluginDir);
+  let pluginMachineJson = getPluginMachineJson(pluginDir,{
+    //Allow app/api URL to be overridden from --appUrl flag
+    appUrl:options.appUrl,
+  });
   const pluginMachine = await pluginMachineApi(
     checkLogin(options.token || getAuthToken(pluginDir)),
   );
   console.log({options})
-    return;
 
   switch (options.command) {
     case 'config':
