@@ -1,19 +1,21 @@
 {
-  "slug": "seaweed",
-  "pluginId": 151,
-  "buildId": 178,
+  "slug": "build-with-two-admin-pages",
+  "pluginId": 1,
+  "buildId": 1,
   "entryPoints": {
     "adminPages": [
-      "settings"
+      "build-with-two-admin-pages-0",
+      "build-with-two-admin-pages-1"
     ],
     "blocks": []
   },
   "buildIncludes": [
-    "seaweed.php",
+    "build-with-two-admin-pages.php",
     "readme.txt",
     "php",
     "vendor",
     "build",
-    "admin/settings/init.php"
+    "admin/build-with-two-admin-pages-0/init.php",
+    "admin/build-with-two-admin-pages-1/init.php"
   ]
 }
