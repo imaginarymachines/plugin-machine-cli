@@ -1,6 +1,6 @@
 const arg = require('arg');
 const inquirer = require('inquirer');
-const { getAuthToken, getPluginDir, getPluginMachineJson } = require( './lib/config');
+const { getAuthToken, getPluginDir, getPluginMachineJson,appUrl,apiUrl } = require( './lib/config');
 
 const {
   error,
@@ -18,9 +18,6 @@ export const pluginMachineApi = async (token) => {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${token}`,
   };
-
-  const appUrl = (endpoint) => `https://pluginmachine.app${endpoint}`;
-  const apiUrl = (endpoint) => `${appUrl(`/api/v1${endpoint}`)}`;
 
   const pluginApiUrl = (endpoint) => `${appUrl(`/plugins${endpoint}`)}`;
 
@@ -167,6 +164,7 @@ function parseArgumentsIntoOptions(rawArgs) {
       '--pluginId': String,
       '--feature': String,
       '--pluginDir': String,
+      '--appUrl': String,
       // Aliases
     },
     {
@@ -178,6 +176,8 @@ function parseArgumentsIntoOptions(rawArgs) {
     feature: args['--feature'] || false,
     pluginId: args['--pluginId'] || args._[2] || false,
     pluginDir: args['--pluginDir'] || false,
+    appUrl: args['--appUrl'] || false,
+
   };
 }
 async function promptForFeature(options,features) {
@@ -380,6 +380,8 @@ export async function cli(args) {
   const pluginMachine = await pluginMachineApi(
     checkLogin(options.token || getAuthToken(pluginDir)),
   );
+  console.log({options})
+    return;
 
   switch (options.command) {
     case 'config':

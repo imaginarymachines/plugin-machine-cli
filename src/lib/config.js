@@ -134,6 +134,9 @@ const isDirectory = (path) => {
 // `getPluginMachineJson(pluginDir, {appUrl: 'http://localhost:3000'})`
 const appUrl = (endpoint) => `${getPluginMachineJson().appUrl}${endpoint}`;
 
+// Retruns full URL for endpoint on Plugin Machine server, with current api prefix
+const apiUrl = (endpoint) => `${appUrl(`/api/v1${endpoint}`)}`;
+
 module.exports = {
   getPluginMachineJson,
   getAuthToken,
@@ -143,5 +146,6 @@ module.exports = {
   readAuthConfigFile,
   writeToAuthConfigFile,
   isDirectory,
-  appUrl
+  appUrl,
+  apiUrl
 }

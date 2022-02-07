@@ -1,4 +1,4 @@
-const {getPluginMachineJson,appUrl} = require( '../lib/config');
+const {getPluginMachineJson,appUrl,apiUrl} = require( '../lib/config');
 const { join } = require( 'path' );
 const pluginDir = join( __dirname, '../../');
 
@@ -27,6 +27,12 @@ describe('getPluginMachineJson', () => {
         expect(Number.isNaN(pluginMachineJson.pluginId)).toBe(false)
     });
 
+
+
+
+})
+
+describe( 'appUrl and apiUrl', () => {
     it( 'returns appUrl', () => {
         expect( typeof getPluginMachineJson(pluginDir).appUrl).toEqual('string');
         expect( appUrl('/api')).toEqual('https://pluginmachine.app/api');
@@ -36,6 +42,9 @@ describe('getPluginMachineJson', () => {
         const pluginMachineJson = getPluginMachineJson(pluginDir, {appUrl: 'http://localhost:3000'})
         expect( pluginMachineJson.appUrl).toEqual('http://localhost:3000')
         expect( appUrl('/api')).toEqual('http://localhost:3000/api');
+    });
 
+    test( 'apiUrl', () => {
+        expect( apiUrl('/spoons')).toEqual('http://localhost:3000/api/v1/spoons');
     });
 })
