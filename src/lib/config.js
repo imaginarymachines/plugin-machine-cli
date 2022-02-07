@@ -13,12 +13,15 @@ const { homedir } = require( 'os' );
       }else{
         pluginMachineJson = {pluginId: 0, buildId: 0};
       }
-
     }
 
     pluginMachineJson = Object.assign(pluginMachineJson, opts);
     pluginMachineJson.pluginId = parseInt(pluginMachineJson.pluginId, 10);
     pluginMachineJson.buildId = parseInt(pluginMachineJson.buildId, 10);
+    if( ! pluginMachineJson.hasOwnProperty('appUrl') ){
+      pluginMachineJson.appUrl = 'https://pluginmachine.app';
+    }
+
     return pluginMachineJson;
 }
 
@@ -126,6 +129,11 @@ const isDirectory = (path) => {
     }
 };
 
+// Returns full URL for endpoint on Plugin Machine server.
+// Override
+// `getPluginMachineJson(pluginDir, {appUrl: 'http://localhost:3000'})`
+const appUrl = (endpoint) => `https://pluginmachine.app${endpoint}`;
+
 module.exports = {
   getPluginMachineJson,
   getAuthToken,
@@ -135,5 +143,6 @@ module.exports = {
   readAuthConfigFile,
   writeToAuthConfigFile,
   isDirectory,
+  appUrl
 
 }

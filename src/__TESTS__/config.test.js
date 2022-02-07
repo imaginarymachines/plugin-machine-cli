@@ -29,4 +29,13 @@ describe('getPluginMachineJson', () => {
         expect(pluginMachineJson.buildId).toEqual(412);
         expect(Number.isNaN(pluginMachineJson.pluginId)).toBe(false)
     });
+
+    it( 'returns appUrl', () => {
+        expect( typeof getPluginMachineJson(pluginDir).appUrl).toEqual('string');
+    });
+
+    it( 'Ovverides app url', () => {
+        const pluginMachineJson = getPluginMachineJson(pluginDir, {appUrl: 'http://localhost:3000'})
+        expect( pluginMachineJson.appUrl).toEqual('http://localhost:3000')
+    });
 })
