@@ -21,6 +21,7 @@ export const pluginMachineApi = async (token) => {
 
   const appUrl = (endpoint) => `https://pluginmachine.app${endpoint}`;
   const apiUrl = (endpoint) => `${appUrl(`/api/v1${endpoint}`)}`;
+
   const pluginApiUrl = (endpoint) => `${appUrl(`/plugins${endpoint}`)}`;
 
   //Get the plugin machine json file for a saved plugin
@@ -84,22 +85,36 @@ export const pluginMachineApi = async (token) => {
     //upoad a new version
     uploadVersion: async (pluginMachineJson,version) => {
       const {pluginId,slug} = pluginMachineJson;
-
-      const data = new FormData();
-      data.append('zip', fs.readFileSync(`${slug}.zip`));
-      data.append('version', version);
+      let readStream = fs.createReadStream(`${slug}.zip`);
+      const fileSizeInBytes = fs.statSync(`${slug}.zip`).size;
+      const data = {
+        file: readStream,
+        version
+      }
 
       return fetch(
         pluginApiUrl(`/${pluginId}/versions`),
         {
           method: "POST",
-          headers,
-          data
+          headers: {
+            ...headers,
+            "Content-length": fileSizeInBytes
+          },
+          body:  {
+            zip: readStream,
+            version
+          }
         }
       ).catch( e => {
         error(`Error uploading version${version} for plugin ${pluginId}`);
         console.log(e);
-      }).then( r => r.json() ).then(r => {
+      }).then( r => {
+        try {
+          return r.json();
+        } catch (error) {
+          console.log({r,error});
+        }
+      } ).then(r => {
           return r;
       });
     },

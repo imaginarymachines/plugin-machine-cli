@@ -1,39 +1,19 @@
 {
-    "slug": "book-list",
-    "pluginId": 16,
-    "buildId": 17,
-    "entryPoints": {
-        "adminPages": [],
-        "blocks": [
-            "b",
-            "a",
-            "aa",
-            "dd"
-        ]
-    },
-    "buildIncludes": [
-        "book-list.php",
-        "readme.txt",
-        "php",
-        "vendor",
-        "build",
-        "blocks/b/init.php",
-        "blocks/b/init.php",
-        "blocks/b/init.php",
-        "blocks/b/init.php",
-        "blocks/a/init.php",
-        "blocks/a/init.php",
-        "blocks/b/init.php",
-        "blocks/aa/init.php",
-        "blocks/aa/init.php",
-        "blocks/a/init.php",
-        "blocks/a/init.php",
-        "blocks/b/init.php",
-        "blocks/dd/init.php",
-        "blocks/dd/init.php",
-        "blocks/a/init.php",
-        "blocks/a/init.php",
-        "blocks/a/init.php",
-        "blocks/a/init.php"
-    ]
+  "slug": "seaweed",
+  "pluginId": 151,
+  "buildId": 178,
+  "entryPoints": {
+    "adminPages": [
+      "settings"
+    ],
+    "blocks": []
+  },
+  "buildIncludes": [
+    "seaweed.php",
+    "readme.txt",
+    "php",
+    "vendor",
+    "build",
+    "admin/settings/init.php"
+  ]
 }
