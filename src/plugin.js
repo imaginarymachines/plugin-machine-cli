@@ -90,14 +90,19 @@ export const pluginMachineApi = async (token) => {
         zip: readStream,
         version
       };
-      console.log(pluginApiUrl(`/${pluginId}/versions`));
+      console.log(pluginApiUrl(`/${pluginId}/versions`),{
+        ...headers,
+        "Content-length": fileSizeInBytes,
+        "Content-Type": "multipart/form-data",
+      });
       return fetch(
         pluginApiUrl(`/${pluginId}/versions`),
         {
           method: "POST",
           headers: {
             ...headers,
-            "Content-length": fileSizeInBytes
+           // "Content-length": fileSizeInBytes,
+            "Content-Type": "multipart/form-data",
           },
           body
         }
@@ -107,7 +112,14 @@ export const pluginMachineApi = async (token) => {
       }).then( r => {
 
         switch(r.status){
+          case 400:
+            return r.json().then(r => {
+              error(`Error uploading a ${version} update for plugin ${pluginId}`);
+              console.log(r.error);
+            });
           case 401:
+            console.log(headers);
+            info(token);
             error(`Error uploading a ${version} update for plugin ${pluginId}`);
             throw new Error(r.statusText || 'Unauthorized');
           case 201:
@@ -118,16 +130,10 @@ export const pluginMachineApi = async (token) => {
               console.log({r,error});
               throw error;
             }
-          break;
+          default: throw new Error(r.statusText || 'Unknown error');
         }
 
-        if( r.status() ) {
-          try {
-            return r.json();
-          } catch (error) {
-            console.log({r,error});
-          }
-        }
+
         throw new  Error(`Error uploading version ${version} for plugin ${pluginId}`);
       } ).then(r => {
         console.log({r});
