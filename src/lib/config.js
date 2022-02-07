@@ -4,7 +4,7 @@ const { join } = require( 'path' );
 const { homedir } = require( 'os' );
 
 //Get current pluginMachine.json file
- const getPluginMachineJson = (pluginDir ) => {
+ const getPluginMachineJson = (pluginDir, opts = {} ) => {
     if( ! pluginMachineJson ){
       if(  fs.existsSync(`${pluginDir}/pluginMachine.json`) ){
         pluginMachineJson = require(
@@ -16,6 +16,7 @@ const { homedir } = require( 'os' );
 
     }
 
+    pluginMachineJson = Object.assign(pluginMachineJson, opts);
     pluginMachineJson.pluginId = parseInt(pluginMachineJson.pluginId, 10);
     pluginMachineJson.buildId = parseInt(pluginMachineJson.buildId, 10);
     return pluginMachineJson;
