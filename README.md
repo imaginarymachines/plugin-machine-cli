@@ -3,7 +3,7 @@
 Command line interface for [Plugin Machine](https://pluginmachine.com).
 
 - ![npm](https://img.shields.io/npm/v/plugin-machine?style=flat-square)
-
+- [![Tests](https://github.com/imaginarymachines/plugin-machine-cli/actions/workflows/node.js.yml/badge.svg)](https://github.com/imaginarymachines/plugin-machine-cli/actions/workflows/node.js.yml)
 ## Install
 
 - Install globally, which is recommended:
