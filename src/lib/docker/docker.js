@@ -51,6 +51,10 @@ module.exports = async function({wpcli,phpVersion,phpunitCommand}) {
                 //See: https://github.com/prooph/docker-files/tree/master/composer
                 return `docker run --rm -it --volume "$(pwd)":/app prooph/composer:${phpVersion} ${command}`;
             },
+            node: async (command) => {
+                //@todo, this in Docker
+                shell.exec( command );
+            },
             //Start the phpunit test container
             startTests: async () => {
                 await runCommand(testsCommand);
