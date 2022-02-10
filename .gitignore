@@ -3,6 +3,8 @@ build/
 blocks/
 admin/
 inc/
+vendor
+
 
 # Logs
 logs

@@ -1,7 +1,8 @@
+import { exitError } from './lib/docker/exit';
+
 const arg = require('arg');
 const inquirer = require('inquirer');
 const { getAuthToken, getPluginDir, getPluginMachineJson,appUrl,apiUrl } = require( './lib/config');
-
 const {
   error,
   important,
@@ -417,7 +418,6 @@ export async function cli(args) {
   const pluginMachine = await pluginMachineApi(
     checkLogin(options.token || getAuthToken(pluginDir)),
   );
-  console.log({options})
 
   switch (options.command) {
     case 'config':
@@ -430,6 +430,22 @@ export async function cli(args) {
     case 'zip':
       pluginMachineJson = validatePluginJson(pluginMachineJson);
       options = await promptForZipOptions(options);
+      let dockerApi = require('./lib/docker/docker.js');
+      if( pluginMachineJson.hasOwnProperty('buildSteps') && pluginMachineJson.buildSteps.length ) {
+        pluginMachineJson.buildSteps.forEach( buildStep => {
+          if( buildStep.startsWith('composer') ) {
+            await dockerApi.composer(options);
+          }else if( buildStep.startsWith('npm') || buildStep.startsWith('yarn') ) {
+            await dockerApi.node(buildStep);
+          }else if( buildStep.startsWith('wp') ) {
+            await dockerApi.wp(buildStep);
+          }else{
+            info(command);
+            info( 'Valid build steps are: composer|npm|yarn|wp');
+            exitError('Can not process build step: ' + buildStep);
+          }
+        });
+      }
       await handleZip(pluginDir,pluginMachineJson);
       if( options.version){
         try {

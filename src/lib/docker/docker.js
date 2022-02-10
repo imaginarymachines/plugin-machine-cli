@@ -1,6 +1,20 @@
-const {info,error} = require( './log');
+const {info,error} = require( '../log');
 const {exitError} = require('./exit');
-
+const shell =   require('shelljs');
+/**
+ * Run a command
+ *
+ * @param {string} command The command to run
+ */
+ const runCommand = async (command) => {
+    return new Promise( async (resolve, reject) => {
+        if (shell.exec(command).code !== 0) {
+            reject();
+        }else{
+            resolve();
+        }
+    });
+}
 
 
 /**
@@ -11,10 +25,10 @@ const {exitError} = require('./exit');
  *  @param {string} opts.phpVersion Optional. The version of PHP to use. Default is "7.4"
  *  @param {string} opts.phpunitCommand Optional. The command to run for PHPUnit. Default is "docker-compose run phpunit"
  */
-module.exports = async function({wpcli,phpVersion,phpunitCommand}) {
+const docker = async function({wpcli,phpVersion,phpunitCommand}){
     wpcli = wpcli || 'docker-compose run wpcli';
     phpVersion = phpVersion || '7.4';
-    testsCommand = testsCommand || '`docker-compose run phpunit`';
+    phpunitCommand = phpunitCommand || '`docker-compose run phpunit`';
     if( phpVersion.length > 3 ){
         phpVersion = phpVersion.substring(0,3);
     }
@@ -68,4 +82,7 @@ module.exports = async function({wpcli,phpVersion,phpunitCommand}) {
         exitError('Please install Docker and try again.')
     }
 
+}
+module.exports = {
+    docker
 }

@@ -17,5 +17,9 @@
     "build",
     "admin/build-with-two-admin-pages-0/init.php",
     "admin/build-with-two-admin-pages-1/init.php"
+  ],
+  "buildSteps":[
+    "composer install --no-dev -o",
+    "yarn"
   ]
 }

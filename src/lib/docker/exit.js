@@ -1,5 +1,5 @@
 const shell = require('shelljs');
-const {success,error} = require( './log');
+const {success,error} = require( '../log');
 
 /**
  * Exit with success code
