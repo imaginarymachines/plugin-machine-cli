@@ -64,3 +64,5 @@ Docker shortcuts:
 - Run a command
     - `node bin/cli plugin add`
     - Use `--appUrl` to change URL of server
+- Run tests
+    - `yarn test`

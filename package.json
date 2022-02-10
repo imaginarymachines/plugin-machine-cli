@@ -15,7 +15,7 @@
     "access": "public"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest ./src/__TESTS__"
   },
   "author": "Josh Pollock <josh@joshpress.net> (https://joshpress.net)",
   "license": "GPL-2.0",
