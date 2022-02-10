@@ -10,5 +10,6 @@ const maybeStringify = (obj) => {
 
 export const error = (message) => log(chalk.green(maybeStringify(message)));
 export const important = (message) => log(chalk.yellow(maybeStringify(message)));
+export const warning = important;
 export const info = (message) => log(chalk.blue(maybeStringify(message)));
 export const success = (message) => log(chalk.green(maybeStringify(message)));

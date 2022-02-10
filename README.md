@@ -47,6 +47,14 @@ All `plugin` commands will assume that the current directory is the root directo
 - Output some debug information
 	- `plugin-machine version`
 
+### Docker
+
+Docker shortcuts:
+
+- Kill all Docker containers running on the machine:
+    - `plugin-machine docker kill`
+    - Runs: `docker kill $(docker ps -q)`
+
 ## Development
 
 - Git clone
@@ -55,3 +63,4 @@ All `plugin` commands will assume that the current directory is the root directo
     - `npm i`
 - Run a command
     - `node bin/cli plugin add`
+    - Use `--appUrl` to change URL of server
