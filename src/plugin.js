@@ -12,6 +12,8 @@ const {
  * Plugin Machine API client
  */
 export const pluginMachineApi = async (token) => {
+  const FormData = require('form-data');
+
   const fetch = require('isomorphic-fetch');
   const fs = require( 'fs');
   const headers = {
@@ -83,34 +85,39 @@ export const pluginMachineApi = async (token) => {
     },
     //upoad a new version
     uploadVersion: async (pluginMachineJson,version) => {
+      const url = "https://minor.pluginmachine.dev/api/plugins/1/versions";
       const {pluginId,slug} = pluginMachineJson;
-      let readStream = fs.createReadStream(`${slug}.zip`);
-      const fileSizeInBytes = fs.statSync(`${slug}.zip`).size;
-      const body = {
-        zip: readStream,
-        version
-      };
-      console.log(pluginApiUrl(`/${pluginId}/versions`),{
-        ...headers,
-        "Content-length": fileSizeInBytes,
-        "Content-Type": "multipart/form-data",
-      });
-      return fetch(
-        pluginApiUrl(`/${pluginId}/versions`),
-        {
-          method: "POST",
-          headers: {
-            ...headers,
-           // "Content-length": fileSizeInBytes,
-            "Content-Type": "multipart/form-data",
-          },
-          body
-        }
-      ).catch( e => {
-        error(`Error uploading version${version} for plugin ${pluginId}`);
-        console.log(e);
-      }).then( r => {
+      const fileName = `${slug}.zip`;
 
+      let formdata = new FormData();
+      formdata.append("zip", fileName, "/C:/Users/jpoll/Downloads/arms.zip");
+      formdata.append("version", version);
+
+      let requestOptions = {
+        method: 'POST',
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          //If
+          "Content-Type": "multipart/form-data",
+        },
+        body: formdata,
+        redirect: 'follow'
+      };
+
+    return fetch(url, {
+      method: 'POST',
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        //With this for Content-Type, I get:
+        // {"error":{"zip":["The zip field is required."]}}
+        // If I remove this, I get: {"error":{"zip":["The zip must be a file of type: zip."]}}
+       "Content-Type": "multipart/form-data",
+      },
+      body: formdata,
+      redirect: 'follow'
+    })
+      .then(response => response.text())
+      .then(r => {
         switch(r.status){
           case 400:
             return r.json().then(r => {
@@ -130,15 +137,17 @@ export const pluginMachineApi = async (token) => {
               console.log({r,error});
               throw error;
             }
-          default: throw new Error(r.statusText || 'Unknown error');
+          default:
+            console.log(r);
+            throw new Error(r.statusText || 'Unknown error');
         }
 
 
         throw new  Error(`Error uploading version ${version} for plugin ${pluginId}`);
-      } ).then(r => {
-        console.log({r});
-          return r;
-      });
+      })
+      .catch(error => console.log('error', error));
+
+
     },
     //upoad a new version
     getVersions: async (pluginMachineJson) => {
