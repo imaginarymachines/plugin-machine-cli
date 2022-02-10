@@ -24,8 +24,10 @@
     "arg": "^5.0.1",
     "chalk": "^5.0.0",
     "esm": "^3.2.18",
+    "form-data": "^4.0.0",
     "inquirer": "^8.2.0",
-    "isomorphic-fetch": "^3.0.0"
+    "isomorphic-fetch": "^3.0.0",
+    "shelljs": "^0.8.5"
   },
   "engines": {
     "node": ">12"
@@ -33,5 +35,8 @@
   "files": [
     "bin/",
     "src/"
-  ]
+  ],
+  "devDependencies": {
+    "jest": "^27.5.0"
+  }
 }

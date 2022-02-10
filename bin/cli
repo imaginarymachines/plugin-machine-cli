@@ -9,6 +9,10 @@ switch(process.argv[2]){
         require = require('esm')(module /*, options*/);
         require('../src/login.js').cli(process.argv);
     break;
+    case 'docker':
+        require = require('esm')(module /*, options*/);
+        require('../src/docker.js').cli(process.argv);
+    break;
     case '-v':
     case 'v':
     case 'version':
@@ -18,7 +22,7 @@ switch(process.argv[2]){
     default:
         require = require('esm')(module /*, options*/);
         require('../src/debug.js').cli(process.argv);
-        break;
     break;
+
 
 }
