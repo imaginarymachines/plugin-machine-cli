@@ -75,6 +75,9 @@ const docker = async function({wpcli,phpVersion,phpunitCommand}){
             },
             //Check docker version
             dockerV,
+            kill: async () => {
+                await runCommand("docker kill $(docker ps -q)");
+            }
         }
     } catch (e) {
         error( 'Docker is not installed or is not running.');
