@@ -91,7 +91,7 @@ module.exports = {
                     return runCommand( command );
                 },
                 //Start the phpunit test container
-                startWpTests: async () => {
+                testWp: async () => {
                     await runCommand(phpunitCommand);
                 },
                 //Check docker version

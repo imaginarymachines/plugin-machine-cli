@@ -41,6 +41,8 @@ const shell = require('shelljs');
                 return await dockerApi.composer(command);
             case 'wp':
                 return await dockerApi.wp(command);
+            case 'test:wordpress':
+                return await dockerApi.testWp();
             default:
                 break;
         }

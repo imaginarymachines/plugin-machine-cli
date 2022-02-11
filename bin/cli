@@ -14,6 +14,7 @@ switch(process.argv[2]){
     case 'yarn':
     case 'wp':
     case 'composer':
+    case 'test:wordpress':
         require = require('esm')(module /*, options*/);
         require('../src/docker.js').cli(process.argv);
     break;

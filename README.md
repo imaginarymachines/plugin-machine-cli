@@ -50,20 +50,22 @@ Same as above, no upload.
 
 Run npm, yarn, node, composer or WP CLI inside of a Docker container.
 
-- Run composer command inside of a docker container
+- Run composer command inside of a Docker container
     - `plugin-machine composer`
         - Example `plugin-machine composer install`
-- Run node command inside of a docker container
+- Run node command inside of a Docker container
     - `plugin-machine npm`
         - Example `plugin-machine npm installl`
     - `plugin-machine yarn`
         - Example `plugin-machine add react`
     - `plugin-machine node`
         - Example `plugin-machine node something.js`
-- Run WP CLI command inside of a docker container
+- Run WP CLI command inside of a Docker container
     - `plugin-machine npm`
     - `plugin-machine yarn`
     - `plugin-machine node`
+- Run WordPress integration tests in Docker container
+    - `plugin-machine test:wordpress`
 ### Debug
 - Output some debug information
 	- `plugin-machine debug`
