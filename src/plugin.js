@@ -1,5 +1,5 @@
-import { exitError } from './lib/docker/exit';
-
+const { exitError } = require('./lib/docker/exit');
+const docker = require('./lib/docker/docker');
 const arg = require('arg');
 const inquirer = require('inquirer');
 const { getAuthToken, getPluginDir, getPluginMachineJson,appUrl,apiUrl } = require( './lib/config');
@@ -323,8 +323,12 @@ async function promptForMissingOptions(options,questions) {
  */
 async function handleConfig(pluginDir,pluginId,pluginMachine) {
   const fs = require('fs');
+  info( 'Downloading pluginMachine.json')
   let newPluginMachineJson = await pluginMachine.getPluginMachineJson(pluginId);
   fs.writeFileSync(`${pluginDir}/pluginMachine.json`, JSON.stringify(newPluginMachineJson, null, 2));
+  info({
+    newPluginMachineJson
+  })
   return true;
 }
 
@@ -421,16 +425,17 @@ export async function cli(args) {
 
   switch (options.command) {
     case 'config':
-      await handleConfig(
+      return await handleConfig(
         pluginDir,
         options.pluginId || pluginMachineJson.pluginId,
         pluginMachine
       );
       break;
     case 'zip':
+      const dockerApi = await docker.api({});
+
       pluginMachineJson = validatePluginJson(pluginMachineJson);
       options = await promptForZipOptions(options);
-      let dockerApi = require('./lib/docker/docker.js');
       if( pluginMachineJson.hasOwnProperty('buildSteps') && pluginMachineJson.buildSteps.length ) {
         pluginMachineJson.buildSteps.forEach( async (buildStep) => {
           if( buildStep.startsWith('composer') ) {
