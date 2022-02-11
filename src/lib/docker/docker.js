@@ -82,7 +82,8 @@ module.exports = {
                         command = command.substring('composer'.length);
                     }
                     //See: https://github.com/prooph/docker-files/tree/master/composer
-                    return runCommand(`docker run --rm -it --volume "$(pwd)":/app prooph/composer:${phpVersion} ${command}`);
+                    //Removed -it flag to make it work.
+                    return runCommand(`docker run --rm  --volume "$(pwd)":/app prooph/composer:${phpVersion} ${command}`);
                 },
                 node: async (command) => {
                     //See: https://gist.github.com/ArtemGordinsky/b79ea473e8bc6f67943b
