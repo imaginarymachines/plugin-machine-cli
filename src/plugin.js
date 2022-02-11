@@ -432,7 +432,7 @@ export async function cli(args) {
       options = await promptForZipOptions(options);
       let dockerApi = require('./lib/docker/docker.js');
       if( pluginMachineJson.hasOwnProperty('buildSteps') && pluginMachineJson.buildSteps.length ) {
-        pluginMachineJson.buildSteps.forEach( buildStep => {
+        pluginMachineJson.buildSteps.forEach( async (buildStep) => {
           if( buildStep.startsWith('composer') ) {
             await dockerApi.composer(options);
           }else if( buildStep.startsWith('npm') || buildStep.startsWith('yarn') ) {
