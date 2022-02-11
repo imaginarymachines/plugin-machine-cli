@@ -22,10 +22,11 @@ const shell =   require('shelljs');
  *
  * @param {{wpcli:string,phpVersion:string}} opts Optional parameters
  *  @param {string} opts.wpcli Optional. The prefix for the WP CLI command, ending in "wp". Default is "docker-compose run wpcli"
- *  @param {string} opts.phpVersion Optional. The version of PHP to use. Default is "7.4"
+ *  @param {string} opts.phpVersion Optional. The version of PHP to use. Default is "7.4". MUST be 3 characters long.
+ *  @param {string}opts.nodeVersion Optional. The version of Node to use. Default is "17". MUST be 2 characters long.
  *  @param {string} opts.phpunitCommand Optional. The command to run for PHPUnit. Default is "docker-compose run phpunit"
  */
-const docker = async function({wpcli,phpVersion,phpunitCommand}){
+const docker = async function({wpcli,phpVersion,nodeVersion,phpunitCommand}){
     wpcli = wpcli || 'docker-compose run wpcli';
     phpVersion = phpVersion || '7.4';
     phpunitCommand = phpunitCommand || '`docker-compose run phpunit`';
@@ -35,6 +36,13 @@ const docker = async function({wpcli,phpVersion,phpunitCommand}){
     if( ! ['7.3', '7.4', '8.0', '8.1'].includes(phpVersion) ){
         info(phpVersion);
         exitError('Invalid PHP Version');
+    }
+    if( nodeVersion.length > 2 ){
+        nodeVersion = nodeVersion.substring(0,2);
+    }
+    if(! ['17', '16', '14', '12'].includes(nodeVersion) ){
+        info(nodeVersion);
+        exitError('Invalid Node Version');
     }
 
     //Util function to check Docker version.
@@ -61,20 +69,21 @@ const docker = async function({wpcli,phpVersion,phpunitCommand}){
                     //remove "composer" from command
                     command = command.substring('composer'.length);
                 }
-                //Run command in Docker
                 //See: https://github.com/prooph/docker-files/tree/master/composer
-                return `docker run --rm -it --volume "$(pwd)":/app prooph/composer:${phpVersion} ${command}`;
+                return runCommand(`docker run --rm -it --volume "$(pwd)":/app prooph/composer:${phpVersion} ${command}`);
             },
             node: async (command) => {
-                //@todo, this in Docker
-                shell.exec( command );
+                //See: https://gist.github.com/ArtemGordinsky/b79ea473e8bc6f67943b
+                command = `docker run -v "$PWD":/usr/src/app -w /usr/src/app node:${nodeVersion}-alpine sh -c '${command}'`;
+                return runCommand( command );
             },
             //Start the phpunit test container
-            startTests: async () => {
+            startWpTests: async () => {
                 await runCommand(testsCommand);
             },
             //Check docker version
             dockerV,
+            //Kill all running containers on the host
             kill: async () => {
                 await runCommand("docker kill $(docker ps -q)");
             }
@@ -84,7 +93,6 @@ const docker = async function({wpcli,phpVersion,phpunitCommand}){
         info( 'https://www.docker.com/products/docker-desktop');
         exitError('Please install Docker and try again.')
     }
-
 }
 module.exports = {
     docker
