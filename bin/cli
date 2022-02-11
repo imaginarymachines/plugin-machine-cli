@@ -10,6 +10,10 @@ switch(process.argv[2]){
         require('../src/login.js').cli(process.argv);
     break;
     case 'docker':
+    case 'npm':
+    case 'yarn':
+    case 'wp':
+    case 'composer':
         require = require('esm')(module /*, options*/);
         require('../src/docker.js').cli(process.argv);
     break;

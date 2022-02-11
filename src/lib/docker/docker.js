@@ -60,6 +60,7 @@ module.exports = {
             return runCommand(`docker version --format '{{.Server.Version}}'`);
         }
         try {
+            info('Checking Docker version...');
             //Check if docker is installed and running
             await dockerV();
             //If so, return API
@@ -97,7 +98,8 @@ module.exports = {
                 //Kill all running containers on the host
                 kill: async () => {
                     await runCommand("docker kill $(docker ps -q)");
-                }
+                },
+                args
             }
         } catch (e) {
             error( 'Docker is not installed or is not running.');

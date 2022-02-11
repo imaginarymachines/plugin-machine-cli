@@ -46,6 +46,24 @@ You will be prompted for type of release. If you select NO, a zip will be create
 
 Same as above, no upload.
 
+### Docker
+
+Run npm, yarn, node, composer or WP CLI inside of a Docker container.
+
+- Run composer command inside of a docker container
+    - `plugin-machine composer`
+        - Example `plugin-machine composer install`
+- Run node command inside of a docker container
+    - `plugin-machine npm`
+        - Example `plugin-machine npm installl`
+    - `plugin-machine yarn`
+        - Example `plugin-machine add react`
+    - `plugin-machine node`
+        - Example `plugin-machine node something.js`
+- Run WP CLI command inside of a docker container
+    - `plugin-machine npm`
+    - `plugin-machine yarn`
+    - `plugin-machine node`
 ### Debug
 - Output some debug information
 	- `plugin-machine debug`
