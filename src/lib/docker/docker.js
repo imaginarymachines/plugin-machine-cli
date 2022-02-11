@@ -28,35 +28,36 @@ const shell =   require('shelljs');
  */
 module.exports = {
     api: async(opts) => {
-        let {wpcli,phpVersion,nodeVersion,phpunitCommand} = Object.assign(
+        let args = Object.assign(
             {
                 wpcli:'docker-compose run wpcli',
                 phpVersion:'7.4',
                 nodeVersion: 16,
                 phpunitCommand: `docker-compose run phpunit`,
-
             },
             opts
         );
 
+        let {wpcli,phpVersion,nodeVersion,phpunitCommand} = args;
         if( phpVersion.length > 3 ){
             phpVersion = phpVersion.substring(0,3);
         }
         if( ! ['7.3', '7.4', '8.0', '8.1'].includes(phpVersion) ){
             info(phpVersion);
-            exitError('Invalid PHP Version');
+            exitError({errorMessage:`${phpVersion} is not a supported PHP version.`});
         }
         if( nodeVersion.length > 2 ){
             nodeVersion = nodeVersion.substring(0,2);
         }
-        if(! ['17', '16', '14', '12'].includes(nodeVersion) ){
+        let nodeVersions = ['12','14','16','17'];
+        if(! [...nodeVersions, ...nodeVersions.map( v => parseInt(v,10) )].includes(nodeVersion) ){
             info(nodeVersion);
-            exitError('Invalid Node Version');
+            exitError({errorMessage:`${nodeVersion} is not a supported Node version.`});
         }
 
         //Util function to check Docker version.
         const dockerV = async () => {
-            return runCommand(`docker version`);
+            return runCommand(`docker version --format '{{.Server.Version}}'`);
         }
         try {
             //Check if docker is installed and running
@@ -74,6 +75,7 @@ module.exports = {
                 },
                 //Run a composer command in Docker container
                 composer: async (command) => {
+
                     if( command.startsWith( 'composer') ){
                         //remove "composer" from command
                         command = command.substring('composer'.length);
@@ -88,7 +90,7 @@ module.exports = {
                 },
                 //Start the phpunit test container
                 startWpTests: async () => {
-                    await runCommand(testsCommand);
+                    await runCommand(phpunitCommand);
                 },
                 //Check docker version
                 dockerV,

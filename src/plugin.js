@@ -423,57 +423,74 @@ export async function cli(args) {
     checkLogin(options.token || getAuthToken(pluginDir)),
   );
 
-  switch (options.command) {
-    case 'config':
-      return await handleConfig(
-        pluginDir,
-        options.pluginId || pluginMachineJson.pluginId,
-        pluginMachine
-      );
-      break;
-    case 'zip':
-      const dockerApi = await docker.api({});
-
-      pluginMachineJson = validatePluginJson(pluginMachineJson);
-      options = await promptForZipOptions(options);
-      if( pluginMachineJson.hasOwnProperty('buildSteps') && pluginMachineJson.buildSteps.length ) {
-        pluginMachineJson.buildSteps.forEach( async (buildStep) => {
-          if( buildStep.startsWith('composer') ) {
-            await dockerApi.composer(options);
-          }else if( buildStep.startsWith('npm') || buildStep.startsWith('yarn') ) {
-            await dockerApi.node(buildStep);
-          }else if( buildStep.startsWith('wp') ) {
-            await dockerApi.wp(buildStep);
-          }else{
-            info(command);
-            info( 'Valid build steps are: composer|npm|yarn|wp');
-            exitError('Can not process build step: ' + buildStep);
+  try {
+    const dockerApi = await docker.api({});
+    switch (options.command) {
+      case 'config':
+        return await handleConfig(
+          pluginDir,
+          options.pluginId || pluginMachineJson.pluginId,
+          pluginMachine
+        );
+        break;
+      case 'zip':
+      case 'build':
+          const BUILD_STEPS = 'buildSteps'
+          const PROD = 'prod';
+          const DEV = 'dev';
+          pluginMachineJson = validatePluginJson(pluginMachineJson);
+          if( 'zip' === options.command ) {
+            options = await promptForZipOptions(options);
           }
-        });
-      }
-      await handleZip(pluginDir,pluginMachineJson);
-      if( options.version){
-        try {
-          await pluginMachine.uploadVersion(pluginMachineJson,options.version);
-        } catch (error) {
-            console.log(error);
 
+          const hasBuildSteps = ()=> pluginMachineJson.hasOwnProperty(BUILD_STEPS);
+          const hasProdBuildSteps = ()=> hasBuildSteps() && pluginMachineJson[BUILD_STEPS].hasOwnProperty(PROD);
+          if( hasBuildSteps() && hasProdBuildSteps() ) {
+            pluginMachineJson[BUILD_STEPS][PROD].forEach( async (buildStep) => {
+              if( buildStep.startsWith('composer') ) {
+                await dockerApi.composer(buildStep);
+              }else if( buildStep.startsWith('npm') || buildStep.startsWith('yarn') ) {
+                await dockerApi.node(buildStep);
+              }else if( buildStep.startsWith('wp') ) {
+                await dockerApi.wp(buildStep);
+              }else{
+                info(command);
+                info( 'Valid build steps are: composer|npm|yarn|wp');
+                exitError('Can not process build step: ' + buildStep);
+              }
+            });
         }
-      }
-      break;
-    case 'add':
-      pluginMachineJson = validatePluginJson(pluginMachineJson);
-      const rules = require( './data/rules.json');
-      const features = require( './data/features.json');
-      options = await promptForFeature(options,features);
-      options = await promptForFeatureRules(options,rules);
-      await handleAddFeature(
-        pluginDir,pluginMachine,pluginMachineJson,options
-      );
-      break;
-    default:
-      throw new Error(`Command plugin ${options.command} not found`);
-      break;
+        if( options.command !== 'zip' ) {
+          return;
+        }
+        await handleZip(pluginDir,pluginMachineJson);
+        if( options.version){
+          try {
+            await pluginMachine.uploadVersion(pluginMachineJson,options.version);
+          } catch (error) {
+              console.log(error);
+
+          }
+        }
+        break;
+      case 'add':
+        pluginMachineJson = validatePluginJson(pluginMachineJson);
+        const rules = require( './data/rules.json');
+        const features = require( './data/features.json');
+        options = await promptForFeature(options,features);
+        options = await promptForFeatureRules(options,rules);
+        await handleAddFeature(
+          pluginDir,pluginMachine,pluginMachineJson,options
+        );
+        break;
+      default:
+        throw new Error(`Command plugin ${options.command} not found`);
+        break;
+    }
+  } catch (error) {
+    console.log({error});
   }
+
+
 
 }

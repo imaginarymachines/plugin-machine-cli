@@ -36,8 +36,15 @@ All `plugin` commands will assume that the current directory is the root directo
 
 - `plugin-machine plugin add`
 
-#### ZIP plugin for release
+#### ZIP plugin and make a release
 - `plugin-machine plugin zip`
+
+You will be prompted for type of release. If you select NO, a zip will be created, but not updated.
+
+#### ZIP plugin
+- `plugin-machine plugin build`
+
+Same as above, no upload.
 
 ### Debug
 - Output some debug information
