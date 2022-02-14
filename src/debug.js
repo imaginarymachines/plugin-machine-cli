@@ -1,5 +1,5 @@
 import { info } from './lib/log';
-
+import {getAuthToken} from './lib/config';
 /**
  * Hander for `plugin-machine debug` commands
  */
@@ -14,7 +14,8 @@ import { info } from './lib/log';
                 cwd: require( 'process').cwd(),
                 homedir: require( 'os').homedir(),
             },
-            debug:{}
+            debug:{},
+            authToken: getAuthToken(),
         }
     );
 }

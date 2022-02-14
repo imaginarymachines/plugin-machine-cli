@@ -1,5 +1,11 @@
-import chalk from 'chalk';
 const log = console.log;
+
+const chalk = {
+    green:(string: string) => string,
+    red:(string: string) => string,
+    yellow:(string: string) => string,
+    blue:(string: string) => string,
+}
 
 const maybeStringify = (obj: string|any) => {
     if( 'string' == typeof obj ) {

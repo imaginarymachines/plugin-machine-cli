@@ -1,11 +1,11 @@
-const {info,success,error} = require( './log');
-const {existSuccess,exitError} = require('./exit');
+import {info,success,error} from './log';
+import {existSuccess,exitError} from './exit';
 
 /**
  * WordPress CLI helper functions
  * @param {(command:string): Promise<any}>} wp An async function that runs a WP CLI command.
  */
-module.exports = function(wp){
+export default function wp(wp){
     return {
         /**
          * Install WordPress for the WordPress site.

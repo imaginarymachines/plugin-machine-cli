@@ -14,6 +14,11 @@ switch(process.argv[2]){
     case 'login':
         require('./login.js').cli(process.argv);
     break;
+    case 'npm':
+    case 'yarn':
+    case 'node':
+    case 'wp':
+    case 'composer':
     case 'docker':
         require('./docker.js').cli(process.argv);
     break;

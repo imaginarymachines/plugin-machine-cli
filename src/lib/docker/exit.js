@@ -1,10 +1,10 @@
-const shell = require('shelljs');
-const {success,error} = require( '../log');
+import {success,error} from  '../log';
+import shell from   'shelljs'
 
 /**
  * Exit with success code
  */
- const exitSuccess = ({errorMessage}) => {
+ export const exitSuccess = ({errorMessage}) => {
     success(errorMessage||'All done!');
     //barrel roll
     shell.exit(0);
@@ -13,12 +13,7 @@ const {success,error} = require( '../log');
 /**
  * Exit with error code
  */
-const exitError = ({errorMessage,errorCode = 1}) => {
+export const exitError = ({errorMessage,errorCode = 1}) => {
     error( errorMessage ||'Exitting With Error!');
     shell.exit(errorCode);
-}
-
-module.exports = {
-    exitSuccess,
-    exitError
 }
