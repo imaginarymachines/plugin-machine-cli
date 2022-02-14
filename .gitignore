@@ -4,6 +4,7 @@ blocks/
 admin/
 inc/
 
+dist
 # Logs
 logs
 *.log
