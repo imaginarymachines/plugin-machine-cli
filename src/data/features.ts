@@ -1,4 +1,4 @@
-{
+const features: any = {
     "cpt": {
         "feature": {
             "type": "cpt",
@@ -168,3 +168,4 @@
         }
     }
 }
+export default features;

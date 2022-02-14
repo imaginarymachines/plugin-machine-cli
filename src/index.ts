@@ -20,11 +20,11 @@ switch(process.argv[2]){
     case '-v':
     case 'v':
     case 'version':
-        require('./src/version.js').cli(process.argv);
+        require('./version.js').cli(process.argv);
         break;
     default:
         info( 'DEBUG INFO:')
-        require('./src/debug.js').cli(process.argv);
+        require('./debug.js').cli(process.argv);
         break;
     break;
 

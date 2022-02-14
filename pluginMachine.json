@@ -1,21 +1,33 @@
 {
-  "slug": "build-with-two-admin-pages",
-  "pluginId": 1,
-  "buildId": 1,
-  "entryPoints": {
-    "adminPages": [
-      "build-with-two-admin-pages-0",
-      "build-with-two-admin-pages-1"
+    "slug": "build-with-one-admin-pages",
+    "pluginId": 2,
+    "buildId": 2,
+    "entryPoints": {
+        "adminPages": [
+            "build-with-one-admin-pages-0"
+        ],
+        "blocks": [
+            ""
+        ]
+    },
+    "buildIncludes": [
+        "build-with-one-admin-pages.php",
+        "readme.txt",
+        "php",
+        "vendor",
+        "build",
+        "blocks//init.php",
+        "blocks//init.php",
+        "admin/build-with-one-admin-pages-0/init.php"
     ],
-    "blocks": []
-  },
-  "buildIncludes": [
-    "build-with-two-admin-pages.php",
-    "readme.txt",
-    "php",
-    "vendor",
-    "build",
-    "admin/build-with-two-admin-pages-0/init.php",
-    "admin/build-with-two-admin-pages-1/init.php"
-  ]
+    "buildSteps": {
+        "dev": [
+            "yarn",
+            "yarn start"
+        ],
+        "prod": [
+            "yarn",
+            "yarn build"
+        ]
+    }
 }

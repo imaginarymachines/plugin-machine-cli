@@ -4,6 +4,7 @@ blocks/
 admin/
 inc/
 
+dist/
 dist
 # Logs
 logs
@@ -89,3 +90,5 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
+dist/plugin.js.map
+dist/index.js

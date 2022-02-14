@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../src/lib/hi.ts"],"sourcesContent":["const hi = (name: string) => `Hello ${name}!`;\n\nexport default hi;\n"],"names":["hi","name"],"mappings":";;;;;AAAA,KAAK,CAACA,EAAE,IAAIC,IAAY,IAAM,MAAM,EAAEA,IAAI,CAAC,CAAC;;eAE7BD,EAAE"}
