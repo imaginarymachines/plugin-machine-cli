@@ -1,14 +1,15 @@
-import { exit } from 'process';
 
-const arg = require('arg');
-const inquirer = require('inquirer');
-const { getAuthToken, getPluginDir, getPluginMachineJson,appUrl,apiUrl } = require( './lib/config');
+import arg from 'arg';
+import inquirer from 'inquirer';
+import { getAuthToken, getPluginDir, getPluginMachineJson,appUrl,apiUrl } from '../lib/config';
 
-const {
+
+import {
   error,
   important,
   info,
-} = require('./lib/log');
+} from '../lib/log';
+
 
 /**
  * Plugin Machine API client

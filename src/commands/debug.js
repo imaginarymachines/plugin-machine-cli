@@ -1,5 +1,5 @@
-import { info } from './lib/log';
-import {getAuthToken} from './lib/config';
+import { info } from '../lib/log';
+import {getAuthToken} from '../lib/config';
 /**
  * Hander for `plugin-machine debug` commands
  */

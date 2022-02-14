@@ -9,10 +9,10 @@ switch(process.argv[2]){
         info(hi(process.argv[2]|| 'Roy'));
     break;
     case 'plugin':
-        require('./plugin.js').cli(process.argv);
+        require('./commands/plugin.js').cli(process.argv);
     break;
     case 'login':
-        require('./login.js').cli(process.argv);
+        require('./commands/login.js').cli(process.argv);
     break;
     case 'npm':
     case 'yarn':
@@ -20,16 +20,16 @@ switch(process.argv[2]){
     case 'wp':
     case 'composer':
     case 'docker':
-        require('./docker.js').cli(process.argv);
+        require('./commands/docker.js').cli(process.argv);
     break;
     case '-v':
     case 'v':
     case 'version':
-        require('./version.js').cli(process.argv);
+        require('./commands/version.js').cli(process.argv);
         break;
     default:
         info( 'DEBUG INFO:')
-        require('./debug.js').cli(process.argv);
+        require('./commands/debug.js').cli(process.argv);
         break;
     break;
 

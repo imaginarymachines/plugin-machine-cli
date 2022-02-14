@@ -1,6 +1,9 @@
-const { info,warning } = require( './lib/log');
-const docker = require('./lib/docker/docker');
-const shell = require('shelljs');
+import docker from '../lib/docker/docker';
+import shell from 'shelljs';
+import {
+    info,warning
+} from '../lib/log';
+
 
 
 

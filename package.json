@@ -11,6 +11,10 @@
   "bin": {
     "plugin-machine": "./dist/index.js"
   },
+  "files": [
+    "dist/data",
+    "dist/data"
+  ],
   "scripts": {
     "start": "npm run build-ts && node dist/index.js",
     "dev": "npm run build-ts && node --inspect-brk dist/index.js",
@@ -40,6 +44,7 @@
   "keywords": [],
   "dependencies": {
     "arg": "^5.0.1",
+    "form-data": "^4.0.0",
     "inquirer": "^8.2.0",
     "shelljs": "^0.8.5"
   }
