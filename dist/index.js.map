@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/index.ts"],"sourcesContent":["#!/usr/bin/env node\nimport hi from './lib/hi';\n\nconsole.log(hi(process.argv[2]));\nconsole.log('Hello World!');\n\nexport {};\n"],"names":["console","log","hi","process","argv"],"mappings":";;AACe,GAAU,CAAV,GAAU;;;;;;AAEzBA,OAAO,CAACC,GAAG,KAACC,GAAE,UAACC,OAAO,CAACC,IAAI,CAAC,CAAC;AAC7BJ,OAAO,CAACC,GAAG,CAAC,CAAc"}
