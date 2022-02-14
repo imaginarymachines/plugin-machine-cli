@@ -1,10 +1,15 @@
 const log = console.log;
 
+
+/**
+ * I am chalk now!
+ */
 const chalk = {
-    green:(string: string) => string,
-    red:(string: string) => string,
-    yellow:(string: string) => string,
-    blue:(string: string) => string,
+    green:(message: string|any) => log('\x1b[32m%s\x1b[0m',maybeStringify(message)),
+    red:(message: string|any) => log('\x1b[31m%s\x1b[0m',maybeStringify(message)),
+    yellow:(message: string|any) => log('\x1b[33m%s\x1b[0m',maybeStringify(message)),
+    blue:(message: string|any) => log('\x1b[35m%s\x1b[0m',maybeStringify(message)),
+    pink:(message: string|any) => log('\x1b[36m%s\x1b[0m',maybeStringify(message)),
 }
 
 const maybeStringify = (obj: string|any) => {
