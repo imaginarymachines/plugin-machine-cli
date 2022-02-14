@@ -2,187 +2,14 @@
 import arg from 'arg';
 import inquirer from 'inquirer';
 import { getAuthToken, getPluginDir, getPluginMachineJson,appUrl,apiUrl } from '../lib/config';
-
-
 import {
   error,
   important,
   info,
+  success,
 } from '../lib/log';
 
-
-/**
- * Plugin Machine API client
- */
-export const pluginMachineApi = async (token) => {
-  const FormData = require('form-data');
-
-  const fetch = require('isomorphic-fetch');
-  const fs = require( 'fs');
-  const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`,
-  };
-
-  //Get full URL for plugin update API
-  //Plugin update API uses a non-standard API prefix (OK, but why?)
-  const pluginApiUrl = (endpoint) => `${appUrl(`/api/plugins${endpoint}`)}`;
-
-  //Get the plugin machine json file for a saved plugin
-  async function getPluginMachineJson(pluginId){
-    console.log({url: apiUrl(`/plugins/${pluginId}/code`)})
-    return fetch(
-      apiUrl(`/plugins/${pluginId}/code`),
-      {
-        method: 'GET',
-        headers,
-      }
-    ).catch( e => {
-      error(`Error getting plugin machine json for plugin ${pluginId}`);
-      console.log(e);
-    }).then( r => r.json() )
-    .then( r => {
-      return r;
-    })
-  }
-
-  return {
-    getPluginMachineJson,
-    //Add a feature to a plugin
-    addFeature: async (pluginMachineJson,data)  =>{
-      const {pluginId,buildId}=pluginMachineJson;
-      return fetch(
-        apiUrl(`/plugins/${pluginId}/builds/${buildId}/features`),
-        {
-          method: "POST",
-          body: JSON.stringify(data),
-          headers,
-        }
-      )
-      .catch( e => {
-        error(`Error adding feature to plugin ${pluginId}`);
-        console.log(e);
-      }).then( r => r.json())
-        .then(r => {
-          return {
-            files: r.files,
-            featureId:r.setting.id,
-            main: r.main ? r.main : false,
-          };
-        });
-
-
-    },
-    //Get one file, from a feature
-    getFeatureCode: async (pluginMachineJson,featureId,file) => {
-      const {pluginId,buildId}=pluginMachineJson;
-      return fetch(
-        apiUrl(`/plugins/${pluginId}/builds/${buildId}/features/${featureId}/code?file=${encodeURI(file)}`),
-        {
-          method: "GET",
-        headers,        }
-      ).catch( e => {
-        error(`Error getting feature ${featureId} for plugin ${pluginId}`);
-        console.log(e);
-      }).then( r => r.text() ).then(r => {
-        return r;
-      });
-    },
-    //upoad a new version
-    uploadVersion: async (pluginMachineJson,version) => {
-      const url = "https://minor.pluginmachine.dev/api/plugins/1/versions";
-      const {pluginId,slug} = pluginMachineJson;
-      const fileName = `${slug}.zip`;
-
-      let formdata = new FormData();
-      formdata.append("zip", fileName, "/C:/Users/jpoll/Downloads/arms.zip");
-      formdata.append("version", version);
-
-
-    return fetch(url, {
-      method: 'POST',
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        //With this for Content-Type, I get:
-        // {"error":{"zip":["The zip field is required."]}}
-        // If I remove this, I get: {"error":{"zip":["The zip must be a file of type: zip."]}}
-       "Content-Type": "multipart/form-data",
-      },
-      body: formdata,
-      redirect: 'follow'
-    })
-      .then(response => response.text())
-      .then(r => {
-        switch(r.status){
-          case 400:
-            return r.json().then(r => {
-              error(`Error uploading a ${version} update for plugin ${pluginId}`);
-              console.log(r.error);
-            });
-          case 401:
-            console.log(headers);
-            info(token);
-            error(`Error uploading a ${version} update for plugin ${pluginId}`);
-            throw new Error(r.statusText || 'Unauthorized');
-          case 201:
-          case 200:
-            try {
-              return r.json();
-            } catch (error) {
-              console.log({r,error});
-              throw error;
-            }
-          default:
-            console.log(r);
-            throw new Error(r.statusText || 'Unknown error');
-        }
-
-
-        throw new  Error(`Error uploading version ${version} for plugin ${pluginId}`);
-      })
-      .catch(error => console.log('error', error));
-
-
-    },
-    //upoad a new version
-    getVersions: async (pluginMachineJson) => {
-      const {pluginId}=pluginMachineJson;
-
-      return fetch(
-        pluginApiUrl(`/${pluginId}/versions`),
-        {
-          method: "GET",
-          headers,
-        }
-      ).catch( e => {
-        error(`Error getting versions for plugin ${pluginId}`);
-        console.log(e);
-      }).then( r => r.json() ).then(r => {
-          return r;
-      });
-    },
-    //Write a file, with some saftery features
-    writeFile: async(pluginDir,file,fileContents) => {
-      //Has a path?
-      let split = file.split('/');
-      //Create directories if they don't exist
-      if( split.length > 1 ) {
-        let createDir = pluginDir;
-        for (let i = 0; i < split.length -1; i++) {
-          createDir = `${createDir}/${split[i]}`;
-          if( ! fs.existsSync(createDir) ) {
-            fs.mkdirSync(createDir);
-          }
-        }
-
-      }
-
-      fs.writeFileSync(`${pluginDir}/${file}`,fileContents,{ flag: 'w+' });
-    },
-
-  };
-
-}
+import pluginMachineApi from '../lib/pluginMachineApi';
 
 
 
@@ -422,21 +249,33 @@ export async function cli(args) {
         pluginDir,
         options.pluginId || pluginMachineJson.pluginId,
         pluginMachine
-      ).catch((e) => error(e));
+      ).catch((e) => error(e))
+      .then( () => success('Plugin Machine config saved'));
       break;
+    case 'upload':
+          try {
+              await pluginMachine.uploadVersion(
+                  pluginMachineJson, options.version,pluginDir
+              );
+          } catch (error) {
+              console.log(error);
+          }
+          break;
     case 'zip':
-      pluginMachineJson = validatePluginJson(pluginMachineJson);
-      options = await promptForZipOptions(options);
-      await handleZip(pluginDir,pluginMachineJson);
-      if( options.version){
-        try {
-          await pluginMachine.uploadVersion(pluginMachineJson,options.version);
-        } catch (error) {
-            console.log(error);
+          pluginMachineJson = validatePluginJson(pluginMachineJson);
+          options = await promptForZipOptions(options);
+          await handleZip(pluginDir, pluginMachineJson);
+          if (options.version) {
+              try {
+                  await pluginMachine.uploadVersion(
+                      pluginMachineJson, options.version,pluginDir
+                  );
+              } catch (error) {
+                  console.log(error);
+              }
+          }
+    break;
 
-        }
-      }
-      break;
     case 'add':
       pluginMachineJson = validatePluginJson(pluginMachineJson);
       const rules =  require( './data/rules')

@@ -1,17 +1,21 @@
+
 const fs = require('fs');
-let pluginMachineJson = false;
 const { join } = require( 'path' );
 const { homedir } = require( 'os' );
 
+import { I_PluginMachineJson } from "./pluginMachineApi";
+let pluginMachineJson : I_PluginMachineJson;
+
+
 //Get current pluginMachine.json file
-export  const getPluginMachineJson = (pluginDir, opts = {} ) => {
+export  const getPluginMachineJson = (pluginDir:string, opts = {} ) => {
     if( ! pluginMachineJson ){
       if(  fs.existsSync(`${pluginDir}/pluginMachine.json`) ){
         pluginMachineJson = require(
             join(pluginDir, 'pluginMachine.json')
         );
       }else{
-        pluginMachineJson = {pluginId: 0, buildId: 0};
+        pluginMachineJson = {pluginId: 0, buildId: 0,buildIncludes: [],slug: ''};
       }
     }
 
@@ -22,11 +26,12 @@ export  const getPluginMachineJson = (pluginDir, opts = {} ) => {
       pluginMachineJson.appUrl = 'https://pluginmachine.app';
     }
 
-    return pluginMachineJson;
-}
 
+  return pluginMachineJson;
+
+};
 //Get auth token from auth.json, if set
-export  const getAuthToken = () => {
+export const getAuthToken = () => {
   const authConfig = getAuthConfig();
   if( authConfig.hasOwnProperty('token') ){
     return authConfig.token;
@@ -34,10 +39,11 @@ export  const getAuthToken = () => {
   return false;
 };
 
- const getPluginDir = () => {
+export const getPluginDir = () => {
   const {cwd}= require( 'process');
   return cwd();
 }
+
 //update auth.json contents
 export  const updateAuthConfig = (newData) => {
     // read existing config
@@ -80,7 +86,7 @@ export  const readAuthConfigFile = () => {
 };
 
 //Placeholder error handler
-export  const error = (message) => message;
+export  const error = (message:string) => message;
 
 //Write to auth.json
 //@see https://github.com/vercel/vercel/blob/f18bca97187d17c050695a7a348b8ae02c244ce9/packages/cli/src/util/config/files.ts#L59-L91
@@ -120,7 +126,7 @@ export  const writeToAuthConfigFile = (authConfig) => {
 
 
 // Returns whether a directory exists
-export  const isDirectory = (path) => {
+export const isDirectory = (path:string): bool => {
     try {
         return fs.lstatSync(path).isDirectory();
     } catch (_) {
@@ -129,10 +135,9 @@ export  const isDirectory = (path) => {
     }
 };
 
-// Returns full URL for endpoint on Plugin Machine server.
-// Override
-// `getPluginMachineJson(pluginDir, {appUrl: 'http://localhost:3000'})`
-export const appUrl = (endpoint) => `${getPluginMachineJson().appUrl}${endpoint}`;
 
-// Retruns full URL for endpoint on Plugin Machine server, with current api prefix
-export const apiUrl = (endpoint) => `${appUrl(`/api/v1${endpoint}`)}`;
+export const appUrl = (endpoint:string) => {
+  return `${pluginMachineJson.appUrl}${endpoint}`;
+};
+
+export const apiUrl = (endpoint:string) => `${appUrl(`/api/v1${endpoint}`)}`;
