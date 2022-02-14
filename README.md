@@ -93,3 +93,14 @@ Docker shortcuts:
     - Use `--appUrl` to change URL of server
 - Run tests
     - `yarn test`
+
+### Dist Tags
+
+- Publish dev tag
+    - `npm publish --tag dev`
+- Delete dev tag
+    - `npm dist-tag rm plugin-machine dev`
+
+SEE:
+    - https://www.grzegorowski.com/what-are-npm-dist-tags-how-to-use-them
+    - https://docs.npmjs.com/adding-dist-tags-to-packages
