@@ -1,4 +1,4 @@
-let chalk = require('chalk');
+import chalk from 'chalk';
 const log = console.log;
 
 const maybeStringify = (obj: string|any) => {

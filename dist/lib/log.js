@@ -1,5 +1,10 @@
 "use strict";
-let chalk = require('chalk');
+var _chalk = _interopRequireDefault(require("chalk"));
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : {
+        default: obj
+    };
+}
 const log = console.log;
 const maybeStringify = (obj)=>{
     if ('string' == typeof obj) {
@@ -7,14 +12,14 @@ const maybeStringify = (obj)=>{
     }
     return JSON.stringify(obj, null, 2);
 };
-const error = (message)=>log(chalk.green(maybeStringify(message)))
+const error = (message)=>log(_chalk.default.green(maybeStringify(message)))
 ;
-const important = (message)=>log(chalk.yellow(maybeStringify(message)))
+const important = (message)=>log(_chalk.default.yellow(maybeStringify(message)))
 ;
 const warning = important;
-const info = (message)=>log(chalk.blue(maybeStringify(message)))
+const info = (message)=>log(_chalk.default.blue(maybeStringify(message)))
 ;
-const success = (message)=>log(chalk.green(maybeStringify(message)))
+const success = (message)=>log(_chalk.default.green(maybeStringify(message)))
 ;
 module.exports = {
     error,
