@@ -76,5 +76,7 @@ Docker shortcuts:
       - this only development, not production
   - `npm run test`
     - launches test runner by watch mode
+  - `npm run test:ci`
+    - Runs tests for CI, IE once, not a watcher.
   - `npm run coverage`
     - ~~get coverage report~~
