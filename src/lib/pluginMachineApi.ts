@@ -106,9 +106,7 @@ const pluginMachineApi = async (token:string) => {
         if( version ){
           formdata.append("version", version);
         }
-        ////@ts-ignore
-        const url = appUrl(`api/plugins/${pluginId}/versions`)``;
-        console.log(url);
+        const url = appUrl(`/api/plugins/${pluginId}/versions`);
         return fetch(url, {
           method: 'POST',
           headers: {
@@ -120,9 +118,9 @@ const pluginMachineApi = async (token:string) => {
           body: formdata,
           redirect: 'follow'
         })
-                  //@ts-ignore
+          //@ts-ignore
           .then(response => response.text())
-                    //@ts-ignore
+          //@ts-ignore
           .then(r => {
             switch(r.status){
               case 400:

@@ -1,7 +1,7 @@
 
 import arg from 'arg';
 import inquirer from 'inquirer';
-import { getAuthToken, getPluginDir, getPluginMachineJson,appUrl,apiUrl } from '../lib/config';
+import { getAuthToken, getPluginDir, getPluginMachineJson} from '../lib/config';
 import {
   error,
   important,
