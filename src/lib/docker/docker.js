@@ -35,7 +35,6 @@ export const api = async (opts) => {
         },
         opts
     );
-
     let {wpcli,phpVersion,nodeVersion,phpunitCommand} = args;
     if( phpVersion.length > 3 ){
         phpVersion = phpVersion.substring(0,3);
