@@ -1,4 +1,4 @@
-{
+const rules :any = {
     "cpt": {
         "cptName": {
             "rules": [
@@ -635,3 +635,4 @@
         }
     }
 }
+export default rules;

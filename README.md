@@ -57,12 +57,26 @@ Docker shortcuts:
 
 ## Development
 
-- Git clone
-    - `git@github.com:imaginarymachines/plugin-machine-cli.git`
-- Install
-    - `npm i`
-- Run a command
-    - `node bin/cli plugin add`
-    - Use `--appUrl` to change URL of server
-- Run tests
-    - `yarn test`
+
+### Required
+
+- Node.js 14+
+
+## Commands
+
+
+  - `npm start`
+    - run cli
+  - `npm run dev`
+    - run force debug cli
+  - `npm run type-check`
+    - run type-check
+  - `npm run build`
+    - run swc
+      - this only development, not production
+  - `npm run test`
+    - launches test runner by watch mode
+  - `npm run test:ci`
+    - Runs tests for CI, IE once, not a watcher.
+  - `npm run coverage`
+    - ~~get coverage report~~

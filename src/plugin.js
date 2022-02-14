@@ -1,3 +1,5 @@
+import { exit } from 'process';
+
 const arg = require('arg');
 const inquirer = require('inquirer');
 const { getAuthToken, getPluginDir, getPluginMachineJson,appUrl,apiUrl } = require( './lib/config');
@@ -27,6 +29,7 @@ export const pluginMachineApi = async (token) => {
 
   //Get the plugin machine json file for a saved plugin
   async function getPluginMachineJson(pluginId){
+    console.log({url: apiUrl(`/plugins/${pluginId}/code`)})
     return fetch(
       apiUrl(`/plugins/${pluginId}/code`),
       {
@@ -36,7 +39,8 @@ export const pluginMachineApi = async (token) => {
     ).catch( e => {
       error(`Error getting plugin machine json for plugin ${pluginId}`);
       console.log(e);
-    }).then( r => r.json() ).then(r => {
+    }).then( r => r.json() )
+    .then( r => {
       return r;
     })
   }
@@ -93,16 +97,6 @@ export const pluginMachineApi = async (token) => {
       formdata.append("zip", fileName, "/C:/Users/jpoll/Downloads/arms.zip");
       formdata.append("version", version);
 
-      let requestOptions = {
-        method: 'POST',
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          //If
-          "Content-Type": "multipart/form-data",
-        },
-        body: formdata,
-        redirect: 'follow'
-      };
 
     return fetch(url, {
       method: 'POST',
@@ -222,6 +216,7 @@ async function promptForFeature(options,features) {
   }
   const getFeatureChoices = () => {
     return Object.keys(features).map(feature => {
+      console.log(feature);
       return {
         name: features[feature].feature.singular,
         value: feature,
@@ -412,12 +407,13 @@ export async function cli(args) {
   const pluginDir = options.pluginDir || getPluginDir();
   let pluginMachineJson = getPluginMachineJson(pluginDir,{
     //Allow app/api URL to be overridden from --appUrl flag
-    appUrl:options.appUrl,
+    //appUrl:options.appUrl,
+    appUrl : 'https://minor.pluginmachine.dev',
   });
   const pluginMachine = await pluginMachineApi(
     checkLogin(options.token || getAuthToken(pluginDir)),
   );
-  console.log({options})
+
 
   switch (options.command) {
     case 'config':
@@ -425,7 +421,7 @@ export async function cli(args) {
         pluginDir,
         options.pluginId || pluginMachineJson.pluginId,
         pluginMachine
-      );
+      ).catch((e) => error(e));
       break;
     case 'zip':
       pluginMachineJson = validatePluginJson(pluginMachineJson);
@@ -442,10 +438,10 @@ export async function cli(args) {
       break;
     case 'add':
       pluginMachineJson = validatePluginJson(pluginMachineJson);
-      const rules = require( './data/rules.json');
-      const features = require( './data/features.json');
-      options = await promptForFeature(options,features);
-      options = await promptForFeatureRules(options,rules);
+      const rules =  require( './data/rules')
+      const features = require( './data/features');
+      options = await promptForFeature(options,features.default);
+      options = await promptForFeatureRules(options,rules.default);
       await handleAddFeature(
         pluginDir,pluginMachine,pluginMachineJson,options
       );

@@ -1,10 +1,10 @@
 const arg = require('arg');
 const inquirer = require('inquirer');
 const { getAuthConfig, updateAuthConfig } =  require('./lib/config');
-const {
+import {
   info,
   success
-} = require('./lib/log');
+} from './lib/log';
 
 function parseArgumentsIntoOptions(rawArgs) {
   //https://www.npmjs.com/package/arg
