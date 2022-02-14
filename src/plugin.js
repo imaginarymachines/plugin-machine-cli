@@ -417,7 +417,8 @@ export async function cli(args) {
   const pluginMachine = await pluginMachineApi(
     checkLogin(options.token || getAuthToken(pluginDir)),
   );
-  console.log({options})
+  console.log({options});
+  return;
 
   switch (options.command) {
     case 'config':

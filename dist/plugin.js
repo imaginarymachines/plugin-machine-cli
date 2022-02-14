@@ -363,6 +363,7 @@ async function cli(args) {
     console.log({
         options
     });
+    return;
     switch(options.command){
         case 'config':
             await handleConfig(pluginDir, options.pluginId || pluginMachineJson.pluginId, pluginMachine);

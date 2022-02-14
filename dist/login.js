@@ -4,10 +4,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.doLogin = doLogin;
 exports.cli = cli;
+var _log = require("./lib/log");
 const arg = require('arg');
 const inquirer = require('inquirer');
 const { getAuthConfig , updateAuthConfig  } = require('./lib/config');
-const { info , success  } = require('./lib/log');
 function parseArgumentsIntoOptions(rawArgs) {
     //https://www.npmjs.com/package/arg
     const args = arg({
@@ -41,13 +41,13 @@ async function doLogin(token) {
     const config = updateAuthConfig({
         token
     });
-    success(`Logged in with token: ${token}`);
+    (0, _log).success(`Logged in with token: ${token}`);
 }
 async function cli(args) {
     let options = parseArgumentsIntoOptions(args);
     if (options.c) {
         const config = getAuthConfig();
-        info(config);
+        (0, _log).info(config);
         return;
     }
     options = await promptForMissingOptions(options);
