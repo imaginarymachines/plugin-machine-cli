@@ -17,6 +17,7 @@ export const pluginMachineApi = async (token) => {
 
   const fetch = require('isomorphic-fetch');
   const fs = require( 'fs');
+  const path = require('path');
   const headers = {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${token}`,
@@ -85,49 +86,35 @@ export const pluginMachineApi = async (token) => {
       });
     },
     //upoad a new version
-    uploadVersion: async (pluginMachineJson,version) => {
+    uploadVersion: async (pluginMachineJson,version,pluginDir) => {
       const url = "https://minor.pluginmachine.dev/api/plugins/1/versions";
       const {pluginId,slug} = pluginMachineJson;
       const fileName = `${slug}.zip`;
-
       let formdata = new FormData();
-      formdata.append("zip", fileName, "/C:/Users/jpoll/Downloads/arms.zip");
+      formdata.append("zip", fileName, path.join(pluginDir,fileName));
       formdata.append("version", version);
-
-      let requestOptions = {
-        method: 'POST',
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          //If
-          "Content-Type": "multipart/form-data",
-        },
-        body: formdata,
-        redirect: 'follow'
-      };
-
     return fetch(url, {
       method: 'POST',
       headers: {
         "Authorization": `Bearer ${token}`,
-        //With this for Content-Type, I get:
-        // {"error":{"zip":["The zip field is required."]}}
-        // If I remove this, I get: {"error":{"zip":["The zip must be a file of type: zip."]}}
-       "Content-Type": "multipart/form-data",
+        "Accept-Encoding": "gzip, deflate, br",
+       //"Content-Type": "multipart/form-data",
       },
       body: formdata,
-      redirect: 'follow'
     })
-      .then(response => response.text())
+      .then(response => response.json())
       .then(r => {
         switch(r.status){
           case 400:
             return r.json().then(r => {
+              loopErrors(r);
               error(`Error uploading a ${version} update for plugin ${pluginId}`);
               console.log(r.error);
             });
           case 401:
             console.log(headers);
             info(token);
+            loopErrors(r);
             error(`Error uploading a ${version} update for plugin ${pluginId}`);
             throw new Error(r.statusText || 'Unauthorized');
           case 201:
@@ -140,7 +127,11 @@ export const pluginMachineApi = async (token) => {
             }
           default:
             console.log(r);
-            throw new Error(r.statusText || 'Unknown error');
+            if( 'string' === typeof r){
+              r = JSON.parse(r);
+            }
+            loopErrors(r);
+            throw new Error(`Error uploading a ${version} update for plugin ${pluginId}`);
         }
 
 
@@ -247,7 +238,7 @@ async function promptForZipOptions(options) {
   const questions = [{
     type: 'list',
     name: 'version',
-    message: 'Would you like to create a new release?',
+    message: 'Would you like to upload a new release?',
     choices:[
       {
         name: 'NO',
@@ -466,10 +457,10 @@ export async function cli(args) {
         await handleZip(pluginDir,pluginMachineJson);
         if( options.version){
           try {
-            await pluginMachine.uploadVersion(pluginMachineJson,options.version);
+            await pluginMachine.uploadVersion(pluginMachineJson,options.version,pluginDir);
           } catch (error) {
               console.log(error);
-
+              exitError('Could not upload version');
           }
         }
         break;

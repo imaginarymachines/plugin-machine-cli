@@ -1,24 +1,31 @@
 {
-  "slug": "coffee",
-  "pluginId": 170,
-  "buildId": 184,
+  "slug": "build-with-two-admin-pages",
+  "pluginId": 1,
+  "buildId": 16,
   "entryPoints": {
-    "adminPages": [],
+    "adminPages": [
+      "build-with-two-admin-pages-0",
+      "build-with-two-admin-pages-1"
+    ],
     "blocks": []
   },
   "buildIncludes": [
-    "coffee.php",
+    "build-with-two-admin-pages.php",
     "readme.txt",
     "php",
     "vendor",
-    "build"
+    "build",
+    "admin/build-with-two-admin-pages-0/init.php",
+    "admin/build-with-two-admin-pages-1/init.php"
   ],
   "buildSteps": {
     "dev": [
-      "composer install"
+      "yarn",
+      "yarn start"
     ],
     "prod": [
-      "composer install --no-dev"
+      "yarn",
+      "yarn build"
     ]
   }
 }
