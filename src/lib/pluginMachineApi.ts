@@ -39,10 +39,13 @@ const pluginMachineApi = async (token:string) => {
           method: 'GET',
           headers,
         }
+              // @ts-ignore
       ).catch( e => {
         error(`Error getting plugin machine json for plugin ${pluginId}`);
         console.log(e);
+              // @ts-ignore
       }).then( r => r.json() )
+          // @ts-ignore
       .then( r => {
         return r;
       })

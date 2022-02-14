@@ -1,6 +1,6 @@
 {
   "name": "plugin-machine",
-  "version": "0.5.12",
+  "version": "0.5.14",
   "description": "A CLI for Plugin Machine",
   "homepage": "https://pluginmachine.com/cli",
   "repository": "github:imaginarymachines/plugin-machine-cli",
@@ -13,13 +13,19 @@
   },
   "files": [
     "dist/data",
-    "dist/data"
+    "dist/commands",
+    "dist/lib",
+    "dist/index.js",
+    "dist/index.map.js",
+    "package.json"
   ],
   "scripts": {
     "start": "npm run build-ts && node dist/index.js",
     "dev": "npm run build-ts && node --inspect-brk dist/index.js",
     "type-check": "tsc --noEmit && eslint .",
-    "build": "npm run type-check && npm run build-ts",
+    "_build": "npm run type-check && npm run build-ts && npm run build:copy",
+    "build": "npm run build-ts && npm run build:copy",
+    "build:copy":"cp package.json dist/package.json",
     "build-ts": "rm -Rf dist/ && swc src/ --config-file .swcrc_build -d dist/",
     "test": "jest --watch",
     "test:ci": "jest --ci",

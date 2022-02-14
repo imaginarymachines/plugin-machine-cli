@@ -6,7 +6,7 @@ const { homedir } = require( 'os' );
 import { I_PluginMachineJson } from "./pluginMachineApi";
 let pluginMachineJson : I_PluginMachineJson;
 
-
+const highlight = (string:string) => string;
 //Get current pluginMachine.json file
 export  const getPluginMachineJson = (pluginDir:string, opts = {} ) => {
     if( ! pluginMachineJson ){
@@ -20,8 +20,11 @@ export  const getPluginMachineJson = (pluginDir:string, opts = {} ) => {
     }
 
     pluginMachineJson = Object.assign(pluginMachineJson, opts);
+    //@ts-ignore
     pluginMachineJson.pluginId = parseInt(pluginMachineJson.pluginId, 10);
+       //@ts-ignore
     pluginMachineJson.buildId = parseInt(pluginMachineJson.buildId, 10);
+        //@ts-ignore
     if( ! pluginMachineJson.hasOwnProperty('appUrl')|| false == pluginMachineJson.appUrl ){
       pluginMachineJson.appUrl = 'https://pluginmachine.app';
     }
@@ -45,7 +48,7 @@ export const getPluginDir = () => {
 }
 
 //update auth.json contents
-export  const updateAuthConfig = (newData) => {
+export  const updateAuthConfig = (newData:any) => {
     // read existing config
     const currentData = readAuthConfigFile();
     if( ! currentData ){
@@ -90,7 +93,7 @@ export  const error = (message:string) => message;
 
 //Write to auth.json
 //@see https://github.com/vercel/vercel/blob/f18bca97187d17c050695a7a348b8ae02c244ce9/packages/cli/src/util/config/files.ts#L59-L91
-export  const writeToAuthConfigFile = (authConfig) => {
+export  const writeToAuthConfigFile = (authConfig:any) => {
     if (authConfig.skipWrite) {
       return;
     }
@@ -100,6 +103,7 @@ export  const writeToAuthConfigFile = (authConfig) => {
         flags: 'w+',
       });
     } catch (err) {
+      // @ts-ignore
       if (err.code === 'EPERM') {
         console.error(
           error(
@@ -109,14 +113,13 @@ export  const writeToAuthConfigFile = (authConfig) => {
           )
         );
         process.exit(1);
+              // @ts-ignore
       } else if (err.code === 'EBADF') {
-        console.error(
           error(
             `Not able to create ${highlight(
               AUTH_CONFIG_FILE_PATH
             )} (bad file descriptor).`
           )
-        );
         process.exit(1);
       }
 
@@ -126,7 +129,7 @@ export  const writeToAuthConfigFile = (authConfig) => {
 
 
 // Returns whether a directory exists
-export const isDirectory = (path:string): bool => {
+export const isDirectory = (path:string) => {
     try {
         return fs.lstatSync(path).isDirectory();
     } catch (_) {
