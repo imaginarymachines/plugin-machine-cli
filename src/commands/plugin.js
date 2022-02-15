@@ -10,7 +10,7 @@ import {
 } from '../lib/log';
 
 import pluginMachineApi from '../lib/pluginMachineApi';
-
+import {FF_ZIP_UPLOADS,isFeatureFlagEnabled}from '../lib/flags'
 
 
 function parseArgumentsIntoOptions(rawArgs) {
@@ -253,6 +253,9 @@ export async function cli(args) {
       .then( () => success('Plugin Machine config saved'));
       break;
     case 'upload':
+          if( !isFeatureFlagEnabled(FF_ZIP_UPLOADS)){
+            throw new Error('plugin upload command is disabled for now');
+          }
           try {
               await pluginMachine.uploadVersion(
                   pluginMachineJson, options.version,pluginDir
@@ -263,9 +266,13 @@ export async function cli(args) {
           break;
     case 'zip':
           pluginMachineJson = validatePluginJson(pluginMachineJson);
-          options = await promptForZipOptions(options);
+          //Offer to upload the zip file, if enabled
+          if( isFeatureFlagEnabled(FF_ZIP_UPLOADS)){
+            options = await promptForZipOptions(options);
+          }
           await handleZip(pluginDir, pluginMachineJson);
-          if (options.version) {
+          //Upload zip if enabled, and chosen
+          if (isFeatureFlagEnabled(FF_ZIP_UPLOADS) && options.version) {
               try {
                   await pluginMachine.uploadVersion(
                       pluginMachineJson, options.version,pluginDir
@@ -275,7 +282,6 @@ export async function cli(args) {
               }
           }
     break;
-
     case 'add':
       pluginMachineJson = validatePluginJson(pluginMachineJson);
       const rules =  require( './data/rules')
