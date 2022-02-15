@@ -154,7 +154,7 @@ async function handleConfig(pluginDir,pluginId,pluginMachine) {
  * Hander for `plugin-machine plugin zip` command
  */
 async function handleZip(pluginDir,pluginMachineJson){
-  const {makeZip} = require('./zip');
+  const {makeZip} = require('../lib/zip');
   await makeZip(pluginDir,pluginMachineJson);
 }
 
