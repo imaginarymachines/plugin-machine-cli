@@ -12,6 +12,10 @@ export interface I_PluginMachineJson {
   buildIncludes: string[];
   slug:string;
   appUrl?: string;
+  buildSteps?: {
+    dev: string[],
+    prod: string[],
+  }
 }
 /**
  * Plugin Machine API client

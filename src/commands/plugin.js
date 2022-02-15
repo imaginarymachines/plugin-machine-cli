@@ -11,7 +11,8 @@ import {
 
 import pluginMachineApi from '../lib/pluginMachineApi';
 import {FF_ZIP_UPLOADS,isFeatureFlagEnabled}from '../lib/flags'
-
+import { exitError } from '../lib/docker/exit';
+import {createDockerApi}from '../lib/docker/docker';
 
 function parseArgumentsIntoOptions(rawArgs) {
 //https://www.npmjs.com/package/arg
@@ -153,8 +154,9 @@ async function handleConfig(pluginDir,pluginId,pluginMachine) {
 /**
  * Hander for `plugin-machine plugin zip` command
  */
-async function handleZip(pluginDir,pluginMachineJson){
-  const {makeZip} = require('../lib/zip');
+async function handleBuildAndZip(pluginDir,pluginMachineJson,dockerApi){
+  const {makeZip,buildPlugin} = require('../lib/zip');
+  await buildPlugin(pluginMachineJson,'prod',dockerApi);
   await makeZip(pluginDir,pluginMachineJson);
 }
 
@@ -234,14 +236,12 @@ export async function cli(args) {
   let options = parseArgumentsIntoOptions(args);
   const pluginDir = options.pluginDir || getPluginDir();
   let pluginMachineJson = getPluginMachineJson(pluginDir,{
-    //Allow app/api URL to be overridden from --appUrl flag
-    //appUrl:options.appUrl,
-    appUrl : 'https://minor.pluginmachine.dev',
+    appUrl:options.appUrl ? options.appUrl : 'https://pluginmachine.app',
   });
   const pluginMachine = await pluginMachineApi(
     checkLogin(options.token || getAuthToken(pluginDir)),
   );
-
+  const dockerApi = await createDockerApi({}).catch(e => {exitError({errorMessage: 'Error connecting to docker'})});
 
   switch (options.command) {
     case 'config':
@@ -270,7 +270,7 @@ export async function cli(args) {
           if( isFeatureFlagEnabled(FF_ZIP_UPLOADS)){
             options = await promptForZipOptions(options);
           }
-          await handleZip(pluginDir, pluginMachineJson);
+          await handleBuildAndZip(pluginDir, pluginMachineJson,dockerApi);
           //Upload zip if enabled, and chosen
           if (isFeatureFlagEnabled(FF_ZIP_UPLOADS) && options.version) {
               try {
@@ -284,8 +284,8 @@ export async function cli(args) {
     break;
     case 'add':
       pluginMachineJson = validatePluginJson(pluginMachineJson);
-      const rules =  require( './data/rules')
-      const features = require( './data/features');
+      const rules =  require( '../data/rules')
+      const features = require( '../data/features');
       options = await promptForFeature(options,features.default);
       options = await promptForFeatureRules(options,rules.default);
       await handleAddFeature(

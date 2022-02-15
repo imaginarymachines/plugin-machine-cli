@@ -1,6 +1,31 @@
+import { I_DockerApi } from "./docker/docker";
+import { exitError } from "./docker/exit";
+import { I_PluginMachineJson } from "./pluginMachineApi";
 
-export async function makeZip(pluginDir,pluginMachineJson) {
-  function isDir(path) {
+/**
+ * Run plugin build steps
+ */
+export async function buildPlugin(
+  pluginMachineJson: I_PluginMachineJson,
+  env: 'prod'|'dev',
+  docker: I_DockerApi,
+  ){
+    if( pluginMachineJson.buildSteps){
+      if( pluginMachineJson.buildSteps[env]){
+      pluginMachineJson.buildSteps[env].forEach(
+        async(step) => {
+          await docker.run(step).catch(exitError);
+        }
+      )
+      }
+    }
+
+}
+/**
+ * Make a zip file of a plugin.
+ */
+export async function makeZip(pluginDir:string,pluginMachineJson: I_PluginMachineJson) {
+  function isDir(path:string) {
       try {
           var stat = fs.lstatSync(path);
           return stat.isDirectory();
@@ -9,7 +34,6 @@ export async function makeZip(pluginDir,pluginMachineJson) {
           return false;
       }
   }
-
 
   const fs = require("fs");
   const archiver = require("archiver");
@@ -24,6 +48,7 @@ export async function makeZip(pluginDir,pluginMachineJson) {
     console.log(archive.pointer() + " total bytes");
   });
 
+  //@ts-ignore
   archive.on("error", function (err) {
     throw err;
   });
