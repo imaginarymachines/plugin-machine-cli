@@ -10,15 +10,21 @@ export async function buildPlugin(
   env: 'prod'|'dev',
   docker: I_DockerApi,
   ){
-    if( pluginMachineJson.buildSteps){
-      if( pluginMachineJson.buildSteps[env]){
-      pluginMachineJson.buildSteps[env].forEach(
-        async(step) => {
-          await docker.run(step).catch(exitError);
+
+    return new Promise( async (resolve) => {
+      if( pluginMachineJson.buildSteps){
+        if( pluginMachineJson.buildSteps[env]){
+        pluginMachineJson.buildSteps[env].forEach(
+          async(step) => {
+            await docker.run(step).catch(exitError);
+          }
+        )
         }
-      )
       }
-    }
+      resolve(true);
+  });
+
+
 
 }
 /**
