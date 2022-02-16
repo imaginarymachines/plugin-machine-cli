@@ -137,7 +137,6 @@ const pluginMachineApi = async (token:string) => {
                   console.log(r.error);
                 });
               case 401:
-                console.log(headers);
                 info(token);
                 error(`Error uploading a ${version} update for plugin ${pluginId}`);
                 throw new Error(r.statusText || 'Unauthorized');

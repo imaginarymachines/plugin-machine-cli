@@ -1,8 +1,9 @@
-import docker from '../lib/docker/docker';
+import {createDockerApi} from '../lib/docker/docker';
 import shell from 'shelljs';
 import {
     info,warning
 } from '../lib/log';
+import { exitError } from '../lib/docker/exit';
 
 
 
@@ -17,7 +18,7 @@ import {
         shell.exit(1);
     }
     try {
-        const dockerApi = await docker.api({});
+        const dockerApi = await createDockerApi({}).catch(err => console.log(err)).then(api => api);
         const i = 'docker' == args[2] ? 3: 2;
         const service = args[i];
         const command  = args.slice(i).join(' ');
@@ -25,10 +26,10 @@ import {
             ['npm', 'yarn'].includes(service) ? 'node' : service
         }`);
         if( ['node','npm', 'yarn'].includes(service) ){
-            info( `Using Node version: ${dockerApi.nodeVersion}`);
+            info( `Using Node version: ${dockerApi.opts.nodeVersion}`);
         }
         if( ['composer'].includes(service) ){
-            info( `Using PHP version: ${dockerApi.phpVersion}`);
+            info( `Using PHP version: ${dockerApi.opts.phpVersion}`);
         }
 
         switch (service) {

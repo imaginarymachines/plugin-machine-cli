@@ -34,7 +34,7 @@ export interface I_DockerApi {
     testWp: () => Promise<void>,
     dockerV:()  => Promise<void>,
     kill:() => Promise<void>,
-    args: I_DockerApiOpts,
+    opts: I_DockerApiOpts,
 }
 
 /**
@@ -142,7 +142,7 @@ export const createDockerApi = async (opts:I_DockerApiOpts): Promise<I_DockerApi
             kill: async () => {
                 await runCommand("docker kill $(docker ps -q)");
             },
-            args
+            opts:args
         };
         return api;
     } catch (e:any) {

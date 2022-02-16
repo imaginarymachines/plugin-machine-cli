@@ -45,7 +45,6 @@ async function promptForFeature(options,features) {
   }
   const getFeatureChoices = () => {
     return Object.keys(features).map(feature => {
-      console.log(feature);
       return {
         name: features[feature].feature.singular,
         value: feature,
