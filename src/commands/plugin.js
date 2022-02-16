@@ -156,7 +156,7 @@ async function handleConfig(pluginDir,pluginId,pluginMachine) {
 async function handleBuildAndZip(pluginDir,pluginMachineJson,dockerApi){
   const {makeZip,buildPlugin} = require('../lib/zip');
   await buildPlugin(pluginMachineJson,'prod',dockerApi)
-  .catch(err => {console.log({err})
+  .catch(err => {console.log({err})})
   .then(async () => {
     await makeZip(pluginDir,pluginMachineJson);
   });
