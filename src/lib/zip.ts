@@ -30,7 +30,10 @@ export async function buildPlugin(
 /**
  * Make a zip file of a plugin.
  */
-export async function makeZip(pluginDir:string,pluginMachineJson: I_PluginMachineJson) {
+export async function makeZip(
+  pluginDir:string,
+  pluginMachineJson: I_PluginMachineJson
+) {
   function isDir(path:string) {
       try {
           var stat = fs.lstatSync(path);

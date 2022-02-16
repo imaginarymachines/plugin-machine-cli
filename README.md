@@ -36,8 +36,16 @@ All `plugin` commands will assume that the current directory is the root directo
 
 - `plugin-machine plugin add`
 
+#### Build plugin
+
+This command runs any npm or composer commands found in pluginMachine.json's "buildSteps" key.
+
+- Prepare for a production-ready, installable zip.
+  - `plugin-machine plugin build`
 #### ZIP plugin for release
-- `plugin-machine plugin zip`
+- Zip files, based on pluginMachine.json's "buildIncludes" key.
+  - `plugin-machine plugin zip`
+
 
 ### Debug
 - Output some debug information

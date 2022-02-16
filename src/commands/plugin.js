@@ -11,7 +11,7 @@ import {
 
 import pluginMachineApi from '../lib/pluginMachineApi';
 import {FF_ZIP_UPLOADS,isFeatureFlagEnabled}from '../lib/flags'
-import { exitError } from '../lib/docker/exit';
+import { exitError, exitSuccess } from '../lib/docker/exit';
 import {createDockerApi}from '../lib/docker/docker';
 
 function parseArgumentsIntoOptions(rawArgs) {
@@ -150,17 +150,6 @@ async function handleConfig(pluginDir,pluginId,pluginMachine) {
   return true;
 }
 
-/**
- * Hander for `plugin-machine plugin zip` command
- */
-async function handleBuildAndZip(pluginDir,pluginMachineJson,dockerApi){
-  const {makeZip,buildPlugin} = require('../lib/zip');
-  await buildPlugin(pluginMachineJson,'prod',dockerApi)
-  .catch(err => {console.log({err})})
-  .then(async () => {
-    await makeZip(pluginDir,pluginMachineJson);
-  });
-}
 
 /**
  * Hander for `plugin-machine plugin add` command
@@ -266,13 +255,26 @@ export async function cli(args) {
               console.log(error);
           }
           break;
+    case 'build':
+          const {buildPlugin} = require('../lib/zip');
+          await buildPlugin(pluginMachineJson,'prod',dockerApi)
+          .catch(err => {console.log({err})})
+          .then(async () => {
+              exitSuccess({message: 'Plugin built'});
+          });
+    break;
     case 'zip':
           pluginMachineJson = validatePluginJson(pluginMachineJson);
           //Offer to upload the zip file, if enabled
           if( isFeatureFlagEnabled(FF_ZIP_UPLOADS)){
             options = await promptForZipOptions(options);
           }
-          await handleBuildAndZip(pluginDir, pluginMachineJson,dockerApi);
+          const {makeZip} = require('../lib/zip');
+          await makeZip(pluginDir,pluginMachineJson)
+          .catch(err => {console.log({err})})
+          .then(async () => {
+              exitSuccess({message: 'Plugin zipped'});
+          });
           //Upload zip if enabled, and chosen
           if (isFeatureFlagEnabled(FF_ZIP_UPLOADS) && options.version) {
               try {
