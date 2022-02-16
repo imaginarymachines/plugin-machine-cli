@@ -258,10 +258,10 @@ export async function cli(args) {
     case 'build':
           const {buildPlugin} = require('../lib/zip');
           await buildPlugin(pluginMachineJson,'prod',dockerApi)
-          .catch(err => {console.log({err})})
-          .then(async () => {
-              exitSuccess({message: 'Plugin built'});
-          });
+            .catch(err => {console.log({err})})
+            .then(async () => {
+                exitSuccess({message: 'Plugin built'});
+            });
     break;
     case 'zip':
           pluginMachineJson = validatePluginJson(pluginMachineJson);

@@ -10,7 +10,6 @@ export async function buildPlugin(
   env: 'prod'|'dev',
   docker: I_DockerApi,
   ){
-
     return new Promise( async (resolve) => {
       if( pluginMachineJson.buildSteps){
         if( pluginMachineJson.buildSteps[env]){
@@ -22,10 +21,7 @@ export async function buildPlugin(
         }
       }
       resolve(true);
-  });
-
-
-
+    });
 }
 /**
  * Make a zip file of a plugin.
@@ -52,31 +48,39 @@ export async function makeZip(
   const archive = archiver("zip");
 
   console.log("Zipping!");
-  output.on("close", function () {
-    console.log("Zipped!");
-    console.log(archive.pointer() + " total bytes");
-  });
 
-  //@ts-ignore
-  archive.on("error", function (err) {
-    throw err;
-  });
+  return new Promise( async (resolve,reject) => {
+    output.on("close", function () {
+      console.log("Zipped!");
+      console.log(archive.pointer() + " total bytes");
+      resolve(true);
+    });
 
-  archive.pipe(output);
+    //@ts-ignore
+    archive.on("error", function (err) {
+      console.log({err});
+      reject(false);
+    });
 
-  buildIncludes.forEach((name) => {
-      if (fs.existsSync(`${pluginDir}/${name}`)) {
-        if( isDir (name) ) {
-          archive.directory(`${name}/`, name);
-        }else{
-          archive.append(fs.createReadStream(`${pluginDir}/${name}`), {
-            name,
-          });
+    archive.pipe(output);
+
+    buildIncludes.forEach((name) => {
+        if (fs.existsSync(`${pluginDir}/${name}`)) {
+          if( isDir (name) ) {
+            archive.directory(`${name}/`, name);
+          }else{
+            archive.append(fs.createReadStream(`${pluginDir}/${name}`), {
+              name,
+            });
+          }
         }
-      }
+
+    });
+
+
+    archive.finalize();
 
   });
 
 
-  archive.finalize();
 }
