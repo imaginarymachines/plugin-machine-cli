@@ -29,12 +29,10 @@ switch(process.argv[2]){
     case 'debug':
         info( 'DEBUG INFO:')
         require('./commands/debug.js').cli(process.argv);
-        break;
     break;
     default:
         error( `ERROR: ${process.argv[2]} Command not found`);
-
-
+    break;
 }
 
 
