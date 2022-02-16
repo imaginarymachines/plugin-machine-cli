@@ -1,4 +1,4 @@
-import {info,success,error} from './log';
+import {info} from './log';
 import {existSuccess,exitError} from './exit';
 
 /**
@@ -20,7 +20,7 @@ export default function wp(wp){
          * Reset WordPress Database
          */
          resetWordPress:async () => {
-            log('Resetting WordPress');
+            info('Resetting WordPress');
             return wp('db reset --yes')
                 .then(existSuccess).catch(exitError);
         },
