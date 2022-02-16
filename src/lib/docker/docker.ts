@@ -86,7 +86,7 @@ export const createDockerApi = async (opts:I_DockerApiOpts): Promise<I_DockerApi
         }
         //See: https://github.com/prooph/docker-files/tree/master/composer
         //Removed -it flag to make it work.
-        return runCommand(`docker run --rm  --volume "$(pwd)":/app prooph/composer:${phpVersion} ${command}`);
+        return runCommand(`docker run --rm  --volume $(pwd):/app prooph/composer:${phpVersion} ${command}`);
     };
 
     //Run a WP CLI command in Docker containr
@@ -101,7 +101,7 @@ export const createDockerApi = async (opts:I_DockerApiOpts): Promise<I_DockerApi
 
     const node = async (command:string) => {
         //See: https://gist.github.com/ArtemGordinsky/b79ea473e8bc6f67943b
-        command = `docker run -v "$PWD":/usr/src/app -w /usr/src/app node:${nodeVersion}-alpine sh -c '${command}'`;
+        command = `docker run -v $PWD:/usr/src/app -w /usr/src/app node:${nodeVersion}-alpine sh -c '${command}'`;
         return runCommand( command );
     };
     try {
