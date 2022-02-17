@@ -20,6 +20,7 @@ import shell from   'shelljs'
 type PHP_VERSIONS = '7.3'| '7.4'|'8.0'|'8.1';
 type NODE_VERSIONS = '12'| '14'|'16'|'17';
 export interface I_DockerApiOpts {
+    pluginDir:string;
     wpcli?:string,
     phpVersion?:PHP_VERSIONS;
     nodeVersion?:NODE_VERSIONS;
@@ -56,7 +57,7 @@ export const createDockerApi = async (opts:I_DockerApiOpts): Promise<I_DockerApi
         },
         opts
     );
-    let {wpcli,phpVersion,nodeVersion,phpunitCommand} = args;
+    let {wpcli,phpVersion,nodeVersion,phpunitCommand,pluginDir} = args;
     if( phpVersion && phpVersion.length > 3 ){
         phpVersion = phpVersion.substring(0,3)as PHP_VERSIONS;
     }
@@ -86,7 +87,9 @@ export const createDockerApi = async (opts:I_DockerApiOpts): Promise<I_DockerApi
         }
         //See: https://github.com/prooph/docker-files/tree/master/composer
         //Removed -it flag to make it work.
-        return runCommand(`docker run --rm  --volume $(pwd):/app prooph/composer:${phpVersion} ${command}`);
+        command = `docker run --rm  --volume ${pluginDir}:/app prooph/composer:${phpVersion} ${command}`;
+        info( `Running composer command: ${command}`);
+        return runCommand(command);
     };
 
     //Run a WP CLI command in Docker containr
@@ -99,9 +102,11 @@ export const createDockerApi = async (opts:I_DockerApiOpts): Promise<I_DockerApi
         return runCommand(command);
     };
 
+    //Run a Node command in Docker container
     const node = async (command:string) => {
         //See: https://gist.github.com/ArtemGordinsky/b79ea473e8bc6f67943b
-        command = `docker run -v $PWD:/usr/src/app -w /usr/src/app node:${nodeVersion}-alpine sh -c '${command}'`;
+        command = `docker run -v ${pluginDir}:/usr/src/app -w /usr/src/app node:${nodeVersion}-alpine sh -c '${command}'`;
+        info( `Running node command: ${command}`);
         return runCommand( command );
     };
     try {
