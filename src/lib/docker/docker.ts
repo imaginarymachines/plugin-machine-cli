@@ -23,7 +23,7 @@ export interface I_DockerApiOpts {
     wpcli?:string,
     phpVersion?:PHP_VERSIONS;
     nodeVersion?:NODE_VERSIONS;
-    phpunitCommand?: `docker-compose run phpunit`,
+    phpunitCommand?: 'docker-compose run phpunit',
 }
 
 export interface I_DockerApi {
@@ -47,12 +47,12 @@ export interface I_DockerApi {
  *  @param {string} opts.phpunitCommand Optional. The command to run for PHPUnit. Default is "docker-compose run phpunit"
  */
 export const createDockerApi = async (opts:I_DockerApiOpts): Promise<I_DockerApi> => {
-    let args : I_DockerApiOpts = Object.assign(
+    const args : I_DockerApiOpts = Object.assign(
         {
             wpcli:'docker-compose run wpcli',
             phpVersion:'7.4',
             nodeVersion: 16,
-            phpunitCommand: `docker-compose run phpunit`,
+            phpunitCommand: 'docker-compose run phpunit',
         },
         opts
     );
@@ -67,7 +67,7 @@ export const createDockerApi = async (opts:I_DockerApiOpts): Promise<I_DockerApi
     if( nodeVersion && nodeVersion.length > 2 ){
         nodeVersion = nodeVersion.substring(0,2) as NODE_VERSIONS;
     }
-    let nodeVersions = ['12','14','16','17'];
+    const nodeVersions = ['12','14','16','17'];
     if(nodeVersion && ! [...nodeVersions, ...nodeVersions.map( v => parseInt(v,10) )].includes(nodeVersion) ){
         info(nodeVersion);
         exitError({errorMessage:`${nodeVersion} is not a supported Node version.`});
@@ -75,7 +75,7 @@ export const createDockerApi = async (opts:I_DockerApiOpts): Promise<I_DockerApi
 
     //Util function to check Docker version.
     const dockerV = async () => {
-        return runCommand(`docker version --format '{{.Server.Version}}'`);
+        return runCommand('docker version --format \'{{.Server.Version}}\'');
     }
 
     //Run a composer command in Docker container
@@ -140,7 +140,7 @@ export const createDockerApi = async (opts:I_DockerApiOpts): Promise<I_DockerApi
             dockerV,
             //Kill all running containers on the host
             kill: async () => {
-                await runCommand("docker kill $(docker ps -q)");
+                await runCommand('docker kill $(docker ps -q)');
             },
             opts:args
         };

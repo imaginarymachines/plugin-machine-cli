@@ -17,13 +17,13 @@ describe('getPluginMachineJson', () => {
 
     it( 'overides pluginId' , () => {
         const pluginMachineJson = getPluginMachineJson(pluginDir,{pluginId: 4312});
-        expect(pluginMachineJson.pluginId).toEqual(4312);
+        expect(pluginMachineJson.pluginId).toBe(4312);
         expect(Number.isNaN(pluginMachineJson.buildId)).toBe(false)
     });
 
     it( 'Returns buildId' , () => {
         const pluginMachineJson = getPluginMachineJson(pluginDir,{buildId: 412});
-        expect(pluginMachineJson.buildId).toEqual(412);
+        expect(pluginMachineJson.buildId).toBe(412);
         expect(Number.isNaN(pluginMachineJson.pluginId)).toBe(false)
     });
 
@@ -34,22 +34,22 @@ describe('getPluginMachineJson', () => {
 
 describe( 'appUrl and apiUrl', () => {
     it( 'returns appUrl', () => {
-        expect( typeof getPluginMachineJson(pluginDir).appUrl).toEqual('string');
-        expect( appUrl('/api')).toEqual('https://pluginmachine.app/api');
+        expect( typeof getPluginMachineJson(pluginDir).appUrl).toBe('string');
+        expect( appUrl('/api')).toBe('https://pluginmachine.app/api');
     });
 
     it( 'returns appUrl if provided false for the URL', () => {
-        expect( typeof getPluginMachineJson(pluginDir,{appUrl: false}).appUrl).toEqual('string');
-        expect( appUrl('/api')).toEqual('https://pluginmachine.app/api');
+        expect( typeof getPluginMachineJson(pluginDir,{appUrl: false}).appUrl).toBe('string');
+        expect( appUrl('/api')).toBe('https://pluginmachine.app/api');
     });
 
     it( 'Ovverides app url', () => {
         const pluginMachineJson = getPluginMachineJson(pluginDir, {appUrl: 'http://localhost:3000'})
-        expect( pluginMachineJson.appUrl).toEqual('http://localhost:3000')
-        expect( appUrl('/api')).toEqual('http://localhost:3000/api');
+        expect( pluginMachineJson.appUrl).toBe('http://localhost:3000')
+        expect( appUrl('/api')).toBe('http://localhost:3000/api');
     });
 
     test( 'apiUrl', () => {
-        expect( apiUrl('/spoons')).toEqual('http://localhost:3000/api/v1/spoons');
+        expect( apiUrl('/spoons')).toBe('http://localhost:3000/api/v1/spoons');
     });
 })

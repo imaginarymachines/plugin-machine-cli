@@ -63,7 +63,7 @@ const pluginMachineApi = async (token:string) => {
         return fetch(
           apiUrl(`/plugins/${pluginId}/builds/${buildId}/features`),
           {
-            method: "POST",
+            method: 'POST',
             body: JSON.stringify(data),
             headers,
           }
@@ -91,7 +91,7 @@ const pluginMachineApi = async (token:string) => {
         return fetch(
           apiUrl(`/plugins/${pluginId}/builds/${buildId}/features/${featureId}/code?file=${encodeURI(file)}`),
           {
-            method: "GET",
+            method: 'GET',
           headers,
                     }
         )
@@ -108,19 +108,19 @@ const pluginMachineApi = async (token:string) => {
       uploadVersion: async (pluginMachineJson:any,version:string,pluginDir:string) => {
         const {pluginId,slug} = pluginMachineJson;
         const fileName = `${slug}.zip`;
-        let formdata = new FormData();
-        formdata.append("zip", fileName, path.join(pluginDir,fileName));
+        const formdata = new FormData();
+        formdata.append('zip', fileName, path.join(pluginDir,fileName));
         if( version ){
-          formdata.append("version", version);
+          formdata.append('version', version);
         }
         const url = appUrl(`/api/plugins/${pluginId}/versions`);
         return fetch(url, {
           method: 'POST',
           headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-            "Accept-Encoding": "gzip, deflate",
-            "Accept":"*/*",
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+            'Accept-Encoding': 'gzip, deflate',
+            'Accept':'*/*',
           },
           body: formdata,
           redirect: 'follow'
@@ -168,7 +168,7 @@ const pluginMachineApi = async (token:string) => {
         return fetch(
           pluginApiUrl(`/${pluginId}/versions`),
           {
-            method: "GET",
+            method: 'GET',
             headers,
           }
           //@ts-ignore
@@ -183,7 +183,7 @@ const pluginMachineApi = async (token:string) => {
       //Write a file, with some saftery features
       writeFile: async(pluginDir:string,file:string,fileContents:string) => {
         //Has a path?
-        let split = file.split('/');
+        const split = file.split('/');
         //Create directories if they don't exist
         if( split.length > 1 ) {
           let createDir = pluginDir;

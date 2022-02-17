@@ -3,7 +3,7 @@ const fs = require('fs');
 const { join } = require( 'path' );
 const { homedir } = require( 'os' );
 
-import { I_PluginMachineJson } from "./pluginMachineApi";
+import { I_PluginMachineJson } from './pluginMachineApi';
 let pluginMachineJson : I_PluginMachineJson;
 
 const highlight = (string:string) => string;

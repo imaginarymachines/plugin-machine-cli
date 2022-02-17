@@ -70,7 +70,7 @@ Docker shortcuts:
 
 - Node.js 14+
 
-## Commands
+### Commands
 
 
   - `npm start`
@@ -78,7 +78,9 @@ Docker shortcuts:
   - `npm run dev`
     - run force debug cli
   - `npm run type-check`
-    - run type-check
+    - run type-check and lint
+  - `npm run lint`
+    - run type-check and lint, fixing fixable errors
   - `npm run build`
     - run swc
       - this only development, not production

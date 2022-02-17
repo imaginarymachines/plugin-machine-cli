@@ -24,6 +24,7 @@
     "start": "npm run build && node dist/index.js",
     "dev": "npm run build-ts && node --inspect-brk dist/index.js",
     "type-check": "tsc --noEmit && eslint .",
+    "lint": "tsc --noEmit && eslint . --fix",
     "_build": "npm run type-check && npm run build-ts",
     "build": "npm run build-ts && cp package.json dist/package.json",
     "build-ts": "rm -Rf dist/ && swc src/ --config-file .swcrc_build -d dist/",

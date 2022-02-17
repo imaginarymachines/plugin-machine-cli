@@ -1,7 +1,7 @@
 export const FF_ZIP_UPLOADS = 'FF_ZIP_UPLOADS';
 export const FF_DOCKER_RUNNER = 'FF_DOCKER_RUNNER';
 
-let featureFlags = {
+const featureFlags = {
     FF_ZIP_UPLOADS: false,
     FF_DOCKER_RUNNER: true,
 };

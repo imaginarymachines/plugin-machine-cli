@@ -1,6 +1,6 @@
-import { I_DockerApi } from "./docker/docker";
-import { exitError } from "./docker/exit";
-import { I_PluginMachineJson } from "./pluginMachineApi";
+import { I_DockerApi } from './docker/docker';
+import { exitError } from './docker/exit';
+import { I_PluginMachineJson } from './pluginMachineApi';
 
 /**
  * Run plugin build steps
@@ -32,7 +32,7 @@ export async function makeZip(
 ) {
   function isDir(path:string) {
       try {
-          var stat = fs.lstatSync(path);
+          const stat = fs.lstatSync(path);
           return stat.isDirectory();
       } catch (e) {
           // lstatSync throws an error if path doesn't exist
@@ -40,24 +40,24 @@ export async function makeZip(
       }
   }
 
-  const fs = require("fs");
-  const archiver = require("archiver");
+  const fs = require('fs');
+  const archiver = require('archiver');
   const {slug,buildIncludes} = pluginMachineJson;
 
   const output = fs.createWriteStream(`${slug}.zip`);
-  const archive = archiver("zip");
+  const archive = archiver('zip');
 
-  console.log("Zipping!");
+  console.log('Zipping!');
 
   return new Promise( async (resolve,reject) => {
-    output.on("close", function () {
-      console.log("Zipped!");
-      console.log(archive.pointer() + " total bytes");
+    output.on('close', function () {
+      console.log('Zipped!');
+      console.log(archive.pointer() + ' total bytes');
       resolve(true);
     });
 
     //@ts-ignore
-    archive.on("error", function (err) {
+    archive.on('error', function (err) {
       console.log({err});
       reject(false);
     });
