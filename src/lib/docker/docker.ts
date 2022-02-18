@@ -122,7 +122,6 @@ export const createDockerApi = async (opts:I_DockerApiOpts): Promise<I_DockerApi
                     || command.startsWith('node')
                 ){
                     await node(command).catch(exitError).then(() => () => exitSuccess({}));
-
                 }
                 if(command.startsWith('composer')){
                     await composer(command).catch(exitError).then(() => exitSuccess({}));

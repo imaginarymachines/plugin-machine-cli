@@ -8,7 +8,7 @@ let pluginMachineJson : I_PluginMachineJson;
 
 const highlight = (string:string) => string;
 //Get current pluginMachine.json file
-export  const getPluginMachineJson = (pluginDir:string, opts = {} ) => {
+export const getPluginMachineJson = (pluginDir:string, opts = {} ) => {
     if( ! pluginMachineJson ){
       if(  fs.existsSync(`${pluginDir}/pluginMachine.json`) ){
         pluginMachineJson = require(

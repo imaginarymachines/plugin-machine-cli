@@ -43,6 +43,15 @@ This command runs any npm or composer commands found in pluginMachine.json's "bu
 
 - Prepare for a production-ready, installable zip.
   - `plugin-machine plugin build`
+
+You can also pass a phpVersion and/or nodeVersion value.
+
+- `plugin-machine plugin build --nodeVersion=16 --phpVersion=7.4`
+- Allowed values for `--nodeVersion`:
+  - '12', '14', '16', '17'
+- Allowed values for `--phpVersion`:
+  - '7.3', '7.4', '8.0', '8.1'
+
 #### ZIP plugin for release
 - Zip files, based on pluginMachine.json's "buildIncludes" key.
   - `plugin-machine plugin zip`

@@ -23,6 +23,8 @@ function parseArgumentsIntoOptions(rawArgs) {
       '--pluginDir': String,
       '--appUrl': String,
       '--token': String,
+      '--phpVersion': String,
+      '--nodeVersion': String,
       // Aliases
     },
     {
@@ -36,6 +38,8 @@ function parseArgumentsIntoOptions(rawArgs) {
     pluginDir: args['--pluginDir'] || false,
     appUrl: args['--appUrl'] || false,
     token: args['--token'] || false,
+    phpVersion: args['--phpVersion'] || false,
+    nodeVersion: args['--nodeVersion'] || false,
 
   };
 }
@@ -222,6 +226,19 @@ const validatePluginJson = (pluginMachineJson) => {
   return pluginMachineJson;
 }
 
+const dockerArgs = (options) => {
+  let args =  {
+    pluginDir,
+    appUrl:pluginMachineJson.appUrl
+  }
+  if( options.phpVersion){
+    args['phpVersion'] = options.phpVersion;
+  }
+  if( options.nodeVersion){
+    args['nodeVersion'] = options.nodeVersion;
+  }
+  return args;
+}
 /**
  * Hander for `plugin-machine plugin {command}` commands
  */
@@ -236,11 +253,8 @@ export async function cli(args) {
   const pluginMachine = await pluginMachineApi(
     checkLogin(options.token || getAuthToken(pluginDir)),
   );
-  const dockerApi = await createDockerApi({
-    pluginDir,
-    appUrl:pluginMachineJson.appUrl,
-  }).catch(e => {exitError({errorMessage: 'Error connecting to docker'})});
-
+  const dockerApi = await createDockerApi(dockerArgs)
+  .catch(e => {exitError({errorMessage: 'Error connecting to docker'})});
   switch (options.command) {
     case 'config':
       await handleConfig(
