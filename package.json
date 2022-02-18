@@ -31,7 +31,7 @@
     "test": "jest --watch",
     "test:ci": "jest --ci",
     "coverage": "jest --coverage",
-    "prepack": "npm run build"
+    "prepack": "npm run test:ci && npm run build"
   },
   "devDependencies": {
     "@swc/cli": "^0.1.51",
