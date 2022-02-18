@@ -1,10 +1,10 @@
 import {createDockerApi} from '../lib/docker/docker';
 import shell from 'shelljs';
 import {
-    info,warning
+    inqfo,warning
 } from '../lib/log';
 import { exitError } from '../lib/docker/exit';
-
+import {getPluginDir,appUrl}from '../lib/config';
 
 
 
@@ -12,13 +12,17 @@ import { exitError } from '../lib/docker/exit';
  * Hander for `plugin-machine docker` commands
  */
  export async function cli(args) {
+
     if (!shell.which('docker')) {
         warning('Docker is not installed');
         info('Install docker: https://docs.docker.com/get-docker/');
         shell.exit(1);
     }
     try {
-        const dockerApi = await createDockerApi({}).catch(err => console.log(err)).then(api => api);
+        const dockerApi = await createDockerApi({
+            pluginDir: getPluginDir(),
+            appUrl: appUrl(),
+        }).catch(err => console.log(err)).then(api => api);
         const i = 'docker' == args[2] ? 3: 2;
         const service = args[i];
         const command  = args.slice(i).join(' ');
