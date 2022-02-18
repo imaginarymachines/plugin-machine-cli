@@ -22,6 +22,7 @@ function parseArgumentsIntoOptions(rawArgs) {
       '--feature': String,
       '--pluginDir': String,
       '--appUrl': String,
+      '--token': String,
       // Aliases
     },
     {
@@ -34,6 +35,7 @@ function parseArgumentsIntoOptions(rawArgs) {
     pluginId: args['--pluginId'] || args._[2] || false,
     pluginDir: args['--pluginDir'] || false,
     appUrl: args['--appUrl'] || false,
+    token: args['--token'] || false,
 
   };
 }

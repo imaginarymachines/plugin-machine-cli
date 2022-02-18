@@ -1,9 +1,9 @@
 import {createDockerApi} from '../lib/docker/docker';
 import shell from 'shelljs';
 import {
-    inqfo,warning
+    info,
+    warning
 } from '../lib/log';
-import { exitError } from '../lib/docker/exit';
 import {getPluginDir,appUrl}from '../lib/config';
 
 

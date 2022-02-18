@@ -19,7 +19,7 @@ function parseArgumentsIntoOptions(rawArgs) {
     }
   );
   return {
-    token: args['--token'] || false,
+    token: args['--token'] || args._[1],
     t: args['-t'] || false,
   };
 }

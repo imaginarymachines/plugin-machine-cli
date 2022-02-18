@@ -15,6 +15,8 @@ Command line interface for [Plugin Machine](https://pluginmachine.com).
 
 ## Commands
 
+Many commands require login. You can either use the login command, which presists your token in your host machine's file system, or you can use the `--token` flag.
+
 ### Login
 - Login to plugin machine.
     - `plugin-machine login {token}`
@@ -31,7 +33,6 @@ All `plugin` commands will assume that the current directory is the root directo
     - `plugin-machine plugin config`
 - Download pluginMachine.json for a plugin
     - `plugin-machine plugin config --pluginId=7`
-
 #### Add a feature to current plugin
 
 - `plugin-machine plugin add`
