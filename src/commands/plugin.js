@@ -226,7 +226,7 @@ const validatePluginJson = (pluginMachineJson) => {
   return pluginMachineJson;
 }
 
-const dockerArgs = (options) => {
+const makeDockerArgs = (options,pluginDir,pluginMachineJson) => {
   let args =  {
     pluginDir,
     appUrl:pluginMachineJson.appUrl
@@ -253,8 +253,8 @@ export async function cli(args) {
   const pluginMachine = await pluginMachineApi(
     checkLogin(options.token || getAuthToken(pluginDir)),
   );
-  const dockerApi = await createDockerApi(dockerArgs)
-  .catch(e => {exitError({errorMessage: 'Error connecting to docker'})});
+  const dockerApi = await createDockerApi(makeDockerArgs(options,pluginDir,pluginMachineJson))
+    .catch(e => {exitError({errorMessage: 'Error connecting to docker'})});
   switch (options.command) {
     case 'config':
       await handleConfig(
