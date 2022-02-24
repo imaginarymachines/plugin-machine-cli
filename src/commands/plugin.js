@@ -25,6 +25,7 @@ function parseArgumentsIntoOptions(rawArgs) {
       '--token': String,
       '--phpVersion': String,
       '--nodeVersion': String,
+      '--buildDir': String,
       // Aliases
     },
     {
@@ -40,6 +41,7 @@ function parseArgumentsIntoOptions(rawArgs) {
     token: args['--token'] || false,
     phpVersion: args['--phpVersion'] || false,
     nodeVersion: args['--nodeVersion'] || false,
+    buildDir: args['--buildDir'] || false,
 
   };
 }
@@ -277,11 +279,20 @@ export async function cli(args) {
           }
           break;
     case 'build':
-          const {buildPlugin} = require('../lib/zip');
+          const {buildPlugin,copyBuildFiles} = require('../lib/zip');
+          let buildDir = options.buildDir || 'output';
           await buildPlugin(pluginMachineJson,'prod',dockerApi)
             .catch(err => {console.log({err})})
             .then(async () => {
-                exitSuccess({message: 'Plugin built'});
+                if( buildDir ){
+                  copyBuildFiles(pluginMachineJson,buildDir,pluginDir);
+                  exitSuccess({message: 'Plugin built and copied'});
+
+                }else{
+                  exitSuccess({message: 'Plugin built'});
+
+                }
+
             });
     break;
     case 'zip':

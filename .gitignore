@@ -4,6 +4,7 @@ blocks/
 admin/
 inc/
 
+output
 dist/
 dist/**/*
 

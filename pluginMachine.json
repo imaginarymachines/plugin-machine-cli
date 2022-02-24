@@ -16,18 +16,16 @@
         "php",
         "vendor",
         "build",
-        "blocks//init.php",
-        "blocks//init.php",
+        "blocks/init.php",
+        "blocks/index.js",
         "admin/build-with-one-admin-pages-0/init.php"
     ],
     "buildSteps": {
         "dev": [
-            "yarn",
-            "yarn start"
+
         ],
         "prod": [
-            "yarn",
-            "yarn build"
+            "composer -v"
         ]
     }
 }

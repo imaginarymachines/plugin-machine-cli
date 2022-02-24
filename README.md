@@ -43,6 +43,8 @@ This command runs any npm or composer commands found in pluginMachine.json's "bu
 
 - Prepare for a production-ready, installable zip.
   - `plugin-machine plugin build`
+- Optionally, copy files to a directory
+  - `plugin-machine plugin build --buildDir=build`
 
 You can also pass a phpVersion and/or nodeVersion value.
 
