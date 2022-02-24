@@ -55,9 +55,16 @@ You can also pass a phpVersion and/or nodeVersion value.
   - '7.3', '7.4', '8.0', '8.1'
 
 #### ZIP plugin for release
+
 - Zip files, based on pluginMachine.json's "buildIncludes" key.
   - `plugin-machine plugin zip`
 
+- Zip files, in directory set in --buildDir option
+  - `plugin-machine plugin zip --buildDir=build`
+
+- Build and then zip build
+  - `plugin-machine plugin build --buildDir=plugin-name`
+  - `plugin-machine plugin zip --buildDir=plugin-name`
 
 ### Debug
 - Output some debug information

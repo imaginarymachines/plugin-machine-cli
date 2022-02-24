@@ -257,6 +257,9 @@ export async function cli(args) {
   );
   const dockerApi = await createDockerApi(makeDockerArgs(options,pluginDir,pluginMachineJson))
     .catch(e => {exitError({errorMessage: 'Error connecting to docker'})});
+
+  const buildDir = options.buildDir || null;
+
   switch (options.command) {
     case 'config':
       await handleConfig(
@@ -280,19 +283,18 @@ export async function cli(args) {
           break;
     case 'build':
           const {buildPlugin,copyBuildFiles} = require('../lib/zip');
-          let buildDir = options.buildDir || 'output';
+          //Build pluigin (run npm/composer, etc)
           await buildPlugin(pluginMachineJson,'prod',dockerApi)
             .catch(err => {console.log({err})})
             .then(async () => {
+                //Copy build files to buildDir if --buildDir is set
                 if( buildDir ){
                   copyBuildFiles(pluginMachineJson,buildDir,pluginDir);
                   exitSuccess({message: 'Plugin built and copied'});
 
                 }else{
                   exitSuccess({message: 'Plugin built'});
-
                 }
-
             });
     break;
     case 'zip':
@@ -301,12 +303,21 @@ export async function cli(args) {
           if( isFeatureFlagEnabled(FF_ZIP_UPLOADS)){
             options = await promptForZipOptions(options);
           }
-          const {makeZip} = require('../lib/zip');
+          const {makeZip,zipDirectory} = require('../lib/zip');
+
+          //If --buildDir arg passed, zip the build dir
+          if( buildDir ){
+            await zipDirectory('output', pluginMachineJson.slug).then(
+              () => exitSuccess({message: 'Plugin zip created'})
+            ).catch(() => exitError());
+          }
+
+          //Else use pluginMachine.json to find files to zip
           await makeZip(pluginDir,pluginMachineJson)
-          .catch(err => {console.log({err})})
-          .then(async () => {
-              exitSuccess({message: 'Plugin zipped'});
-          });
+            .catch(err => {console.log({err})})
+            .then(async () => {
+                exitSuccess({message: 'Plugin zipped'});
+            });
           //Upload zip if enabled, and chosen
           if (isFeatureFlagEnabled(FF_ZIP_UPLOADS) && options.version) {
               try {

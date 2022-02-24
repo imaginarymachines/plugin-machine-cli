@@ -73,6 +73,35 @@ export async function copyBuildFiles(
     }
   });
 }
+
+/**
+ * Zip a directory
+ */
+export async function zipDirectory(buildDir:string,slug:string){
+  const fs = require('fs-extra');
+  const output = fs.createWriteStream(`${slug}.zip`);
+  const archive = require('archiver')('zip');
+
+  return new Promise( async (resolve,reject) => {
+    output.on('close', function () {
+      console.log('Zipped!');
+      console.log(archive.pointer() + ' total bytes');
+      resolve(true);
+    });
+
+    //@ts-ignore
+    archive.on('error', function (err) {
+      console.log({err});
+      reject(false);
+    });
+
+    archive.pipe(output);
+
+    archive.directory(buildDir, '/');
+    archive.finalize();
+  });
+
+}
 /**
  * Make a zip file of a plugin.
  */
