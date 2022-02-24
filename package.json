@@ -56,5 +56,8 @@
     "inquirer": "^8.2.0",
     "isomorphic-fetch": "^3.0.0",
     "shelljs": "^0.8.5"
-  }
+  },
+  "engines" : {
+     "node" : ">=16"
+   }
 }
