@@ -161,7 +161,7 @@ const pluginMachineApi = async (token:string) => {
 
 
       },
-      //upoad a new version
+      //Get all versions of plugin
       getVersions: async (pluginMachineJson:I_PluginMachineJson) => {
         const {pluginId}=pluginMachineJson;
 

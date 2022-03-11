@@ -100,10 +100,51 @@ const pluginMachineJson = getPluginMachineJson(
   //Optional ovverides
   {}
 );
+```
+
+### Plugin Machine API
+
+```js
+import {pluginMachineApi} from 'plugin-machine';
 //Get token from somewhere
 let token = '';
 const pluginMachine = await pluginMachineApi(token);
 ```
+
+- Get the plugin machine json file for a saved plugin
+```js
+  await pluginMachine.getPluginMachineJson(pluginId);
+```
+- Add a feature to a plugin
+```js
+  await pluginMachine.addFeature(pluginMachineJson,data)
+```
+- Get one file, from a feature
+```js
+  await pluginMachine.getFeatureCode(
+      pluginMachineJson,
+      featureId,
+      file
+  );
+```
+- Upload a new version
+  - `${pluginMachineJson.slug}.zip` must exist.
+```js
+  await pluginMachine.uploadVersion(
+    pluginMachineJson,
+    version,
+    pluginDir
+
+  )
+```
+- Get all versions of plugin
+```js
+  let versions =await pluginMachine.uploadVersion(
+    pluginMachineJson,
+
+  );
+```
+
 
 ### Using The Builder
 
@@ -164,6 +205,8 @@ await zipDirectory(
 ).then( () => console.log('zipped!'));
 
 ```
+
+
 
 ## Development
 
