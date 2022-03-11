@@ -82,6 +82,89 @@ Docker shortcuts:
     - `plugin-machine docker kill`
     - Runs: `docker kill $(docker ps -q)`
 
+## Node API
+
+You can also install this as a module in a node.js project, and use the api directly.
+
+```js
+import {createDockerApi,getPluginMachineJson,pluginMachineApi} from 'plugin-machine';
+
+//Create instance of Docker API
+const pmDockerApi = await createDockerApi({
+  //options are optional
+});
+
+//Get the pluginMachine.json file for the plugin
+const pluginMachineJson = getPluginMachineJson(
+  '/path/pluginMachine.json',
+  //Optional ovverides
+  {}
+);
+//Get token from somewhere
+let token = '';
+const pluginMachine = await pluginMachineApi(token);
+```
+
+### Using The Builder
+
+#### Build Plugin & Zip
+
+```js
+import {builder,createDockerApi,getPluginMachineJson} from 'plugin-machine';
+const {
+  buildPlugin,
+  makeZip,
+} = builder;
+//Setup pmDockerApi and pluginMachineJson first.
+const pmDockerApi = await createDockerApi({});
+const pluginMachineJson = getPluginMachineJson('/path/pluginMachine.json');
+const
+buildPlugin(
+  pluginMachineJson,
+  'prod',
+  pmDockerApi
+).then( () => {
+  console.log('built!');
+  makeZip(
+    './',//dir plugin is in
+    pluginMachineJson
+  ).then( () => {
+    console.log('zipped');
+  })
+});
+
+```
+
+#### Build Plugin & Copy Files
+
+```js
+import {builder,createDockerApi,getPluginMachineJson} from 'plguin-machine';
+const {
+  buildPlugin,
+  copyBuildFiles,
+  zipDirectory
+} = builder;
+//Setup pmDockerApi and pluginMachineJson first.
+const pmDockerApi = await createDockerApi({});
+const pluginMachineJson = getPluginMachineJson('/path/pluginMachine.json');
+await
+buildPlugin(
+  pluginMachineJson,
+  'prod',
+  pmDockerApi
+).then( () => console.log('built!'));
+await copyBuildFiles(
+  pluginMachineJson,
+  './',//plugin root directory
+  'output'//subdir of plugin dir to copy file sto
+).then( () => console.log('copied!'));
+await zipDirectory(
+    './output',
+    'plugin-slug'
+).then( () => console.log('zipped!'));
+
+```
+
 ## Development
 
 
