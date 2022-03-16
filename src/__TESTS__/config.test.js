@@ -27,6 +27,17 @@ describe('getPluginMachineJson', () => {
         expect(Number.isNaN(pluginMachineJson.pluginId)).toBe(false)
     });
 
+    it( 'Ovverides all', () => {
+        const data = {
+            pluginId: 12,
+            buildId: 2,
+        };
+        const pluginMachineJson = getPluginMachineJson(pluginDir,{
+            pluginMachineJson: data,
+        });
+        expect(pluginMachineJson.pluginId).toEqual(12);
+
+    });
 
 
 
