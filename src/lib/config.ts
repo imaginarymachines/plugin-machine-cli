@@ -7,8 +7,16 @@ import { I_PluginMachineJson } from './pluginMachineApi';
 let pluginMachineJson : I_PluginMachineJson;
 
 const highlight = (string:string) => string;
+type opts = {
+  pluginMachineJson?: I_PluginMachineJson,
+}
+
 //Get current pluginMachine.json file
-export const getPluginMachineJson = (pluginDir:string, opts = {} ) => {
+export const getPluginMachineJson = (pluginDir:string, opts: opts = {} ) => {
+    if( opts && opts.pluginMachineJson ){
+      pluginMachineJson = opts.pluginMachineJson;
+      return pluginMachineJson;
+    }
     if( ! pluginMachineJson ){
       if(  fs.existsSync(`${pluginDir}/pluginMachine.json`) ){
         pluginMachineJson = require(

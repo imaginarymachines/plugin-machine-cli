@@ -35,7 +35,7 @@ describe('getPluginMachineJson', () => {
         const pluginMachineJson = getPluginMachineJson(pluginDir,{
             pluginMachineJson: data,
         });
-        expect(pluginMachineJson.pluginId).toEqual(12);
+        expect(pluginMachineJson.pluginId).toBe(12);
 
     });
 
