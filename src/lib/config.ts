@@ -13,29 +13,35 @@ type opts = {
 
 //Get current pluginMachine.json file
 export const getPluginMachineJson = (pluginDir:string, opts: opts = {} ) => {
-    if( opts && opts.pluginMachineJson ){
-      pluginMachineJson = opts.pluginMachineJson;
-      return pluginMachineJson;
+  const addAppUrl = (config:any) => {
+    if( ! config.hasOwnProperty('appUrl')|| false == config.appUrl ){
+      config.appUrl = 'https://pluginmachine.app';
     }
-    if( ! pluginMachineJson ){
-      if(  fs.existsSync(`${pluginDir}/pluginMachine.json`) ){
-        pluginMachineJson = require(
-            join(pluginDir, 'pluginMachine.json')
-        );
-      }else{
-        pluginMachineJson = {pluginId: 0, buildId: 0,buildIncludes: [],slug: ''};
-      }
-    }
+    return config;
+  }
 
-    pluginMachineJson = Object.assign(pluginMachineJson, opts);
-    //@ts-ignore
-    pluginMachineJson.pluginId = parseInt(pluginMachineJson.pluginId, 10);
-       //@ts-ignore
-    pluginMachineJson.buildId = parseInt(pluginMachineJson.buildId, 10);
-        //@ts-ignore
-    if( ! pluginMachineJson.hasOwnProperty('appUrl')|| false == pluginMachineJson.appUrl ){
-      pluginMachineJson.appUrl = 'https://pluginmachine.app';
+  if( opts.pluginMachineJson ){
+    pluginMachineJson = addAppUrl(opts.pluginMachineJson);
+    return pluginMachineJson;
+  }
+
+  if( ! pluginMachineJson ){
+    if(  fs.existsSync(`${pluginDir}/pluginMachine.json`) ){
+      pluginMachineJson = require(
+          join(pluginDir, 'pluginMachine.json')
+      );
+    }else{
+      pluginMachineJson = {pluginId: 0, buildId: 0,buildIncludes: [],slug: ''};
     }
+  }
+
+  pluginMachineJson = Object.assign(pluginMachineJson, opts);
+  //@ts-ignore
+  pluginMachineJson.pluginId = parseInt(pluginMachineJson.pluginId, 10);
+      //@ts-ignore
+  pluginMachineJson.buildId = parseInt(pluginMachineJson.buildId, 10);
+  pluginMachineJson = addAppUrl(pluginMachineJson);
+
 
 
   return pluginMachineJson;

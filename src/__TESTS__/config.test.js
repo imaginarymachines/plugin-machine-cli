@@ -31,11 +31,15 @@ describe('getPluginMachineJson', () => {
         const data = {
             pluginId: 12,
             buildId: 2,
+            slug: 'noms'
         };
         const pluginMachineJson = getPluginMachineJson(pluginDir,{
             pluginMachineJson: data,
         });
+        expect(pluginMachineJson.slug).toBe('noms');
+
         expect(pluginMachineJson.pluginId).toBe(12);
+        expect(pluginMachineJson.hasOwnProperty('appUrl')).toBe(true);
 
     });
 
