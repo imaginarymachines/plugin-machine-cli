@@ -130,7 +130,8 @@ const pluginMachineApi = async (token:string) => {
         .then( r => r.json() )
           //@ts-ignore
         .then( r => {
-          console.log({r})
+          console.log({r});
+          return r;
         });
       },
       //upoad a new version
