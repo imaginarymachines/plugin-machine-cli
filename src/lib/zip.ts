@@ -130,9 +130,9 @@ export async function makeZip(
 
   return new Promise( async (resolve,reject) => {
     output.on('close', function () {
-      console.log('Zipped!');
+      console.log(`ZIPPED: ${slug}.zip`);
       console.log(archive.pointer() + ' total bytes');
-      resolve(true);
+      resolve({name:`${slug}.zip`});
     });
 
     //@ts-ignore
