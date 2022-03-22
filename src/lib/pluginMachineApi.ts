@@ -104,6 +104,35 @@ const pluginMachineApi = async (token:string) => {
           return r;
         });
       },
+      uploadFile: async (fileName:string, filePath:string) => {
+        const formdata = new FormData();
+        formdata.append('file', fileName, filePath);
+        formdata.append('name', fileName);
+        formdata.append('private', false);
+        const url = appUrl(`/api/v1/files`);
+        return fetch(url, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+            'Accept-Encoding': 'gzip, deflate',
+            'Accept':'*/*',
+          },
+          body: formdata,
+          redirect: 'follow'
+
+        })
+          //@ts-ignore
+        .catch( error => {
+          console.log({error});
+        })
+        //@ts-ignore
+        .then( r => r.json() )
+          //@ts-ignore
+        .then( r => {
+          console.log({r})
+        });
+      },
       //upoad a new version
       uploadVersion: async (pluginMachineJson:any,version:string,pluginDir:string) => {
         const {pluginId,slug} = pluginMachineJson;
