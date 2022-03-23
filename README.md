@@ -66,6 +66,9 @@ You can also pass a phpVersion and/or nodeVersion value.
   - `plugin-machine plugin build --buildDir=plugin-name`
   - `plugin-machine plugin zip --buildDir=plugin-name`
 
+- Upload file
+  - `plugin-machine plugin upload --fileName=something.zip --filePath=/full/path/to/zip.zip
+
 ### Debug
 - Output some debug information
 	- `plugin-machine debug`
@@ -137,6 +140,14 @@ const pluginMachine = await pluginMachineApi(token);
 
   )
 ```
+- Upload a zip file
+  - `${pluginMachineJson.slug}.zip` must exist.
+```js
+  await pluginMachine.uploadFile(
+    fileName, filePath
+  )
+```
+
 - Get all versions of plugin
 ```js
   let versions =await pluginMachine.uploadVersion(

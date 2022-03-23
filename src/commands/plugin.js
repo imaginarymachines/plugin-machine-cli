@@ -26,6 +26,8 @@ function parseArgumentsIntoOptions(rawArgs) {
       '--phpVersion': String,
       '--nodeVersion': String,
       '--buildDir': String,
+      '--fileName': String,
+      '--filePath': String,
       // Aliases
     },
     {
@@ -42,6 +44,8 @@ function parseArgumentsIntoOptions(rawArgs) {
     phpVersion: args['--phpVersion'] || false,
     nodeVersion: args['--nodeVersion'] || false,
     buildDir: args['--buildDir'] || false,
+    fileName: args['--fileName'] || false,
+    filePath: args['--filePath'] || false,
 
   };
 }
@@ -269,7 +273,8 @@ export async function cli(args) {
       ).catch((e) => error(e))
       .then( () => success('Plugin Machine config saved'));
       break;
-    case 'upload':
+
+    case 'upload-version':
           if( !isFeatureFlagEnabled(FF_ZIP_UPLOADS)){
             throw new Error('plugin upload command is disabled for now');
           }
@@ -281,6 +286,24 @@ export async function cli(args) {
               console.log(error);
           }
           break;
+    case 'upload':
+      const {fileName, filePath} = options;
+      info({fileName, filePath});
+      if( !fileName ) {
+        throw new Error('No fileName found');
+      }
+      if( !filePath ) {
+        throw new Error('No filePath found');
+      }
+
+      try {
+          await pluginMachine.uploadFile(
+              fileName, filePath
+          );
+      } catch (error) {
+          console.log(error);
+      }
+      break;
     case 'build':
           const {buildPlugin,copyBuildFiles} = require('../lib/zip');
           //Build pluigin (run npm/composer, etc)
