@@ -2,6 +2,7 @@
 const fs = require('fs');
 const { join } = require( 'path' );
 const { homedir } = require( 'os' );
+const info = (...args:any[]) => console.log(...args);
 
 import { I_PluginMachineJson } from './pluginMachineApi';
 let pluginMachineJson : I_PluginMachineJson;
@@ -22,15 +23,20 @@ export const getPluginMachineJson = (pluginDir:string, opts: opts = {} ) => {
 
   if( opts.pluginMachineJson ){
     pluginMachineJson = addAppUrl(opts.pluginMachineJson);
+    info( 'Loaded pluginMachine.json from opts' );
+    info({pluginMachineJson})
     return pluginMachineJson;
   }
 
   if( ! pluginMachineJson ){
+    info( `Loading pluginMachine.json from ${pluginDir}/pluginMachine.json` );
     if(  fs.existsSync(`${pluginDir}/pluginMachine.json`) ){
       pluginMachineJson = require(
           join(pluginDir, 'pluginMachine.json')
       );
+      info( {pluginMachineJson} );
     }else{
+      info( `No pluginMachine.json found`);
       pluginMachineJson = {pluginId: 0, buildId: 0,buildIncludes: [],slug: ''};
     }
   }
