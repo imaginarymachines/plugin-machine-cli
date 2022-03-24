@@ -67,7 +67,7 @@ You can also pass a phpVersion and/or nodeVersion value.
   - `plugin-machine plugin zip --buildDir=plugin-name`
 
 - Upload file
-  - `plugin-machine plugin upload --fileName=something.zip --filePath=/full/path/to/zip.zip
+  - `plugin-machine upload --fileName=something.zip --filePath=/full/path/to/zip.zip
 
 ### Debug
 - Output some debug information

@@ -104,9 +104,9 @@ const pluginMachineApi = async (token:string) => {
           return r;
         });
       },
-      uploadFile: async (fileName:string, filePath:string) => {
+      uploadFile: async (fileName:string, pluginDir:string) => {
         const formdata = new FormData();
-        formdata.append('file', fileName, filePath);
+        formdata.append('file', fileName, path.join(pluginDir,fileName));
         formdata.append('name', fileName);
         formdata.append('private', false);
         const url = appUrl(`/api/v1/files`);

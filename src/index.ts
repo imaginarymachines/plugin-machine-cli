@@ -6,6 +6,9 @@ switch(process.argv[2]){
     case 'hi':
         info(hi(process.argv[2]|| 'Roy'));
     break;
+    case 'upload':
+        require('./commands/upload.js').cli(process.argv);
+    break;
     case 'plugin':
         require('./commands/plugin.js').cli(process.argv);
     break;

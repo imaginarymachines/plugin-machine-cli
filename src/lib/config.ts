@@ -159,8 +159,13 @@ export const isDirectory = (path:string) => {
 };
 
 
-export const appUrl = (endpoint:string):string => {
-  return `${pluginMachineJson.appUrl}${endpoint}`;
+export const appUrl = (endpoint:string,):string => {
+  if( pluginMachineJson ){
+    return `${pluginMachineJson.appUrl}${endpoint}`;
+
+  }
+  return `https://pluginmachine.app${endpoint}`;
+
 };
 
 export const apiUrl = (endpoint:string):string => `${appUrl(`/api/v1${endpoint}`)}`;
