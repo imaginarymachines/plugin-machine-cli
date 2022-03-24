@@ -58,6 +58,7 @@ export async function cli(args) {
         success(`${fileName} uploaded successfully`);
         success(r.download);
     } catch (error) {
+        warning('Upload failed');
         warning(error);
     }
 }
