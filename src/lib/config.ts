@@ -36,7 +36,7 @@ export const getPluginMachineJson = (pluginDir:string, opts: opts = {} ) => {
       );
       info( {pluginMachineJson} );
     }else{
-      info( `No pluginMachine.json found`);
+      info( 'No pluginMachine.json found');
       pluginMachineJson = {pluginId: 0, buildId: 0,buildIncludes: [],slug: ''};
     }
   }

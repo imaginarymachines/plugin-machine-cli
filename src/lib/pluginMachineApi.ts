@@ -72,7 +72,7 @@ const pluginMachineApi = async (token:string) => {
         .catch( e => {
           error(`Error adding feature to plugin ${pluginId}`);
           console.log(e);
-                    //@ts-ignore
+            //@ts-ignore
         }).then( r => r.json())
                   //@ts-ignore
           .then(r => {
@@ -92,7 +92,7 @@ const pluginMachineApi = async (token:string) => {
           apiUrl(`/plugins/${pluginId}/builds/${buildId}/features/${featureId}/code?file=${encodeURI(file)}`),
           {
             method: 'GET',
-          headers,
+            headers,
                     }
         )
         //@ts-ignore
@@ -104,35 +104,47 @@ const pluginMachineApi = async (token:string) => {
           return r;
         });
       },
-      uploadFile: async (fileName:string, pluginDir:string) => {
-        const formdata = new FormData();
-        formdata.append('file', fileName, path.join(pluginDir,fileName));
-        formdata.append('name', fileName);
-        formdata.append('private', false);
-        const url = appUrl(`/api/v1/files`);
-        return fetch(url, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data',
-            'Accept-Encoding': 'gzip, deflate',
-            'Accept':'*/*',
-          },
-          body: formdata,
-          redirect: 'follow'
-
-        })
-          //@ts-ignore
-        .catch( error => {
-          console.log({error});
-        })
-        //@ts-ignore
-        .then( r => r.json() )
-          //@ts-ignore
-        .then( r => {
-          console.log({r});
-          return r;
+      uploadFile:  async (fileName:string, pluginDir:string) => {
+        const request = require('request');
+        const promise  = new Promise( (resolve, reject) => {
+          request({
+            'method': 'POST',
+            'url': 'https://pluginmachine.app/api/v1/files',
+            'headers': headers,
+            formData: {
+              'file': {
+                'value': fs.createReadStream(
+                  path.join(pluginDir,fileName)
+                ),
+                'options': {
+                  'filename': 'test-23.zip',
+                  'contentType': null
+                }
+              },
+              'name': fileName,
+              'private': 0,
+            }
+            //@ts-ignore
+          }, function (error, response) {
+            if (error){
+              reject(error);
+            }
+            let r = JSON.parse(response.body);
+            if( r.hasOwnProperty('error')){
+              reject(r.error);
+            }
+            resolve(r);
+          });
         });
+        return promise.then( r => {
+          return r;
+        })
+
+
+
+
+
+
       },
       //upoad a new version
       uploadVersion: async (pluginMachineJson:any,version:string,pluginDir:string) => {

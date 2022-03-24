@@ -1,4 +1,4 @@
-import { info } from '../lib/log';
+import { info, success } from '../lib/log';
 import {getAuthToken, getPluginDir, getPluginMachineJson} from '../lib/config';
 import arg from 'arg';
 import pluginMachineApi from '../lib/pluginMachineApi';
@@ -38,14 +38,11 @@ const checkLogin = (token) => {
  */
 export async function cli(args) {
     let options = parseArgumentsIntoOptions(args);
-    //Set appUrl from options
-    //const appUrl = options.appUrl ? options.appUrl : 'https://pluginmachine.app';
     const pluginDir = options.pluginDir || getPluginDir();
-    const pluginMachine = await pluginMachineApi(
-        checkLogin(options.token || getAuthToken(pluginDir)),
-    );
-    const {fileName, filePath} = options;
-    info({options,fileName, filePath});
+    const token = options.token || getAuthToken(pluginDir);
+    checkLogin(token);
+    const pluginMachine = await pluginMachineApi(token);
+    const {fileName} = options;
 
     const missingArgError = (argName) => {
         throw new Error(`--${argName} is required`);
@@ -53,15 +50,13 @@ export async function cli(args) {
     if( !fileName ) {
         missingArgError('fileName');
     }
-    if( !pluginDir ) {
-        missingArgError('pluginDir');
-
-    }
 
     try {
-        await pluginMachine.uploadFile(
+        let r = await pluginMachine.uploadFile(
             fileName, pluginDir
         );
+        success(`${fileName} uploaded successfully`);
+        success(r.download);
     } catch (error) {
         console.log(error);
     }
