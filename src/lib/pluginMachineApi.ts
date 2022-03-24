@@ -106,16 +106,18 @@ const pluginMachineApi = async (token:string) => {
       },
       uploadFile:  async (fileName:string, pluginDir:string) => {
         const request = require('request');
+        const filePath = path.join(pluginDir,fileName);
         const promise  = new Promise( (resolve, reject) => {
+          if( ! fs.existsSync(filePath) ){
+            reject(`File ${filePath} does not exist`);
+          }
           request({
             'method': 'POST',
             'url': 'https://pluginmachine.app/api/v1/files',
             'headers': headers,
             formData: {
               'file': {
-                'value': fs.createReadStream(
-                  path.join(pluginDir,fileName)
-                ),
+                'value': fs.createReadStream(filePath),
                 'options': {
                   'filename': 'test-23.zip',
                   'contentType': null
@@ -129,11 +131,17 @@ const pluginMachineApi = async (token:string) => {
             if (error){
               reject(error);
             }
-            let r = JSON.parse(response.body);
-            if( r.hasOwnProperty('error')){
-              reject(r.error);
+            try {
+              let r = JSON.parse(response.body);
+              if( r.hasOwnProperty('error')){
+                reject(r.error);
+              }
+              resolve(r);
+
+            } catch (error) {
+              reject(error);
             }
-            resolve(r);
+
           });
         });
         return promise.then( r => {

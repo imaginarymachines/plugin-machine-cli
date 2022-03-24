@@ -1,4 +1,4 @@
-import { info, success } from '../lib/log';
+import { warning, success } from '../lib/log';
 import {getAuthToken, getPluginDir, getPluginMachineJson} from '../lib/config';
 import arg from 'arg';
 import pluginMachineApi from '../lib/pluginMachineApi';
@@ -58,6 +58,6 @@ export async function cli(args) {
         success(`${fileName} uploaded successfully`);
         success(r.download);
     } catch (error) {
-        console.log(error);
+        warning(error);
     }
 }
