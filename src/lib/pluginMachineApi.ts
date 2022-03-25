@@ -119,7 +119,7 @@ const pluginMachineApi = async (token:string) => {
               'file': {
                 'value': fs.createReadStream(filePath),
                 'options': {
-                  'filename': 'test-23.zip',
+                  'filename': fileName,
                   'contentType': null
                 }
               },
