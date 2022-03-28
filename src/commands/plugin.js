@@ -288,7 +288,6 @@ export async function cli(args) {
           break;
     case 'upload':
       const {fileName, filePath} = options;
-      info({fileName, filePath});
       if( !fileName ) {
         throw new Error('No fileName found');
       }

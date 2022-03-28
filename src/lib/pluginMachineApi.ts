@@ -129,7 +129,10 @@ const pluginMachineApi = async (token:string) => {
             //@ts-ignore
           }, function (error, response) {
             if (error){
-              reject(error);
+              reject({
+                message: 'Error uploading file',
+                error
+              });
             }
             try {
               let r = JSON.parse(response.body);
@@ -139,20 +142,17 @@ const pluginMachineApi = async (token:string) => {
               resolve(r);
 
             } catch (error) {
-              reject(error);
+              reject({
+                message: 'Error parsing JSON response',
+                error,
+              });
             }
 
           });
         });
         return promise.then( r => {
           return r;
-        })
-
-
-
-
-
-
+        });
       },
       //upoad a new version
       uploadVersion: async (pluginMachineJson:any,version:string,pluginDir:string) => {
