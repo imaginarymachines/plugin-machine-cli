@@ -330,7 +330,7 @@ export async function cli(args) {
 
           //If --buildDir arg passed, zip the build dir
           if( buildDir ){
-            await zipDirectory('output', pluginMachineJson.slug).then(
+            await zipDirectory(buildDir, pluginMachineJson.slug).then(
               () => exitSuccess({message: 'Plugin zip created'})
             ).catch(() => exitError());
           }
