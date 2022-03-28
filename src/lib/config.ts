@@ -24,7 +24,6 @@ export const getPluginMachineJson = (pluginDir:string, opts: opts = {} ) => {
   if( opts.pluginMachineJson ){
     pluginMachineJson = addAppUrl(opts.pluginMachineJson);
     info( 'Loaded pluginMachine.json from opts' );
-    info({pluginMachineJson})
     return pluginMachineJson;
   }
 
@@ -34,7 +33,6 @@ export const getPluginMachineJson = (pluginDir:string, opts: opts = {} ) => {
       pluginMachineJson = require(
           join(pluginDir, 'pluginMachine.json')
       );
-      info( {pluginMachineJson} );
     }else{
       info( 'No pluginMachine.json found');
       pluginMachineJson = {pluginId: 0, buildId: 0,buildIncludes: [],slug: ''};
