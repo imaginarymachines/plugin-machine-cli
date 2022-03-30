@@ -287,17 +287,14 @@ export async function cli(args) {
           }
           break;
     case 'upload':
-      const {fileName, filePath} = options;
+      const {fileName} = options;
       if( !fileName ) {
         throw new Error('No fileName found');
-      }
-      if( !filePath ) {
-        throw new Error('No filePath found');
       }
 
       try {
           await pluginMachine.uploadFile(
-              fileName, filePath
+              fileName, pluginDir
           );
       } catch (error) {
           console.log(error);
