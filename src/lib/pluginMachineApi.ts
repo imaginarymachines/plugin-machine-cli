@@ -26,10 +26,14 @@ const pluginMachineApi = async (token:string) => {
     const fetch = require('isomorphic-fetch');
     const fs = require( 'fs');
     const path = require('path');
-
+    const packageJson = require(
+      require('path').join(__dirname, '../package.json')
+    );
+    const {version} = packageJson;
     const headers = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`,
+      'User Agent': `Plugin Machine CLI / ${version}`,
     };
 
     //Get full URL for plugin update API
