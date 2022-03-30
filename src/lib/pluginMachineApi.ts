@@ -1,6 +1,7 @@
 import {
   error,
   info,
+  warning,
 } from './log';
 
 
@@ -142,6 +143,7 @@ const pluginMachineApi = async (token:string) => {
               resolve(r);
 
             } catch (error) {
+              warning(response.body);
               reject({
                 message: 'Error parsing JSON response',
                 error,
