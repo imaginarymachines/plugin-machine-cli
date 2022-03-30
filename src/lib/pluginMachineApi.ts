@@ -133,11 +133,18 @@ const pluginMachineApi = async (token:string) => {
             }
             //@ts-ignore
           }, function (error, response) {
+
             if (error){
               reject({
                 message: 'Error uploading file',
                 error
               });
+            }
+            if (response.statusCode !== 201) {
+              reject({message: 'Error uploading file', error: {
+                statusCode: response.statusCode,
+                message: 'Probably blocked by Cloudflare',
+              }});
             }
             try {
               let r = JSON.parse(response.body);

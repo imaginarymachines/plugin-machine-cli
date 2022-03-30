@@ -2,6 +2,7 @@ import { warning, success } from '../lib/log';
 import {getAuthToken, getPluginDir, getPluginMachineJson} from '../lib/config';
 import arg from 'arg';
 import pluginMachineApi from '../lib/pluginMachineApi';
+import { exitError, exitSuccess } from '../lib/docker/exit';
 
 function parseArgumentsIntoOptions(rawArgs) {
     //https://www.npmjs.com/package/arg
@@ -56,9 +57,10 @@ export async function cli(args) {
             fileName, pluginDir
         );
         success(`${fileName} uploaded successfully`);
-        success(r.download);
+        exitSuccess({message: r.download});
     } catch (error) {
         warning('Upload failed');
         warning(error);
+        exitError({errorMessage: 'Upload failed'});
     }
 }
