@@ -33,7 +33,7 @@ const pluginMachineApi = async (token:string) => {
     const headers = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`,
-      'User Agent': `Plugin Machine CLI / ${version}`,
+      'User-Agent': `Plugin Machine CLI / ${version}`,
     };
 
     //Get full URL for plugin update API
@@ -147,7 +147,11 @@ const pluginMachineApi = async (token:string) => {
               resolve(r);
 
             } catch (error) {
-              warning(response.body);
+              //@ts-ignore
+              warning({
+                message: 'Error parsing JSON response',
+                error,
+              });
               reject({
                 message: 'Error parsing JSON response',
                 error,

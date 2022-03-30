@@ -1,6 +1,6 @@
 {
   "name": "plugin-machine",
-  "version": "0.8.15",
+  "version": "0.8.16",
   "description": "A CLI for Plugin Machine",
   "homepage": "https://pluginmachine.com/cli",
   "repository": "github:imaginarymachines/plugin-machine-cli",
