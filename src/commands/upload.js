@@ -13,6 +13,7 @@ function parseArgumentsIntoOptions(rawArgs) {
             '--token': String,
             '--fileName': String,
             '--pluginDir': String,
+            '--quiet': Boolean,
             // Aliases
         },
         {
@@ -24,6 +25,7 @@ function parseArgumentsIntoOptions(rawArgs) {
         token: args['--token'] || false,
         fileName: args['--fileName'] || false,
         pluginDir: args['--pluginDir'] || false,
+        quiet: args['--quiet'] || false,
     };
 }
 //Make sure we have a token
@@ -56,7 +58,9 @@ export async function cli(args) {
         let r = await pluginMachine.uploadFile(
             fileName, pluginDir
         );
-        success(`${fileName} uploaded successfully`);
+        if( ! options.quiet ) {
+            success(`${fileName} uploaded successfully`);
+        }
         exitSuccess({message: r.download});
     } catch (error) {
         warning('Upload failed');
