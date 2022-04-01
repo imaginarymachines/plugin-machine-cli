@@ -109,45 +109,45 @@ export const createDockerApi = async (opts:I_DockerApiOpts): Promise<I_DockerApi
         info( `Running node command: ${command}`);
         return runCommand( command );
     };
+    const api : I_DockerApi = {
+        run: async (command:string) => {
+            if(
+                command.startsWith('npm')
+                || command.startsWith('yarn')
+                || command.startsWith('node')
+            ){
+                await node(command).catch(exitError).then(() => () => exitSuccess({}));
+            }
+            if(command.startsWith('composer')){
+                await composer(command).catch(exitError).then(() => exitSuccess({}));
+            }
+            if( command.startsWith('wp')){
+                await wp(command)
+            }
+            throw new Error('Command not supported.');
+        },
+        wp,
+        //Run a composer command in Docker container
+        composer,
+        node,
+        //Start the phpunit test container
+        testWp: async () => {
+            //@ts-ignore
+            await runCommand(phpunitCommand);
+        },
+        //Check docker version
+        dockerV,
+        //Kill all running containers on the host
+        kill: async () => {
+            await runCommand('docker kill $(docker ps -q)');
+        },
+        opts:args
+    };
     try {
         info('Checking Docker version...');
         //Check if docker is installed and running
         await dockerV();
         //If so, return API
-        const api : I_DockerApi = {
-            run: async (command:string) => {
-                if(
-                    command.startsWith('npm')
-                    || command.startsWith('yarn')
-                    || command.startsWith('node')
-                ){
-                    await node(command).catch(exitError).then(() => () => exitSuccess({}));
-                }
-                if(command.startsWith('composer')){
-                    await composer(command).catch(exitError).then(() => exitSuccess({}));
-                }
-                if( command.startsWith('wp')){
-                    await wp(command)
-                }
-                throw new Error('Command not supported.');
-            },
-            wp,
-            //Run a composer command in Docker container
-            composer,
-            node,
-            //Start the phpunit test container
-            testWp: async () => {
-                //@ts-ignore
-                await runCommand(phpunitCommand);
-            },
-            //Check docker version
-            dockerV,
-            //Kill all running containers on the host
-            kill: async () => {
-                await runCommand('docker kill $(docker ps -q)');
-            },
-            opts:args
-        };
         return api;
     } catch (e:any) {
         error( 'Docker is not installed or is not running.');
