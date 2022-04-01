@@ -1,6 +1,6 @@
 const arg = require('arg');
 const inquirer = require('inquirer');
-const { getAuthConfig, updateAuthConfig, getPluginDir } =  require('../lib/config');
+const { getAuthConfig, updateAuthConfig, getPluginDir, clearAuthConfig } =  require('../lib/config');
 import { exitError, exitSuccess } from '../lib/docker/exit';
 import {
   info,
@@ -14,6 +14,7 @@ function parseArgumentsIntoOptions(rawArgs) {
       '--token': String,
       '--ci': Boolean,
       '--pluginDir' : String,
+      '--out': Boolean,
       // Aliases
     },
     {
@@ -22,8 +23,9 @@ function parseArgumentsIntoOptions(rawArgs) {
   );
   return {
     token: args['--token'] || args._[1],
-    ci: args['--ci'] || false,
+    isCi: args['--ci'] || false,
     pluginDir: args['--pluginDir'] || getPluginDir(),
+    out: args['--out'] || false,
   };
 }
 
@@ -68,9 +70,22 @@ export async function doLogin(token,isCi,pluginDir) {
  */
 export async function cli(args) {
   let options = parseArgumentsIntoOptions(args);
+  const {pluginDir,isCi} = options;
+  if (options.out){
+    try {
+      clearAuthConfig(pluginDir);
+      exitSuccess({
+        message: `Logged out sucessfuly`
+      });
+    } catch (error) {
+      exitError({
+        errorMessage: error.message ? error.message : 'Could not log out',
+        errorCode: error.code ? error.code : 1,
+      });
+    }
+  }
   options = await promptForMissingOptions(options);
-  const {pluginDir} = options;
-  doLogin(options.token,true,pluginDir);
+  doLogin(options.token,isCi,pluginDir);
 }
 
 // ...

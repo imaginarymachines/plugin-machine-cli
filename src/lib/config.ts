@@ -6,7 +6,7 @@ const info = (...args:any[]) => console.log(...args);
 // Path to auth.json
 export  const AUTH_CONFIG_FILE_PATH = `${homedir()}/.plugin-machine-php-cli/auth.json`;
 import { exitError } from './docker/exit';
-import { warning } from './log';
+import { error, warning } from './log';
 import { I_PluginMachineJson } from './pluginMachineApi';
 let pluginMachineJson : I_PluginMachineJson;
 
@@ -79,6 +79,8 @@ type authConfig = {
 }
 
 const pathToAuthForCi = (pluginDir:string) => `${pluginDir}/pluginMachineAuth.json`
+
+
 //update auth.json contents
 export  const updateAuthConfig = (
   newData:authConfig,
@@ -147,13 +149,19 @@ export  const readAuthConfigFile = (
     }
   }
 
-
-
-
 };
 
-//Placeholder error handler
-export  const error = (message:string) => message;
+//Delete the auth.json file(s) if they exist
+export const clearAuthConfig = (pluginDir:string) => {
+  let pathToAuth = pathToAuthForCi(pluginDir);
+  if( fs.existsSync(pathToAuth) ){
+    fs.unlinkSync(pathToAuth);
+  }
+  if( fs.existsSync(AUTH_CONFIG_FILE_PATH) ){
+    fs.unlinkSync(AUTH_CONFIG_FILE_PATH);
+  }
+}
+
 
 //Write to auth.json
 //@see https://github.com/vercel/vercel/blob/f18bca97187d17c050695a7a348b8ae02c244ce9/packages/cli/src/util/config/files.ts#L59-L91
@@ -169,13 +177,12 @@ export  const writeToAuthConfigFile = (authConfig:any) => {
     } catch (err) {
       // @ts-ignore
       if (err.code === 'EPERM') {
-        console.error(
           error(
             `Not able to create ${highlight(
               AUTH_CONFIG_FILE_PATH
             )} (operation not permitted).`
           )
-        );
+
         process.exit(1);
               // @ts-ignore
       } else if (err.code === 'EBADF') {

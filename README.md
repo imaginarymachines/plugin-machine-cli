@@ -51,7 +51,8 @@ Many commands require login. You can either use the login command, which presist
   - `plugin-machine login --token=your-token --ci`
     - Logs in with token, writing it to ./pluginMachineAuth.json
     - Make sure to delete this
-
+- Logout
+  - `plugin-machine login`
 
 
 ### Plugin
