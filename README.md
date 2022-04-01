@@ -13,6 +13,17 @@ Command line interface for [Plugin Machine](https://pluginmachine.com).
 - Use via npx
     - `npx plugin-machine login`
 
+## Configuratation
+
+### pluginMachine.json
+
+### Environment Variables
+
+You may optionally set these variables:
+
+- `PLUGIN_MACHINE_TOKEN`
+  - Instead of using the login command, set token with an environment variable.
+
 ## Commands
 
 Many commands require login. You can either use the login command, which presists your token in your host machine's file system, or you can use the `--token` flag.
@@ -21,6 +32,7 @@ Many commands require login. You can either use the login command, which presist
 - Login to plugin machine.
     - `plugin-machine login {token}`
     - [When logged in, go to /dashboard/api](https://pluginmachine.app/dashboard/api) to see API token.
+
 
 ### Plugin
 > These Commands Require login

@@ -29,7 +29,6 @@ switch(process.argv[2]){
         require('./commands/version.js').cli(process.argv);
         break;
     case 'debug':
-        info( 'DEBUG INFO:')
         require('./commands/debug.js').cli(process.argv);
     break;
     default:

@@ -53,6 +53,9 @@ export const getPluginMachineJson = (pluginDir:string, opts: opts = {} ) => {
 };
 //Get auth token from auth.json, if set
 export const getAuthToken = () => {
+  if( process.env.PLUGIN_MACHINE_TOKEN){
+    return process.env.PLUGIN_MACHINE_TOKEN;
+  }
   const authConfig = getAuthConfig();
   if( authConfig.hasOwnProperty('token') ){
     return authConfig.token;
