@@ -6,16 +6,19 @@ describe( 'Calling plugin commands to check for errors', () => {
     });
 
     afterAll(() => {
-        shell.exec( 'unset PLUGIN_MACHINE_API_TOKEN' );
+        exec( 'unset PLUGIN_MACHINE_API_TOKEN' );
+        exec( 'plugin-machine login --out' );
     });
 
     it( 'runs build command', () => {
-        shell.exec( 'plugin-machine plugin build' );
+        exec( 'plugin-machine plugin build' );
     });
 
     it( 'runs the zip commands', () => {
-        shell.exec( 'plugin-machine plugin zip' );
+        exec( 'plugin-machine plugin zip' );
     });
+
+
 
 
 });
