@@ -87,7 +87,7 @@ export const createDockerApi = async (opts:I_DockerApiOpts): Promise<I_DockerApi
         }
         //See: https://github.com/prooph/docker-files/tree/master/composer
         //Removed -it flag to make it work.
-        command = `docker run --rm  --volume ${pluginDir}:/app prooph/composer:${phpVersion} ${command}`;
+        command = `docker run --rm  --volume ${pluginDir.toLowerCase()}:/app prooph/composer:${phpVersion} ${command}`;
         info( `Running composer command: ${command}`);
         return runCommand(command);
     };
