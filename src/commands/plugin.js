@@ -12,8 +12,7 @@ import {
 import pluginMachineApi from '../lib/pluginMachineApi';
 import {FF_ZIP_UPLOADS,isFeatureFlagEnabled}from '../lib/flags'
 import { exitError, exitSuccess } from '../lib/docker/exit';
-import {createDockerApi}from '../lib/docker/docker';
-
+import {createDockerApi,makeDockerArgs}from '../lib/docker/docker';
 function parseArgumentsIntoOptions(rawArgs) {
 //https://www.npmjs.com/package/arg
   const args = arg(
@@ -23,8 +22,6 @@ function parseArgumentsIntoOptions(rawArgs) {
       '--pluginDir': String,
       '--appUrl': String,
       '--token': String,
-      '--phpVersion': String,
-      '--nodeVersion': String,
       '--buildDir': String,
       '--fileName': String,
       '--filePath': String,
@@ -41,8 +38,6 @@ function parseArgumentsIntoOptions(rawArgs) {
     pluginDir: args['--pluginDir'] || false,
     appUrl: args['--appUrl'] || false,
     token: args['--token'] || false,
-    phpVersion: args['--phpVersion'] || false,
-    nodeVersion: args['--nodeVersion'] || false,
     buildDir: args['--buildDir'] || false,
     fileName: args['--fileName'] || false,
     filePath: args['--filePath'] || false,
@@ -232,19 +227,7 @@ const validatePluginJson = (pluginMachineJson) => {
   return pluginMachineJson;
 }
 
-const makeDockerArgs = (options,pluginDir,pluginMachineJson) => {
-  let args =  {
-    pluginDir,
-    appUrl:pluginMachineJson.appUrl
-  }
-  if( options.phpVersion){
-    args['phpVersion'] = options.phpVersion;
-  }
-  if( options.nodeVersion){
-    args['nodeVersion'] = options.nodeVersion;
-  }
-  return args;
-}
+
 /**
  * Hander for `plugin-machine plugin {command}` commands
  */
@@ -259,7 +242,7 @@ export async function cli(args) {
   const pluginMachine = await pluginMachineApi(
     checkLogin(options.token || getAuthToken(pluginDir)),
   );
-  const dockerApi = await createDockerApi(makeDockerArgs(options,pluginDir,pluginMachineJson))
+  const dockerApi = await createDockerApi(makeDockerArgs(pluginDir,pluginMachineJson))
     .catch(e => {exitError({errorMessage: 'Error connecting to docker'})});
 
   const buildDir = options.buildDir || null;

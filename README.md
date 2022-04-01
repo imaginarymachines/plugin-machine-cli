@@ -17,6 +17,19 @@ Command line interface for [Plugin Machine](https://pluginmachine.com).
 
 ### pluginMachine.json
 
+The `pluginMachine.json` file is used to configure how your plugin with the CLI. It is provided when you use Plugin Machine for your plugin.
+
+#### Important Keys
+
+- "slug" - The slug of your plugin, will determine the name of the generated zip.
+- "nodeVersion" - What version of Node the CLI will use for node, yarn and npm commands.
+  - Allowed values: '14'| '16'| '17'
+  - Default: '16'
+- "phpVersion" - What version of PHP the ClI will use for composer commands
+  - Allowed values: '7.3'| '7.4'| '8.0'| '8.1'
+  - Default: '7.4'
+
+
 ### Environment Variables
 
 You may optionally set these variables:
@@ -57,14 +70,6 @@ This command runs any npm or composer commands found in pluginMachine.json's "bu
   - `plugin-machine plugin build`
 - Optionally, copy files to a directory
   - `plugin-machine plugin build --buildDir=build`
-
-You can also pass a phpVersion and/or nodeVersion value.
-
-- `plugin-machine plugin build --nodeVersion=16 --phpVersion=7.4`
-- Allowed values for `--nodeVersion`:
-  - '12', '14', '16', '17'
-- Allowed values for `--phpVersion`:
-  - '7.3', '7.4', '8.0', '8.1'
 
 #### ZIP plugin for release
 

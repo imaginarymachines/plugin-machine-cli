@@ -16,7 +16,9 @@ export interface I_PluginMachineJson {
   buildSteps?: {
     dev: string[],
     prod: string[],
-  }
+  },
+  phpVersion?: '7.3'| '7.4'| '8.0'| '8.1',
+  nodeVersion?: '14'| '16'| '17',
 }
 /**
  * Plugin Machine API client

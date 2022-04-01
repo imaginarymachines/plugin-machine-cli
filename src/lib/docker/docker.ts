@@ -2,6 +2,7 @@ import {info,error, warning} from  '../log';
 import {exitError,exitSuccess} from './exit';
 //@ts-ignore
 import shell from   'shelljs'
+import { I_PluginMachineJson } from '../pluginMachineApi';
 /**
  * Run a command
  *
@@ -27,6 +28,9 @@ export interface I_DockerApiOpts {
     phpunitCommand?: 'docker-compose run phpunit',
 }
 
+/**
+ * Describes the Docker API client
+ */
 export interface I_DockerApi {
     wp:  (command:string) => Promise<void>,
     composer:  (command:string) => Promise<void>,
@@ -39,12 +43,30 @@ export interface I_DockerApi {
 }
 
 /**
+ * Create options for Docker API
+ */
+export const makeDockerArgs =
+(pluginDir:string,pluginMachineJson:I_PluginMachineJson):I_DockerApiOpts => {
+    let args:I_DockerApiOpts =  {
+      pluginDir,
+      //appUrl:pluginMachineJson.appUrl
+    }
+    if( pluginMachineJson.phpVersion){
+      args['phpVersion'] = pluginMachineJson.phpVersion;
+    }
+    if( pluginMachineJson.nodeVersion){
+      args['nodeVersion'] = pluginMachineJson.nodeVersion;
+    }
+    return args;
+  }
+
+/**
  * Docker command runners
  *
  * @param {{wpcli:string,phpVersion:string}} opts Optional parameters
  *  @param {string} opts.wpcli Optional. The prefix for the WP CLI command, ending in "wp". Default is "docker-compose run wpcli"
  *  @param {string} opts.phpVersion Optional. The version of PHP to use. Default is "7.4". MUST be 3 characters long.
- *  @param {string}opts.nodeVersion Optional. The version of Node to use. Default is "17". MUST be 2 characters long.
+ *  @param {string} opts.nodeVersion Optional. The version of Node to use. Default is "17". MUST be 2 characters long.
  *  @param {string} opts.phpunitCommand Optional. The command to run for PHPUnit. Default is "docker-compose run phpunit"
  */
 export const createDockerApi = async (opts:I_DockerApiOpts): Promise<I_DockerApi> => {
@@ -143,7 +165,8 @@ export const createDockerApi = async (opts:I_DockerApiOpts): Promise<I_DockerApi
         },
         opts:args
     };
-    if( ! /\s/g.test(pluginDir) ){
+    //Check for a space in the directory path.
+    if( /\s/g.test(pluginDir) ){
         warning(`Directory is: ${pluginDir}`);
         exitError({errorMessage:`The Directory has a space in it, which is not supported.`});
     }
