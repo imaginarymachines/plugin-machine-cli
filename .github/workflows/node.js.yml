@@ -24,6 +24,8 @@ jobs:
     - name: Install
       run: npm install
     - name: Build
-      run: npm run build
+      run: npm run build && npm link
+    - name: Check that it works via CI
+      run: plugin-machine version
     - name: Test With Node ${{ matrix.node-version }}
       run: npm run test:ci
