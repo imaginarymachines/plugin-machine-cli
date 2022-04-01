@@ -1,4 +1,4 @@
-import {info,error} from  '../log';
+import {info,error, warning} from  '../log';
 import {exitError,exitSuccess} from './exit';
 //@ts-ignore
 import shell from   'shelljs'
@@ -143,6 +143,10 @@ export const createDockerApi = async (opts:I_DockerApiOpts): Promise<I_DockerApi
         },
         opts:args
     };
+    if( ! /\s/g.test(pluginDir) ){
+        warning(`Directory is: ${pluginDir}`);
+        exitError({errorMessage:`The Directory has a space in it, which is not supported.`});
+    }
     try {
         info('Checking Docker version...');
         //Check if docker is installed and running
