@@ -1,7 +1,8 @@
 describe( 'Calling plugin commands to check for errors', () => {
-   const shell = require('shelljs');
+   const {exec} = require('shelljs');
    beforeAll(() => {
-       shell.exec( 'export PLUGIN_MACHINE_API_TOKEN=1234567890' );
+       exec( 'export PLUGIN_MACHINE_API_TOKEN=1234567890' );
+       exec( 'plugin-machine login --token=fake --ci' );
     });
 
     afterAll(() => {

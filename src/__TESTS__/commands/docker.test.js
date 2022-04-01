@@ -1,21 +1,33 @@
+
+const {exec} = require( 'shelljs' );
+
+//@todo use this, for now using link
+const runCommand = (command) => {
+    if( command.startsWith( 'plugin-machine' ) ) {
+        command = command.replace( 'plugin-machine', '' );
+    }
+    const child = exec(`node dist/index.js ${command}`, {async:true});
+    child.stdout.on('data', function(data) {
+
+    });
+}
 describe( 'running commands to make sure there are no errors', () => {
-    const shell = require('shelljs');
 
     it( 'Gets node version', () => {
-        shell.exec('plugin-machine node -v');
+        exec('plugin-machine node -v');
     });
 
     it( 'Get npm version', () => {
-        shell.exec('plugin-machine npm -v');
+        exec('plugin-machine npm -v');
     }
     );
 
     it( 'Gets yarn version', () => {
-        shell.exec('plugin-machine yarn -v');
+        exec('plugin-machine yarn -v');
     }
     );
     it( 'Gets composer version', () => {
-        shell.exec('plugin-machine composer --version');
+        exec('plugin-machine composer --version');
     }
     );
 });
