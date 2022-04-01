@@ -36,6 +36,4 @@ switch(process.argv[2]){
     break;
 }
 
-
-
 export {};
