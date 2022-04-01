@@ -56,7 +56,7 @@ export async function cli(args) {
 
     try {
         let r = await pluginMachine.uploadFile(
-            fileName, pluginDir
+            fileName, pluginDir,options.quiet
         );
         if( ! options.quiet ) {
             success(`${fileName} uploaded successfully`);

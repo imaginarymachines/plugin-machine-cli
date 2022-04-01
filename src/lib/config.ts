@@ -124,15 +124,12 @@ export  const getAuthConfig = (
 // @see https://github.com/vercel/vercel/blob/f18bca97187d17c050695a7a348b8ae02c244ce9/packages/cli/src/util/config/files.ts#L53-L57
 export  const readAuthConfigFile = (
   pluginDir:string,
-
 ) => {
   let pathToAuth = pathToAuthForCi(pluginDir);
   if( fs.existsSync(pathToAuth) ){
-    info( `Loading auth config from ${pathToAuth}`);
     try {
       const config = fs.readFileSync(pathToAuth);
       return JSON.parse(config);
-      return config;
     } catch (error) {
       return false;
     }
@@ -143,7 +140,6 @@ export  const readAuthConfigFile = (
     try {
       const config = fs.readFileSync(AUTH_CONFIG_FILE_PATH);
       return JSON.parse(config);
-    return config;
     } catch (error) {
       return false;
     }
