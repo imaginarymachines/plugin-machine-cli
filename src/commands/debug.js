@@ -12,6 +12,7 @@ import {getAuthToken} from '../lib/config';
             info:{
                 version:packageJson.version,
                 cwd: require( 'process').cwd(),
+                pwd: require( 'shelljs').pwd(),
                 homedir: require( 'os').homedir(),
             },
             debug:{},
