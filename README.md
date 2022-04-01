@@ -43,8 +43,15 @@ Many commands require login. You can either use the login command, which presist
 
 ### Login
 - Login to plugin machine.
-    - `plugin-machine login {token}`
-    - [When logged in, go to /dashboard/api](https://pluginmachine.app/dashboard/api) to see API token.
+  - [When logged in, go to /dashboard/api](https://pluginmachine.app/dashboard/api) to see API token.
+  - `plugin-machine login`
+    - Will prompt for token
+  - `plugin-machine login --token=your-token`
+    - Will log in with your token
+  - `plugin-machine login --token=your-token --ci`
+    - Logs in with token, writing it to ./pluginMachineAuth.json
+    - Make sure to delete this
+
 
 
 ### Plugin

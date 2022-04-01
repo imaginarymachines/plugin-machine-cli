@@ -5,6 +5,7 @@ const { homedir } = require( 'os' );
 const info = (...args:any[]) => console.log(...args);
 // Path to auth.json
 export  const AUTH_CONFIG_FILE_PATH = `${homedir()}/.plugin-machine-php-cli/auth.json`;
+import { exitError } from './docker/exit';
 import { warning } from './log';
 import { I_PluginMachineJson } from './pluginMachineApi';
 let pluginMachineJson : I_PluginMachineJson;
@@ -54,11 +55,14 @@ export const getPluginMachineJson = (pluginDir:string, opts: opts = {} ) => {
 
 };
 //Get auth token from auth.json, if set
-export const getAuthToken = () => {
+export const getAuthToken = (
+  pluginDir:string,
+
+) => {
   if( process.env.PLUGIN_MACHINE_TOKEN){
     return process.env.PLUGIN_MACHINE_TOKEN;
   }
-  const authConfig = getAuthConfig();
+  const authConfig = getAuthConfig(pluginDir);
   if( authConfig.hasOwnProperty('token') ){
     return authConfig.token;
   }
@@ -73,15 +77,17 @@ export const getPluginDir = () => {
 type authConfig = {
   token?: string,
 }
+
+const pathToAuthForCi = (pluginDir:string) => `${pluginDir}/pluginMachineAuth.json`
 //update auth.json contents
 export  const updateAuthConfig = (
   newData:authConfig,
   pluginDir:string,
-  isCi:boolean = false
+  isCi: boolean = false
 ): authConfig => {
   if( isCi ){
     info( 'CI mode');
-    let pathToAuth =`${pluginDir}/pluginMachineAuth.json`;
+    let pathToAuth = pathToAuthForCi(pluginDir);
     fs.writeFileSync(pathToAuth,
       JSON.stringify(newData), {
       flags: 'w+',
@@ -91,7 +97,7 @@ export  const updateAuthConfig = (
     return newData;
   }
   // read existing config
-    const currentData = readAuthConfigFile();
+    const currentData = readAuthConfigFile(pluginDir);
     if( ! currentData ){
         writeToAuthConfigFile(newData);
     }else{
@@ -100,30 +106,49 @@ export  const updateAuthConfig = (
             ...newData
         });
     }
-    return getAuthConfig();
+    return getAuthConfig(pluginDir,isCi);
 };
 
 //Get auth.json contantes
-export  const getAuthConfig = (): authConfig => {
-    const config = readAuthConfigFile();
+export  const getAuthConfig = (
+  pluginDir:string,
+
+): authConfig => {
+    const config = readAuthConfigFile(pluginDir);
     return config ? config : {};
 }
 
-
-
 // reads "auth config" file atomically
 // @see https://github.com/vercel/vercel/blob/f18bca97187d17c050695a7a348b8ae02c244ce9/packages/cli/src/util/config/files.ts#L53-L57
-export  const readAuthConfigFile = () => {
-  if( ! fs.existsSync(AUTH_CONFIG_FILE_PATH) ){
-    return false;
+export  const readAuthConfigFile = (
+  pluginDir:string,
+
+) => {
+  let pathToAuth = pathToAuthForCi(pluginDir);
+  if( fs.existsSync(pathToAuth) ){
+    info( `Loading auth config from ${pathToAuth}`);
+    try {
+      const config = fs.readFileSync(pathToAuth);
+      return JSON.parse(config);
+      return config;
+    } catch (error) {
+      return false;
+    }
+  }else{
+    if( ! fs.existsSync(AUTH_CONFIG_FILE_PATH) ){
+      return false;
+    }
+    try {
+      const config = fs.readFileSync(AUTH_CONFIG_FILE_PATH);
+      return JSON.parse(config);
+    return config;
+    } catch (error) {
+      return false;
+    }
   }
-  try {
-    const config = fs.readFileSync(AUTH_CONFIG_FILE_PATH);
-    return JSON.parse(config);
-  return config;
-  } catch (error) {
-    return false;
-  }
+
+
+
 
 };
 
