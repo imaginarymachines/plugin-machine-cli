@@ -3,7 +3,9 @@ const fs = require('fs');
 const { join } = require( 'path' );
 const { homedir } = require( 'os' );
 const info = (...args:any[]) => console.log(...args);
-
+// Path to auth.json
+export  const AUTH_CONFIG_FILE_PATH = `${homedir()}/.plugin-machine-php-cli/auth.json`;
+import { warning } from './log';
 import { I_PluginMachineJson } from './pluginMachineApi';
 let pluginMachineJson : I_PluginMachineJson;
 
@@ -68,9 +70,27 @@ export const getPluginDir = () => {
   return cwd();
 }
 
+type authConfig = {
+  token?: string,
+}
 //update auth.json contents
-export  const updateAuthConfig = (newData:any) => {
-    // read existing config
+export  const updateAuthConfig = (
+  newData:authConfig,
+  pluginDir:string,
+  isCi:boolean = false
+): authConfig => {
+  if( isCi ){
+    info( 'CI mode');
+    let pathToAuth =`${pluginDir}/pluginMachineAuth.json`;
+    fs.writeFileSync(pathToAuth,
+      JSON.stringify(newData), {
+      flags: 'w+',
+    });
+    warning( `Make sure to delete ${pathToAuth}`);
+
+    return newData;
+  }
+  // read existing config
     const currentData = readAuthConfigFile();
     if( ! currentData ){
         writeToAuthConfigFile(newData);
@@ -84,14 +104,12 @@ export  const updateAuthConfig = (newData:any) => {
 };
 
 //Get auth.json contantes
-export  const getAuthConfig = () => {
+export  const getAuthConfig = (): authConfig => {
     const config = readAuthConfigFile();
     return config ? config : {};
 }
 
 
-// Path to auth.json
-export  const AUTH_CONFIG_FILE_PATH = `${homedir()}/.plugin-machine-php-cli/auth.json`;
 
 // reads "auth config" file atomically
 // @see https://github.com/vercel/vercel/blob/f18bca97187d17c050695a7a348b8ae02c244ce9/packages/cli/src/util/config/files.ts#L53-L57

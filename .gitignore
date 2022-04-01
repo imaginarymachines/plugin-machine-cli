@@ -4,6 +4,8 @@ blocks/
 admin/
 inc/
 
+pluginMachineAuth.json
+
 output
 dist/
 dist/**/*

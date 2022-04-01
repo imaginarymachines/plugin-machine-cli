@@ -1,6 +1,7 @@
 const arg = require('arg');
 const inquirer = require('inquirer');
-const { getAuthConfig, updateAuthConfig } =  require('../lib/config');
+const { getAuthConfig, updateAuthConfig, getPluginDir } =  require('../lib/config');
+import { exitError, exitSuccess } from '../lib/docker/exit';
 import {
   info,
   success
@@ -11,7 +12,8 @@ function parseArgumentsIntoOptions(rawArgs) {
   const args = arg(
     {
       '--token': String,
-      '-c': Boolean,
+      '--ci': Boolean,
+      '--pluginDir' : String,
       // Aliases
     },
     {
@@ -20,7 +22,8 @@ function parseArgumentsIntoOptions(rawArgs) {
   );
   return {
     token: args['--token'] || args._[1],
-    t: args['-t'] || false,
+    ci: args['--ci'] || false,
+    pluginDir: args['--pluginDir'] || getPluginDir(),
   };
 }
 
@@ -45,9 +48,19 @@ async function promptForMissingOptions(options) {
 /**
  * Hander for `plugin-machine login ` command
  */
-export async function doLogin(token) {
-  const config = updateAuthConfig({token});
-  success(`Logged in with token: ${token}`);
+export async function doLogin(token,isCi,pluginDir) {
+  try {
+    const config = updateAuthConfig( {token},pluginDir,isCi);
+    exitSuccess({
+      message: `Logged in with token`
+    });
+  } catch (error) {
+    exitError({
+      errorMessage: error.message ? error.message : 'Error logging in',
+      errorCode: error.code ? error.code : 1,
+    });
+  }
+
 }
 
 /**
@@ -55,13 +68,9 @@ export async function doLogin(token) {
  */
 export async function cli(args) {
   let options = parseArgumentsIntoOptions(args);
-  if( options.c ) {
-    const config = getAuthConfig();
-    info( config );
-    return;
-  }
   options = await promptForMissingOptions(options);
-  doLogin(options.token);
+  const {pluginDir} = options;
+  doLogin(options.token,true,pluginDir);
 }
 
 // ...
