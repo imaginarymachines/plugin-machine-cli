@@ -92,8 +92,8 @@ This command runs any npm or composer commands found in pluginMachine.json's "bu
   - `plugin-machine plugin zip --buildDir=plugin-name`
 
 - Upload file
-  - `plugin-machine upload --fileName=something.zip
-
+  - `plugin-machine upload`
+  - `plugin-machine upload --fileName=something.zip`
 ### Debug
 - Output some debug information
 	- `plugin-machine debug`

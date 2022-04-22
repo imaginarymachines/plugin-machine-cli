@@ -44,14 +44,16 @@ export async function cli(args) {
     const pluginDir = options.pluginDir || getPluginDir();
     const token = options.token || getAuthToken(pluginDir);
     checkLogin(token);
+    //Set appUrl from options
+    const appUrl = options.appUrl ? options.appUrl : 'https://pluginmachine.app';
+    let pluginMachineJson = getPluginMachineJson(pluginDir,{
+        appUrl
+    });
     const pluginMachine = await pluginMachineApi(token);
-    const {fileName} = options;
+    let {fileName} = options;
 
-    const missingArgError = (argName) => {
-        throw new Error(`--${argName} is required`);
-    }
     if( !fileName ) {
-        missingArgError('fileName');
+        fileName = `${pluginMachineJson.slug}.zip`;
     }
 
     try {

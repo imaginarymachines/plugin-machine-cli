@@ -5,7 +5,6 @@ const { homedir } = require( 'os' );
 const info = (...args:any[]) => console.log(...args);
 // Path to auth.json
 export  const AUTH_CONFIG_FILE_PATH = `${homedir()}/.plugin-machine-php-cli/auth.json`;
-import { exitError } from './docker/exit';
 import { error, warning } from './log';
 import { I_PluginMachineJson } from './pluginMachineApi';
 let pluginMachineJson : I_PluginMachineJson;
@@ -16,7 +15,7 @@ type opts = {
 }
 
 //Get current pluginMachine.json file
-export const getPluginMachineJson = (pluginDir:string, opts: opts = {} ) => {
+export const getPluginMachineJson = (pluginDir:string, opts: opts = {} ):I_PluginMachineJson => {
   const addAppUrl = (config:any) => {
     if( ! config.hasOwnProperty('appUrl')|| false == config.appUrl ){
       config.appUrl = 'https://pluginmachine.app';
