@@ -7,7 +7,6 @@ describe( 'Calling plugin commands to check for errors', () => {
 
     afterAll(() => {
         exec( 'unset PLUGIN_MACHINE_API_TOKEN' );
-        exec( 'plugin-machine login --out' );
     });
 
     it( 'runs build command', () => {
@@ -17,8 +16,5 @@ describe( 'Calling plugin commands to check for errors', () => {
     it( 'runs the zip commands', () => {
         exec( 'plugin-machine plugin zip' );
     });
-
-
-
 
 });
