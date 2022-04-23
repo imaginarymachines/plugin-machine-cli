@@ -146,6 +146,7 @@ const pluginMachineApi = async (token:string) => {
               reject({message: 'Error uploading file', error: {
                 statusCode: response.statusCode,
                 message: 'Probably blocked by Cloudflare',
+                error: error ? error: null,
               }});
             }
             try {
