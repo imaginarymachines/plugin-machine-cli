@@ -1,12 +1,9 @@
 import {
   error,
-  info,
-  warning,
 } from './log';
-
-
 import {appUrl,apiUrl} from './config';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
+import pmCiApi from './pmCiApi';
 export interface I_PluginMachineJson {
   pluginId: number;
   buildId: number;
@@ -24,9 +21,8 @@ export interface I_PluginMachineJson {
  * Plugin Machine API client
  */
 const pluginMachineApi = async (token:string) => {
-    const FormData = require('form-data');
+    const pmCi = pmCiApi();
     const fs = require( 'fs');
-    const path = require('path');
     const packageJson = require(
       require('path').join(__dirname, '../package.json')
     );
@@ -107,14 +103,18 @@ const pluginMachineApi = async (token:string) => {
           return r;
         });
       },
-      uploadFile:  async (fileName:string, pluginDir:string) => {
-
-        const promise  = new Promise( (resolve, reject) => {
-            //redo this
-        });
-        return promise.then( r => {
-          return r;
-        });
+      uploadFile:  async (fileName:string, pluginDir:string,pluginId:number) => {
+        return pmCi.uploadVersion(
+          fs.readFileSync(`${pluginDir}/${fileName}`),
+          pluginId,
+        )
+        //@ts-ignore
+        .catch( e => {
+          error(`Error uploading file ${fileName}`);
+          console.log(e);
+          // @ts-ignore
+        })
+        .then( r => r );
       },
 
       //Get all versions of plugin
