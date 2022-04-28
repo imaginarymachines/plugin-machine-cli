@@ -6,7 +6,7 @@ import {
 
 
 import {appUrl,apiUrl} from './config';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 export interface I_PluginMachineJson {
   pluginId: number;
   buildId: number;
@@ -41,6 +41,7 @@ const pluginMachineApi = async (token:string) => {
     //Plugin update API uses a non-standard API prefix (OK, but why?)
     const pluginApiUrl = (endpoint:string) => `${appUrl(`/api/plugins${endpoint}`)}`;
 
+
     //Get the plugin machine json file for a saved plugin
     async function getPluginMachineJson(pluginId:string|number){
       return axios.get(
@@ -53,7 +54,7 @@ const pluginMachineApi = async (token:string) => {
       ).catch( e => {
         error(`Error getting plugin machine json for plugin ${pluginId}`);
         console.log(e);
-              // @ts-ignore
+        // @ts-ignore
       }).then( ({data}) => {
         return data;
       })
@@ -101,7 +102,7 @@ const pluginMachineApi = async (token:string) => {
         .catch( e => {
           error(`Error getting feature ${featureId} for plugin ${pluginId}`);
           console.log(e);
-                    //@ts-ignore
+          // @ts-ignore
         }).then( (r) => r.text() ).then(r => {
           return r;
         });
@@ -129,9 +130,11 @@ const pluginMachineApi = async (token:string) => {
           //@ts-ignore
         ).catch( e => {
           error(`Error getting versions for plugin ${pluginId}`);
-          console.log(e);
-        }).then( ({data}) => {
-            return data
+        }).then( ( r ) => {
+            if( r ){
+              return r.data;
+            }
+            throw new Error(`Error getting versions for plugin ${pluginId}`);
         });
       },
       //Write a file, with some saftery features
