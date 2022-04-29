@@ -60,7 +60,6 @@
     "fs-extra": "^10.0.1",
     "get-file-object-from-local-path": "^1.0.2",
     "inquirer": "^8.2.0",
-    "isomorphic-fetch": "^3.0.0",
     "laravel-vapor": "^0.5.1",
     "request": "^2.88.2",
     "shelljs": "^0.8.5"

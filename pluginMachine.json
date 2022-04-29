@@ -1,31 +1,81 @@
 {
-    "slug": "build-with-one-admin-pages",
-    "pluginId": 2,
-    "buildId": 2,
-    "entryPoints": {
-        "adminPages": [
-            "build-with-one-admin-pages-0"
-        ],
-        "blocks": [
-            ""
-        ]
-    },
-    "buildIncludes": [
-        "build-with-one-admin-pages.php",
-        "readme.txt",
-        "php",
-        "vendor",
-        "build",
-        "blocks/init.php",
-        "blocks/index.js",
-        "admin/build-with-one-admin-pages-0/init.php"
+  "slug": "build-with-two-admin-pages",
+  "pluginId": 1,
+  "buildId": 1,
+  "entryPoints": {
+    "adminPages": [
+      "build-with-two-admin-pages-0",
+      "build-with-two-admin-pages-1",
+      "name",
+      "a",
+      "aaa",
+      "qa",
+      "aa"
     ],
-    "buildSteps": {
-        "dev": [
-
-        ],
-        "prod": [
-            "node -v"
-        ]
-    }
+    "blocks": []
+  },
+  "buildIncludes": [
+    "build-with-two-admin-pages.php",
+    "readme.txt",
+    "php",
+    "vendor",
+    "build",
+    "inc",
+    "admin/build-with-two-admin-pages-0/init.php",
+    "admin/build-with-two-admin-pages-1/init.php",
+    "admin/name/init.php",
+    "admin/name/init.php",
+    "admin/a/init.php",
+    "admin/a/init.php",
+    "admin/aaa/init.php",
+    "admin/aaa/init.php",
+    "admin/a/init.php",
+    "admin/a/init.php",
+    "admin/qa/init.php",
+    "admin/qa/init.php",
+    "admin/aa/init.php",
+    "admin/aa/init.php",
+    "admin/a/init.php",
+    "admin/a/init.php",
+    "admin/a/init.php",
+    "admin/a/init.php",
+    "admin/a/init.php",
+    "admin/a/init.php",
+    "admin/a/init.php",
+    "admin/a/init.php",
+    "admin/aaa/init.php",
+    "admin/aaa/init.php",
+    "admin/a/init.php",
+    "admin/a/init.php",
+    "admin/aaa/init.php",
+    "admin/aaa/init.php",
+    "admin/aa/init.php",
+    "admin/aa/init.php",
+    "admin/aa/init.php",
+    "admin/aa/init.php",
+    "admin/aaa/init.php",
+    "admin/aaa/init.php",
+    "admin/a/init.php",
+    "admin/a/init.php",
+    "admin/a/init.php",
+    "admin/a/init.php",
+    "admin/a/init.php",
+    "admin/a/init.php",
+    "admin/a/init.php",
+    "admin/a/init.php",
+    "admin/a/init.php",
+    "admin/a/init.php",
+    "admin/a/init.php",
+    "admin/a/init.php"
+  ],
+  "buildSteps": {
+    "dev": [
+      "yarn",
+      "yarn start"
+    ],
+    "prod": [
+      "yarn",
+      "yarn build"
+    ]
+  }
 }
