@@ -33,23 +33,32 @@ const pluginMachineApi = async (token:string) => {
       'User-Agent': `Plugin Machine CLI / ${version}`,
     };
 
-    //Get full URL for plugin update API
+    //Axios instance for primary API, with auth token
+    const apiInstance = axios.create({
+      //baseURL: appUrl('/api/v1'),
+      baseURL: 'http://localhost/api/v1',
+      timeout: 5000,
+      headers
+    });
+
+    //Axios instance for plugins API, with auth token
     //Plugin update API uses a non-standard API prefix (OK, but why?)
-    const pluginApiUrl = (endpoint:string) => `${appUrl(`/api/plugins${endpoint}`)}`;
+    const pluginApiInstance = axios.create({
+      baseURL: appUrl('/api/plugins'),
+      timeout: 5000,
+      headers
+    });
 
 
     //Get the plugin machine json file for a saved plugin
     async function getPluginMachineJson(pluginId:string|number){
-      return axios.get(
-        apiUrl(`/plugins/${pluginId}/code`),
-        {
-          method: 'GET',
-          headers,
-        }
+      return apiInstance.get(
+        `/plugins/${pluginId}/code`,
+
               // @ts-ignore
-      ).catch( e => {
+      ).catch( ({response}) => {
         error(`Error getting plugin machine json for plugin ${pluginId}`);
-        console.log(e);
+        console.log(response.statusText,response.data);
         // @ts-ignore
       }).then( ({data}) => {
         return data;
@@ -61,18 +70,22 @@ const pluginMachineApi = async (token:string) => {
       //Add a feature to a plugin
       addFeature: async (pluginMachineJson:I_PluginMachineJson,data:any)  =>{
         const {pluginId,buildId}=pluginMachineJson;
-        return axios.post(
-          apiUrl(`/plugins/${pluginId}/builds/${buildId}/features`),
-          {
-            method: 'POST',
-            body: JSON.stringify(data),
-            headers,
-          }
+
+        return apiInstance.post(
+          `/plugins/${pluginId}/builds/${buildId}/features`,
+          JSON.stringify(data)
         )
-                  //@ts-ignore
-        .catch( e => {
+        //@ts-ignore
+        .catch( ({response}) => {
           error(`Error adding feature to plugin ${pluginId}`);
-          console.log(e);
+          if( response.data ){
+            Object.keys(response.data).forEach( (key) => {
+              error(`${key}: ${response.data[key]}`);
+            });
+          }
+          throw new Error(
+            response.statusText
+          )
             //@ts-ignore
         }).then( ({data}) => {
             return {
@@ -87,21 +100,17 @@ const pluginMachineApi = async (token:string) => {
       //Get one file, from a feature
       getFeatureCode: async (pluginMachineJson:I_PluginMachineJson,featureId:number|string,file:string) => {
         const {pluginId,buildId}=pluginMachineJson;
-        return axios.get(
-          apiUrl(`/plugins/${pluginId}/builds/${buildId}/features/${featureId}/code?file=${encodeURI(file)}`),
-          {
-            method: 'GET',
-            headers,
-          }
+        return apiInstance.get(
+          `/plugins/${pluginId}/builds/${buildId}/features/${featureId}/code?file=${encodeURI(file)}`
         )
         //@ts-ignore
         .catch( e => {
           error(`Error getting feature ${featureId} for plugin ${pluginId}`);
-          console.log(e);
-          // @ts-ignore
-        }).then( (r) => r.text() ).then(r => {
-          return r;
-        });
+        }).then( (r) => {
+            if(r){
+              return r.data;
+            }
+        } );
       },
       uploadFile:  async (fileName:string, pluginDir:string,pluginId:number) => {
         return pmCi.uploadVersion(
@@ -121,12 +130,9 @@ const pluginMachineApi = async (token:string) => {
       getVersions: async (pluginMachineJson:I_PluginMachineJson) => {
         const {pluginId}=pluginMachineJson;
 
-        return axios.get(
-          pluginApiUrl(`/${pluginId}/versions`),
-          {
-            method: 'GET',
-            headers,
-          }
+        return pluginApiInstance(
+          `/${pluginId}/versions`
+
           //@ts-ignore
         ).catch( e => {
           error(`Error getting versions for plugin ${pluginId}`);
