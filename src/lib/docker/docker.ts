@@ -63,7 +63,7 @@ export const makeDockerArgs =
 /**
  * Docker command runners
  *
- * @param {{wpcli:string,phpVersion:string}} opts Optional parameters
+ *  @param {{wpcli:string,phpVersion:string}} opts Optional parameters
  *  @param {string} opts.wpcli Optional. The prefix for the WP CLI command, ending in "wp". Default is "docker-compose run wpcli"
  *  @param {string} opts.phpVersion Optional. The version of PHP to use. Default is "7.4". MUST be 3 characters long.
  *  @param {string} opts.nodeVersion Optional. The version of Node to use. Default is "17". MUST be 2 characters long.

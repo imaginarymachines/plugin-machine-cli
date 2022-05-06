@@ -1,8 +1,9 @@
 import { warning, success } from '../lib/log';
 import {getAuthToken, getPluginDir, getPluginMachineJson} from '../lib/config';
 import arg from 'arg';
-import pluginMachineApi from '../lib/pluginMachineApi';
 import { exitError, exitSuccess } from '../lib/docker/exit';
+import pmCiApi from '../lib/pmCiApi';
+import {LocalFileData} from 'get-file-object-from-local-path';
 
 function parseArgumentsIntoOptions(rawArgs) {
     //https://www.npmjs.com/package/arg
@@ -49,22 +50,24 @@ export async function cli(args) {
     let pluginMachineJson = getPluginMachineJson(pluginDir,{
         appUrl
     });
-    const pluginMachine = await pluginMachineApi(token);
+    const client = pmCiApi(token);
     let {fileName} = options;
 
     if( !fileName ) {
         fileName = `${pluginMachineJson.slug}.zip`;
     }
+    const fileData = new LocalFileData(`${pluginDir}/${fileName}`);
 
     try {
-        let r = await pluginMachine.uploadFile(
-            fileName, pluginDir,options.quiet
+        let r = await client.uploadVersion(
+            fileData, pluginMachineJson.pluginId
         );
         if( ! options.quiet ) {
             success(`${fileName} uploaded successfully`);
         }
         exitSuccess({message: r.download});
     } catch (error) {
+        console.log({error});
         warning('Upload failed');
         warning(error);
         exitError({errorMessage: 'Upload failed'});

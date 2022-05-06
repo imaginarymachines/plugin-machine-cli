@@ -171,6 +171,10 @@ async function handleAddFeature(pluginDir,pluginMachine,pluginMachineJson,option
         data[option] = options[option].toLowerCase();
       }
     }
+    if( 'adminPageType' === option ) {
+      data[option] = options[option].toUpperCase();
+
+    }
   });
   data.featureType = feature;
 
@@ -183,6 +187,10 @@ async function handleAddFeature(pluginDir,pluginMachine,pluginMachineJson,option
   if( files.length ){
     files.forEach(async(file) => {
       let fileContents = await pluginMachine.getFeatureCode(pluginMachineJson,featureId,file);
+      //If json file got converted to js, then convert back to json
+      if( 'object' === typeof fileContents ) {
+        fileContents = JSON.stringify(fileContents, null, 2);
+      }
       promises.push(
         await pluginMachine.writeFile(pluginDir,file,fileContents).catch(e => {
             throw new Error(e);

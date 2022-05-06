@@ -1,12 +1,9 @@
 import {
   error,
-  info,
-  warning,
 } from './log';
-
-
 import {appUrl,apiUrl} from './config';
-
+import axios from 'axios';
+import pmCiApi from './pmCiApi';
 export interface I_PluginMachineJson {
   pluginId: number;
   buildId: number;
@@ -24,10 +21,8 @@ export interface I_PluginMachineJson {
  * Plugin Machine API client
  */
 const pluginMachineApi = async (token:string) => {
-    const FormData = require('form-data');
-    const fetch = require('isomorphic-fetch');
+    const pmCi = pmCiApi();
     const fs = require( 'fs');
-    const path = require('path');
     const packageJson = require(
       require('path').join(__dirname, '../package.json')
     );
@@ -38,27 +33,35 @@ const pluginMachineApi = async (token:string) => {
       'User-Agent': `Plugin Machine CLI / ${version}`,
     };
 
-    //Get full URL for plugin update API
+    //Axios instance for primary API, with auth token
+    const apiInstance = axios.create({
+      //baseURL: appUrl('/api/v1'),
+      baseURL: 'http://localhost/api/v1',
+      timeout: 5000,
+      headers
+    });
+
+    //Axios instance for plugins API, with auth token
     //Plugin update API uses a non-standard API prefix (OK, but why?)
-    const pluginApiUrl = (endpoint:string) => `${appUrl(`/api/plugins${endpoint}`)}`;
+    const pluginApiInstance = axios.create({
+      baseURL: appUrl('/api/plugins'),
+      timeout: 5000,
+      headers
+    });
+
 
     //Get the plugin machine json file for a saved plugin
     async function getPluginMachineJson(pluginId:string|number){
-      return fetch(
-        apiUrl(`/plugins/${pluginId}/code`),
-        {
-          method: 'GET',
-          headers,
-        }
+      return apiInstance.get(
+        `/plugins/${pluginId}/code`,
+
               // @ts-ignore
-      ).catch( e => {
+      ).catch( ({response}) => {
         error(`Error getting plugin machine json for plugin ${pluginId}`);
-        console.log(e);
-              // @ts-ignore
-      }).then( r => r.json() )
-          // @ts-ignore
-      .then( r => {
-        return r;
+        console.log(response.statusText,response.data);
+        // @ts-ignore
+      }).then( ({data}) => {
+        return data;
       })
     }
 
@@ -67,26 +70,28 @@ const pluginMachineApi = async (token:string) => {
       //Add a feature to a plugin
       addFeature: async (pluginMachineJson:I_PluginMachineJson,data:any)  =>{
         const {pluginId,buildId}=pluginMachineJson;
-        return fetch(
-          apiUrl(`/plugins/${pluginId}/builds/${buildId}/features`),
-          {
-            method: 'POST',
-            body: JSON.stringify(data),
-            headers,
-          }
+
+        return apiInstance.post(
+          `/plugins/${pluginId}/builds/${buildId}/features`,
+          JSON.stringify(data)
         )
-                  //@ts-ignore
-        .catch( e => {
+        //@ts-ignore
+        .catch( ({response}) => {
           error(`Error adding feature to plugin ${pluginId}`);
-          console.log(e);
+          if( response.data ){
+            Object.keys(response.data).forEach( (key) => {
+              error(`${key}: ${response.data[key]}`);
+            });
+          }
+          throw new Error(
+            response.statusText
+          )
             //@ts-ignore
-        }).then( r => r.json())
-                  //@ts-ignore
-          .then(r => {
+        }).then( ({data}) => {
             return {
-              files: r.files,
-              featureId:r.setting.id,
-              main: r.main ? r.main : false,
+              files: data.files,
+              featureId:data.setting.id,
+              main: data.main ? data.main : false,
             };
           });
 
@@ -95,159 +100,47 @@ const pluginMachineApi = async (token:string) => {
       //Get one file, from a feature
       getFeatureCode: async (pluginMachineJson:I_PluginMachineJson,featureId:number|string,file:string) => {
         const {pluginId,buildId}=pluginMachineJson;
-        return fetch(
-          apiUrl(`/plugins/${pluginId}/builds/${buildId}/features/${featureId}/code?file=${encodeURI(file)}`),
-          {
-            method: 'GET',
-            headers,
-                    }
+        return apiInstance.get(
+          `/plugins/${pluginId}/builds/${buildId}/features/${featureId}/code?file=${encodeURI(file)}`
         )
         //@ts-ignore
         .catch( e => {
           error(`Error getting feature ${featureId} for plugin ${pluginId}`);
+        }).then( (r) => {
+            if(r){
+              return r.data;
+            }
+        } );
+      },
+      uploadFile:  async (fileName:string, pluginDir:string,pluginId:number) => {
+        return pmCi.uploadVersion(
+          fs.readFileSync(`${pluginDir}/${fileName}`),
+          pluginId,
+        )
+        //@ts-ignore
+        .catch( e => {
+          error(`Error uploading file ${fileName}`);
           console.log(e);
-                    //@ts-ignore
-        }).then( (r) => r.text() ).then(r => {
-          return r;
-        });
-      },
-      uploadFile:  async (fileName:string, pluginDir:string) => {
-        const request = require('request');
-        const filePath = path.join(pluginDir,fileName);
-        const promise  = new Promise( (resolve, reject) => {
-          if( ! fs.existsSync(filePath) ){
-            reject(`File ${filePath} does not exist`);
-          }
-          request({
-            'method': 'POST',
-            'url': 'https://pluginmachine.app/api/v1/files',
-            'headers': headers,
-            formData: {
-              'file': {
-                'value': fs.createReadStream(filePath),
-                'options': {
-                  'filename': fileName,
-                  'contentType': null
-                }
-              },
-              'name': fileName,
-              'private': 0,
-            }
-            //@ts-ignore
-          }, function (error, response) {
-
-            if (error){
-              reject({
-                message: 'Error uploading file',
-                error
-              });
-            }
-            if (response.statusCode !== 201) {
-              reject({message: 'Error uploading file', error: {
-                statusCode: response.statusCode,
-                message: 'Probably blocked by Cloudflare',
-                error: error ? error: null,
-              }});
-            }
-            try {
-              let r = JSON.parse(response.body);
-              if( r.hasOwnProperty('error')){
-                reject(r.error);
-              }
-              resolve(r);
-
-            } catch (error) {
-              //@ts-ignore
-              warning({
-                message: 'Error parsing JSON response',
-                error,
-              });
-              reject({
-                message: 'Error parsing JSON response',
-                error,
-              });
-            }
-
-          });
-        });
-        return promise.then( r => {
-          return r;
-        });
-      },
-      //upoad a new version
-      uploadVersion: async (pluginMachineJson:any,version:string,pluginDir:string) => {
-        const {pluginId,slug} = pluginMachineJson;
-        const fileName = `${slug}.zip`;
-        const formdata = new FormData();
-        formdata.append('zip', fileName, path.join(pluginDir,fileName));
-        if( version ){
-          formdata.append('version', version);
-        }
-        const url = appUrl(`/api/plugins/${pluginId}/versions`);
-        return fetch(url, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data',
-            'Accept-Encoding': 'gzip, deflate',
-            'Accept':'*/*',
-          },
-          body: formdata,
-          redirect: 'follow'
+          // @ts-ignore
         })
-          //@ts-ignore
-          .then(response => response.text())
-          //@ts-ignore
-          .then(r => {
-            switch(r.status){
-              case 400:
-                //@ts-ignore
-                return r.json().then(r => {
-                  error(`Error uploading a ${version} update for plugin ${pluginId}`);
-                  console.log(r.error);
-                });
-              case 401:
-                info(token);
-                error(`Error uploading a ${version} update for plugin ${pluginId}`);
-                throw new Error(r.statusText || 'Unauthorized');
-              case 201:
-              case 200:
-                try {
-                  return r.json();
-                } catch (error) {
-                  console.log({r,error});
-                  throw error;
-                }
-              default:
-                console.log(r);
-                throw new Error(r.statusText || 'Unknown error');
-            }
-
-
-            throw new  Error(`Error uploading version ${version} for plugin ${pluginId}`);
-          })
-                  //@ts-ignore
-          .catch(error => console.log('error', error));
-
-
+        .then( r => r );
       },
+
       //Get all versions of plugin
       getVersions: async (pluginMachineJson:I_PluginMachineJson) => {
         const {pluginId}=pluginMachineJson;
 
-        return fetch(
-          pluginApiUrl(`/${pluginId}/versions`),
-          {
-            method: 'GET',
-            headers,
-          }
+        return pluginApiInstance(
+          `/${pluginId}/versions`
+
           //@ts-ignore
         ).catch( e => {
           error(`Error getting versions for plugin ${pluginId}`);
-          console.log(e);
-                    //@ts-ignore
-        }).then( r => r.json() ).then(r => {
-            return r;
+        }).then( ( r ) => {
+            if( r ){
+              return r.data;
+            }
+            throw new Error(`Error getting versions for plugin ${pluginId}`);
         });
       },
       //Write a file, with some saftery features
