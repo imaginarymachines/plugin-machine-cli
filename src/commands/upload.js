@@ -3,7 +3,6 @@ import {getAuthToken, getPluginDir, getPluginMachineJson} from '../lib/config';
 import arg from 'arg';
 import { exitError, exitSuccess } from '../lib/docker/exit';
 import pmCiApi from '../lib/pmCiApi';
-import {LocalFileData} from 'get-file-object-from-local-path';
 
 function parseArgumentsIntoOptions(rawArgs) {
     //https://www.npmjs.com/package/arg
@@ -56,16 +55,15 @@ export async function cli(args) {
     if( !fileName ) {
         fileName = `${pluginMachineJson.slug}.zip`;
     }
-    const fileData = new LocalFileData(`${pluginDir}/${fileName}`);
 
     try {
         let r = await client.uploadVersion(
-            fileData, pluginMachineJson.pluginId
+            `${pluginDir}/${fileName}`, pluginMachineJson.pluginId
         );
         if( ! options.quiet ) {
             success(`${fileName} uploaded successfully`);
         }
-        exitSuccess({message: r.download});
+        exitSuccess({message: r.url});
     } catch (error) {
         console.log({error});
         warning('Upload failed');

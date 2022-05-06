@@ -1,7 +1,7 @@
 import {
   error,
 } from './log';
-import {appUrl,apiUrl} from './config';
+import {appUrl} from './config';
 import axios from 'axios';
 import pmCiApi from './pmCiApi';
 export interface I_PluginMachineJson {
@@ -21,7 +21,7 @@ export interface I_PluginMachineJson {
  * Plugin Machine API client
  */
 const pluginMachineApi = async (token:string) => {
-    const pmCi = pmCiApi();
+    const pmCi = pmCiApi(token);
     const fs = require( 'fs');
     const packageJson = require(
       require('path').join(__dirname, '../package.json')
@@ -35,8 +35,7 @@ const pluginMachineApi = async (token:string) => {
 
     //Axios instance for primary API, with auth token
     const apiInstance = axios.create({
-      //baseURL: appUrl('/api/v1'),
-      baseURL: 'http://localhost/api/v1',
+      baseURL: appUrl('/api/v1'),
       timeout: 5000,
       headers
     });
@@ -125,7 +124,15 @@ const pluginMachineApi = async (token:string) => {
         })
         .then( r => r );
       },
+      getPlugins: async (page:number=1) =>{
+        return pluginApiInstance(
+          `/plugins?page=${page}`
 
+          //@ts-ignore
+        ).then( (r) => {
+          console.log(r.data);
+        });
+      },
       //Get all versions of plugin
       getVersions: async (pluginMachineJson:I_PluginMachineJson) => {
         const {pluginId}=pluginMachineJson;

@@ -1,81 +1,21 @@
 {
-  "slug": "build-with-two-admin-pages",
-  "pluginId": 1,
-  "buildId": 1,
+  "slug": "a",
+  "pluginId": 192,
+  "buildId": 211,
   "entryPoints": {
-    "adminPages": [
-      "build-with-two-admin-pages-0",
-      "build-with-two-admin-pages-1",
-      "name",
-      "a",
-      "aaa",
-      "qa",
-      "aa"
-    ],
+    "adminPages": [],
     "blocks": []
   },
   "buildIncludes": [
-    "build-with-two-admin-pages.php",
+    "a.php",
     "readme.txt",
     "php",
     "vendor",
     "build",
-    "inc",
-    "admin/build-with-two-admin-pages-0/init.php",
-    "admin/build-with-two-admin-pages-1/init.php",
-    "admin/name/init.php",
-    "admin/name/init.php",
-    "admin/a/init.php",
-    "admin/a/init.php",
-    "admin/aaa/init.php",
-    "admin/aaa/init.php",
-    "admin/a/init.php",
-    "admin/a/init.php",
-    "admin/qa/init.php",
-    "admin/qa/init.php",
-    "admin/aa/init.php",
-    "admin/aa/init.php",
-    "admin/a/init.php",
-    "admin/a/init.php",
-    "admin/a/init.php",
-    "admin/a/init.php",
-    "admin/a/init.php",
-    "admin/a/init.php",
-    "admin/a/init.php",
-    "admin/a/init.php",
-    "admin/aaa/init.php",
-    "admin/aaa/init.php",
-    "admin/a/init.php",
-    "admin/a/init.php",
-    "admin/aaa/init.php",
-    "admin/aaa/init.php",
-    "admin/aa/init.php",
-    "admin/aa/init.php",
-    "admin/aa/init.php",
-    "admin/aa/init.php",
-    "admin/aaa/init.php",
-    "admin/aaa/init.php",
-    "admin/a/init.php",
-    "admin/a/init.php",
-    "admin/a/init.php",
-    "admin/a/init.php",
-    "admin/a/init.php",
-    "admin/a/init.php",
-    "admin/a/init.php",
-    "admin/a/init.php",
-    "admin/a/init.php",
-    "admin/a/init.php",
-    "admin/a/init.php",
-    "admin/a/init.php"
+    "inc"
   ],
   "buildSteps": {
-    "dev": [
-      "yarn",
-      "yarn start"
-    ],
-    "prod": [
-      "yarn",
-      "yarn build"
-    ]
+    "dev": [],
+    "prod": []
   }
 }

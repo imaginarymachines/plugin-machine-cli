@@ -265,18 +265,6 @@ export async function cli(args) {
       .then( () => success('Plugin Machine config saved'));
       break;
 
-    case 'upload-version':
-          if( !isFeatureFlagEnabled(FF_ZIP_UPLOADS)){
-            throw new Error('plugin upload command is disabled for now');
-          }
-          try {
-              await pluginMachine.uploadVersion(
-                  pluginMachineJson, options.version,pluginDir
-              );
-          } catch (error) {
-              console.log(error);
-          }
-          break;
     case 'upload':
       const {fileName} = options;
       if( !fileName ) {

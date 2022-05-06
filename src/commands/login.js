@@ -1,6 +1,6 @@
 const arg = require('arg');
 const inquirer = require('inquirer');
-const { getAuthConfig, updateAuthConfig, getPluginDir, clearAuthConfig } =  require('../lib/config');
+const { getAuthConfig, updateAuthConfig, getPluginDir, clearAuthConfig, getAuthToken } =  require('../lib/config');
 import { exitError, exitSuccess } from '../lib/docker/exit';
 import {
   info,

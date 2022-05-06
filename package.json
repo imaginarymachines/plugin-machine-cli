@@ -1,6 +1,6 @@
 {
   "name": "plugin-machine",
-  "version": "0.9.5",
+  "version": "0.10.0",
   "description": "A CLI for Plugin Machine",
   "homepage": "https://pluginmachine.com/cli",
   "repository": "github:imaginarymachines/plugin-machine-cli",
@@ -60,7 +60,6 @@
     "fs-extra": "^10.0.1",
     "get-file-object-from-local-path": "^1.0.2",
     "inquirer": "^8.2.0",
-    "laravel-vapor": "^0.5.1",
     "request": "^2.88.2",
     "shelljs": "^0.8.5"
   },
