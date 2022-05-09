@@ -11,8 +11,9 @@ const checkLogin = (token:string) => {
   }
 
 const creator = async (options: any) => {
-
     const pluginDir = options.pluginDir || getPluginDir();
+    const token = options.token || getAuthToken(pluginDir);
+
     //Set appUrl from options
     const appUrl = options.appUrl ? options.appUrl : 'https://pluginmachine.app';
     let pluginMachineJson = getPluginMachineJson(pluginDir,{
@@ -38,8 +39,7 @@ const creator = async (options: any) => {
         dockerApi,
         pluginMachine,
         pluginMachineJson,
-
-
+        token
     }
 };
 
@@ -79,7 +79,6 @@ async function pluginZip(options: any){
         pluginMachineJson,
     } = await creator(options);
     const {makeZip,zipDirectory} = require('./lib/zip');
-
     return new Promise( async (resolve,reject) => {
 
           //If --buildDir arg passed, zip the build dir
@@ -102,16 +101,33 @@ async function pluginZip(options: any){
 
 }
 
-async function upload(options: any){
+async function uploader(options: any){
     const {
-        buildDir,
-        dockerApi,
-        pluginMachine,
+        pluginDir,
+
         pluginMachineJson,
+        token
     } = await creator(options);
+    checkLogin(token);
+    const pmCiApi = require( "./lib/pmCiApi").default;
+    const client = pmCiApi(token);
+    let {fileName} = options;
+
+    if( !fileName ) {
+        fileName = `${pluginMachineJson.slug}.zip`;
+    }
 
     return new Promise( async (resolve,reject) => {
+        try {
+            let r = await client.uploadVersion(
+                `${pluginDir}/${fileName}`, pluginMachineJson.pluginId
+            );
 
+            resolve({message: 'Upload completed',url:r.url});
+        } catch (error) {
+            console.log({error});
+            reject({error: 'Upload failed'});
+        }
     });
 
 }
@@ -119,5 +135,5 @@ async function upload(options: any){
 export {
     pluginBuild,
     pluginZip,
-    upload
+    uploader
 }

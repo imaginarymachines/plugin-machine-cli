@@ -3,6 +3,7 @@ import {getAuthToken, getPluginDir, getPluginMachineJson} from '../lib/config';
 import arg from 'arg';
 import { exitError, exitSuccess } from '../lib/docker/exit';
 import pmCiApi from '../lib/pmCiApi';
+import { uploader } from '../pluginMachine';
 
 function parseArgumentsIntoOptions(rawArgs) {
     //https://www.npmjs.com/package/arg
@@ -41,33 +42,12 @@ const checkLogin = (token) => {
  */
 export async function cli(args) {
     let options = parseArgumentsIntoOptions(args);
-    const pluginDir = options.pluginDir || getPluginDir();
-    const token = options.token || getAuthToken(pluginDir);
-    checkLogin(token);
-    //Set appUrl from options
-    const appUrl = options.appUrl ? options.appUrl : 'https://pluginmachine.app';
-    let pluginMachineJson = getPluginMachineJson(pluginDir,{
-        appUrl
-    });
-    const client = pmCiApi(token);
-    let {fileName} = options;
-
-    if( !fileName ) {
-        fileName = `${pluginMachineJson.slug}.zip`;
-    }
-
-    try {
-        let r = await client.uploadVersion(
-            `${pluginDir}/${fileName}`, pluginMachineJson.pluginId
+    uploader(options)
+        .then( ({message,url}) => {
+           exitSuccess({message:url});
+        }).catch(
+            ({message}) => {
+                exitError({errorMessage: message});
+            }
         );
-        if( ! options.quiet ) {
-            success(`${fileName} uploaded successfully`);
-        }
-        exitSuccess({message: r.url});
-    } catch (error) {
-        console.log({error});
-        warning('Upload failed');
-        warning(error);
-        exitError({errorMessage: 'Upload failed'});
-    }
 }

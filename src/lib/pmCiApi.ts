@@ -82,6 +82,9 @@ function pmCiApi(token:string){
                 //Upload file
                 Vapor.store(require('fs').readFileSync(filePath), options).catch(e => console.log({e}))
                     .then((response:void|AxiosResponse) => {
+                        if( response && [400,401,403,500,501,502,503].includes(response.status)){
+                            reject({message: response.statusText});
+                        }
                         axios.post(`${API.root}${API.ack}`, {
                             //@ts-ignore
                             uuid: response.uuid,
