@@ -1,6 +1,6 @@
 {
   "name": "plugin-machine",
-  "version": "0.10.3",
+  "version": "0.10.4",
   "description": "A CLI for Plugin Machine",
   "homepage": "https://pluginmachine.com/cli",
   "repository": "github:imaginarymachines/plugin-machine-cli",
@@ -17,6 +17,8 @@
     "dist/lib",
     "dist/index.js",
     "dist/index.map.js",
+    "dist/pluginMachine.js",
+    "dist/pluginMachine.map.js",
     "package.json",
     "dist/package.json",
     "dist/api.js"
