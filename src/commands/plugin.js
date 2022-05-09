@@ -264,55 +264,21 @@ export async function cli(args) {
       ).catch((e) => error(e))
       .then( () => success('Plugin Machine config saved'));
       break;
-
-    case 'upload':
-      const {fileName} = options;
-      if( !fileName ) {
-        throw new Error('No fileName found');
-      }
-
-      try {
-          await pluginMachine.uploadFile(
-              fileName, pluginDir
-          );
-      } catch (error) {
-          console.log(error);
-      }
-      break;
     case 'build':
-          const {buildPlugin,copyBuildFiles} = require('../lib/zip');
-          //Build pluigin (run npm/composer, etc)
-          await buildPlugin(pluginMachineJson,'prod',dockerApi)
-            .catch(err => {console.log({err})})
-            .then(async () => {
-                //Copy build files to buildDir if --buildDir is set
-                if( buildDir ){
-                  copyBuildFiles(pluginMachineJson,buildDir,pluginDir);
-                  exitSuccess({message: 'Plugin built and copied'});
-
-                }else{
-                  exitSuccess({message: 'Plugin built'});
-                }
-            });
+      const {pluginBuild} = require('../pluginMachine')
+      pluginBuild(options).catch( ({message}) => {
+        exitError({errorMessage: message});
+      }).then( () => {
+        exitSuccess({message: 'Plugin built and copied'});
+      });
     break;
     case 'zip':
-          pluginMachineJson = validatePluginJson(pluginMachineJson);
-
-          const {makeZip,zipDirectory} = require('../lib/zip');
-
-          //If --buildDir arg passed, zip the build dir
-          if( buildDir ){
-            await zipDirectory(buildDir, pluginMachineJson.slug,pluginDir).then(
-              () => exitSuccess({message: 'Plugin zip created'})
-            ).catch(() => exitError());
-          }
-
-          //Else use pluginMachine.json to find files to zip
-          await makeZip(pluginDir,pluginMachineJson)
-            .catch(err => {console.log({err})})
-            .then(async () => {
-                exitSuccess({message: 'Plugin zipped'});
-            });
+      const {pluginZip} = require('../pluginMachine');
+      pluginZip(options).catch( ({message}) => {
+        exitError({errorMessage: message});
+      }).then( ({message}) => {
+        exitSuccess({message});
+      });
 
     break;
     case 'add':

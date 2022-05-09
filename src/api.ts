@@ -11,7 +11,6 @@ import pluginMachineApi from './lib/pluginMachineApi';
 /**
  * Exporting api for when used as module
  */
-
 export default {
     builder: {
         buildPlugin,

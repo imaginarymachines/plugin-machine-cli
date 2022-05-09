@@ -12,6 +12,7 @@ let pluginMachineJson : I_PluginMachineJson;
 const highlight = (string:string) => string;
 type opts = {
   pluginMachineJson?: I_PluginMachineJson,
+  appUrl?: string,
 }
 
 //Get current pluginMachine.json file
