@@ -8,10 +8,23 @@ import {
     getAuthConfig
 } from './lib/config'
 import pluginMachineApi from './lib/pluginMachineApi';
+import {
+    pluginBuild,
+    pluginZip,
+    uploader
+} from './pluginMachine'
+
 /**
  * Exporting api for when used as module
  */
 export default {
+    //Primary functions
+    pluginMachine: {
+        pluginBuild,
+        pluginZip,
+        uploader
+    },
+    //Lower-level build function
     builder: {
         buildPlugin,
         zipDirectory,
