@@ -77,9 +77,9 @@ export async function copyBuildFiles(
 /**
  * Zip a directory
  */
-export async function zipDirectory(buildDir:string,slug:string){
+export async function zipDirectory(buildDir:string,slug:string,pluginDir:string){
   const fs = require('fs-extra');
-  const output = fs.createWriteStream(`${slug}.zip`);
+  const output = fs.createWriteStream(`${pluginDir}/${slug}.zip`);
   const archive = require('archiver')('zip');
 
   return new Promise( async (resolve,reject) => {

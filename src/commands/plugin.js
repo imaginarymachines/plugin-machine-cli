@@ -297,15 +297,12 @@ export async function cli(args) {
     break;
     case 'zip':
           pluginMachineJson = validatePluginJson(pluginMachineJson);
-          //Offer to upload the zip file, if enabled
-          if( isFeatureFlagEnabled(FF_ZIP_UPLOADS)){
-            options = await promptForZipOptions(options);
-          }
+
           const {makeZip,zipDirectory} = require('../lib/zip');
 
           //If --buildDir arg passed, zip the build dir
           if( buildDir ){
-            await zipDirectory(buildDir, pluginMachineJson.slug).then(
+            await zipDirectory(buildDir, pluginMachineJson.slug,pluginDir).then(
               () => exitSuccess({message: 'Plugin zip created'})
             ).catch(() => exitError());
           }
@@ -316,16 +313,7 @@ export async function cli(args) {
             .then(async () => {
                 exitSuccess({message: 'Plugin zipped'});
             });
-          //Upload zip if enabled, and chosen
-          if (isFeatureFlagEnabled(FF_ZIP_UPLOADS) && options.version) {
-              try {
-                  await pluginMachine.uploadVersion(
-                      pluginMachineJson, options.version,pluginDir
-                  );
-              } catch (error) {
-                  console.log(error);
-              }
-          }
+
     break;
     case 'add':
       pluginMachineJson = validatePluginJson(pluginMachineJson);
