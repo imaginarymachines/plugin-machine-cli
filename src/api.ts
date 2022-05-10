@@ -11,7 +11,8 @@ import pluginMachineApi from './lib/pluginMachineApi';
 import {
     pluginBuild,
     pluginZip,
-    uploader
+    uploader,
+    builder
 } from './pluginMachine'
 
 /**
@@ -22,7 +23,8 @@ export default {
     pluginMachine: {
         pluginBuild,
         pluginZip,
-        uploader
+        uploader,
+        builder
     },
     //Lower-level build function
     builder: {
