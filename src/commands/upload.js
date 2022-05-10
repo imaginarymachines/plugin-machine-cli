@@ -2,8 +2,7 @@ import { warning, success } from '../lib/log';
 import {getAuthToken, getPluginDir, getPluginMachineJson} from '../lib/config';
 import arg from 'arg';
 import { exitError, exitSuccess } from '../lib/docker/exit';
-import pmCiApi from '../lib/pmCiApi';
-import { uploader } from '../pluginMachine';
+import { builder, uploader } from '../pluginMachine';
 
 function parseArgumentsIntoOptions(rawArgs) {
     //https://www.npmjs.com/package/arg
@@ -14,7 +13,9 @@ function parseArgumentsIntoOptions(rawArgs) {
             '--token': String,
             '--fileName': String,
             '--pluginDir': String,
+            '--buildDir': String,
             '--quiet': Boolean,
+            '--zipFirst': Boolean,
             // Aliases
         },
         {
@@ -27,6 +28,8 @@ function parseArgumentsIntoOptions(rawArgs) {
         fileName: args['--fileName'] || false,
         pluginDir: args['--pluginDir'] || false,
         quiet: args['--quiet'] || false,
+        zipFirst: args['--zipFirst'] || false,
+        buildDir: args['--buildDir'] || false,
     };
 }
 //Make sure we have a token
@@ -42,12 +45,20 @@ const checkLogin = (token) => {
  */
 export async function cli(args) {
     let options = parseArgumentsIntoOptions(args);
-    uploader(options)
+    if( options.zipFirst ){
+        const {} = builder(options).catch( ({message}) => {
+            exitError({errorMessage: message});
+        });
+
+    }else{
+        uploader(options)
         .then( ({message,url}) => {
-           exitSuccess({message:url});
+           exitSuccess({message:`${message} ${url}`});
         }).catch(
             ({message}) => {
                 exitError({errorMessage: message});
             }
         );
+    }
+
 }

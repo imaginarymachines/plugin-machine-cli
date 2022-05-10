@@ -17,11 +17,11 @@ export async function buildPlugin(
       resolve(true);
       if( pluginMachineJson.buildSteps){
         if( pluginMachineJson.buildSteps[env]){
-        pluginMachineJson.buildSteps[env].forEach(
-          async(step) => {
-            await docker.run(step).catch(exitError);
-          }
-        )
+          pluginMachineJson.buildSteps[env].forEach(
+            async(step) => {
+              await docker.run(step).catch(exitError);
+            }
+          );
         }
       }
       resolve(true);
@@ -74,19 +74,28 @@ export async function copyBuildFiles(
   });
 }
 
+export type T_ZipReturn = Promise<{
+  fileName: string
+}>;
 /**
  * Zip a directory
  */
-export async function zipDirectory(buildDir:string,slug:string,pluginDir:string){
+export async function zipDirectory(
+  buildDir:string,
+  slug:string,
+  pluginDir:string
+):T_ZipReturn{
   const fs = require('fs-extra');
-  const output = fs.createWriteStream(`${pluginDir}/${slug}.zip`);
+  const file = `${pluginDir}/${slug}.zip`;
+  const output = fs.createWriteStream(file);
+
   const archive = require('archiver')('zip');
 
   return new Promise( async (resolve,reject) => {
     output.on('close', function () {
       console.log('Zipped!');
       console.log(archive.pointer() + ' total bytes');
-      resolve(true);
+      resolve({fileName:file});
     });
 
     //@ts-ignore
@@ -108,7 +117,7 @@ export async function zipDirectory(buildDir:string,slug:string,pluginDir:string)
 export async function makeZip(
   pluginDir:string,
   pluginMachineJson: I_PluginMachineJson
-) {
+):T_ZipReturn {
   function isDir(path:string) {
     try {
         const stat = fs.lstatSync(path);
@@ -122,8 +131,8 @@ export async function makeZip(
   const fs = require('fs');
   const archiver = require('archiver');
   const {slug,buildIncludes} = pluginMachineJson;
-
-  const output = fs.createWriteStream(`${slug}.zip`);
+  const fileName = `${pluginDir}/${slug}.zip`;
+  const output = fs.createWriteStream(fileName);
   const archive = archiver('zip');
 
   console.log('Zipping!');
@@ -132,7 +141,7 @@ export async function makeZip(
     output.on('close', function () {
       console.log(`ZIPPED: ${slug}.zip`);
       console.log(archive.pointer() + ' total bytes');
-      resolve({name:`${slug}.zip`});
+      resolve({fileName});
     });
 
     //@ts-ignore
@@ -144,15 +153,20 @@ export async function makeZip(
     archive.pipe(output);
 
     buildIncludes.forEach((name) => {
-        if (fs.existsSync(`${pluginDir}/${name}`)) {
-          if( isDir (name) ) {
-            archive.directory(`${name}/`, name);
-          }else{
-            archive.append(fs.createReadStream(`${pluginDir}/${name}`), {
+      let fileName = `${pluginDir}/${name}`;
+      if (fs.existsSync(fileName)) {
+        if( isDir (fileName) ) {
+          archive.directory(fileName, name);
+        }else{
+          archive.append(
+            fs.createReadStream(
+              fileName
+            ),{
               name,
-            });
-          }
+            }
+          );
         }
+      }
 
     });
 

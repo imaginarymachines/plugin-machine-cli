@@ -81,6 +81,9 @@ This command runs any npm or composer commands found in pluginMachine.json's "bu
 
 #### ZIP plugin for release
 
+- Build plugin, create zip, and upload
+  - `plugin-machine upload --zipFirst`
+  - `plugin-machine upload --zipFirst --pluginDir=/path-to-plugin-dir`
 - Zip files, based on pluginMachine.json's "buildIncludes" key.
   - `plugin-machine plugin zip`
 

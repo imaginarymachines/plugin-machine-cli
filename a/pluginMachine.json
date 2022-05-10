@@ -1,0 +1,21 @@
+{
+    "slug": "a",
+    "pluginId": 192,
+    "buildId": 211,
+    "entryPoints": {
+        "adminPages": [],
+        "blocks": []
+    },
+    "buildIncludes": [
+        "a.php",
+        "readme.txt",
+        "php",
+        "vendor",
+        "build",
+        "inc"
+    ],
+    "buildSteps": {
+        "dev": [],
+        "prod": []
+    }
+}

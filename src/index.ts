@@ -2,6 +2,7 @@
 import hi from './lib/hi';
 import {info,error} from './lib/log';
 
+console.log(process.argv.length);
 switch(process.argv[2]){
     case 'hi':
         info(hi(process.argv[2]|| 'Roy'));

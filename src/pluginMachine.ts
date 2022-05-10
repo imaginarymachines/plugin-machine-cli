@@ -43,9 +43,12 @@ const creator = async (options: any) => {
     }
 };
 
-
-async function pluginBuild(options: any){
+async function pluginBuild(options: any): Promise<{
+    message: string,
+    outputDir:string
+}> {
     const {
+        pluginDir,
         buildDir,
         dockerApi,
         pluginMachineJson,
@@ -54,25 +57,34 @@ async function pluginBuild(options: any){
 
     return new Promise( async (resolve,reject) => {
         await buildPlugin(pluginMachineJson,'prod',dockerApi)
-        //@ts-ignore
-        .catch(err => {console.log({err})})
-        .then(async () => {
-            //Copy build files to buildDir if --buildDir is set
-            if( buildDir ){
-              copyBuildFiles(pluginMachineJson,buildDir,pluginDir);
-              resolve({message: 'Plugin built and copied'});
+            //@ts-ignore
+            .catch(err => {reject({error: err})})
+            .then(async () => {
+                //Copy build files to buildDir if --buildDir is set
+                if( buildDir ){
+                    copyBuildFiles(pluginMachineJson,buildDir,pluginDir);
+                    resolve({
+                        message: 'Plugin built and copied',
+                        outputDir: `${pluginDir}/${buildDir}`
+                    });
 
-            }else{
-                reject({message: 'Plugin built'});
-            }
-        });
+                }else{
+                    resolve({
+                        message: 'Plugin built',
+                        outputDir: pluginDir
+                    });
+                }
+            });
 
     });
 
 
 }
 
-async function pluginZip(options: any){
+async function pluginZip(options: any):Promise< {
+    fileName: string;
+    message: string;
+}>{
     const {
         buildDir,
         pluginDir,
@@ -83,28 +95,37 @@ async function pluginZip(options: any){
 
           //If --buildDir arg passed, zip the build dir
           if( buildDir ){
-            await zipDirectory(buildDir, pluginMachineJson.slug,pluginDir).then(
-              () => resolve({message: 'Plugin zip created'})
+            let {fileName} =await zipDirectory(
+                buildDir, pluginMachineJson.slug,pluginDir
             ).catch(() => reject(
                 {message: 'Plugin zip not created'}
             ));
-          }
-
-          //Else use pluginMachine.json to find files to zip
-          await makeZip(pluginDir,pluginMachineJson)
+            resolve({
+                message: 'Plugin zip created',
+                fileName
+            });
+          }else{
+            //Else use pluginMachine.json to find files to zip
+            let {fileName} = await makeZip(pluginDir,pluginMachineJson)
             //@ts-ignore
             .catch(err => reject({message:err}))
-            .then(async () => {
-                resolve({message: 'Plugin zipped'});
+                resolve({
+                message: 'Plugin zipped',
+                fileName
             });
+          }
+
+
     });
 
 }
-
-async function uploader(options: any){
+type T_UploadReturn = Promise<{
+    message:string;
+    url:string;
+}>;
+async function uploader(options: any):T_UploadReturn{
     const {
         pluginDir,
-
         pluginMachineJson,
         token
     } = await creator(options);
@@ -120,7 +141,8 @@ async function uploader(options: any){
     return new Promise( async (resolve,reject) => {
         try {
             let r = await client.uploadVersion(
-                `${pluginDir}/${fileName}`, pluginMachineJson.pluginId
+                fileName.startsWith(pluginDir) ? fileName :`${pluginDir}/${fileName}`,
+                pluginMachineJson.pluginId
             );
 
             resolve({message: 'Upload completed',url:r.url});
@@ -132,8 +154,35 @@ async function uploader(options: any){
 
 }
 
+async function builder(options: any){
+    let {outputDir,message} = await pluginBuild(options).catch(
+        (e:Error) => {
+            console.log(e);
+            throw e;
+        }
+    );
+    console.log({message,outputDir});
+    let zipped = await pluginZip({
+        ...options,
+        buildDir: options.buildDir ? outputDir :false
+    });
+
+    console.log(zipped.message);
+    let uploaded = await uploader({
+        ...options,
+        fileName: zipped.fileName
+    });
+    console.log(uploaded.message);
+    console.log(uploaded.url);
+    return {
+        message: uploaded.message,
+        url: uploaded.url
+    }
+}
+
 export {
     pluginBuild,
     pluginZip,
-    uploader
+    uploader,
+    builder
 }
